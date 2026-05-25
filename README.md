@@ -1,2 +1,2 @@
 # Ugrad
-oops
+O Ugrad é um projeto

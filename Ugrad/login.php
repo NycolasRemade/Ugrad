@@ -14,15 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($email && !empty($senha)) {
         try {
-            $stmt = $pdo->prepare('SELECT id, nome, senha, tipo, ativada FROM usuarios WHERE email = ?');
+            $stmt = $pdo->prepare('SELECT id, nome, senha, tipo FROM usuarios WHERE email = ?');
             $stmt->execute([$email]);
             $usuario = $stmt->fetch();
 
             if ($usuario) {
-
-                if (!$usuario['ativada']) {
-                    $erro = 'Esta conta ainda não foi ativada pelo administrador.';
-                } elseif (password_verify($senha, $usuario['senha'])) {
+                if (password_verify($senha, $usuario['senha'])) {
 
                     session_regenerate_id(true);
 
@@ -51,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login do Sistema</title>
+    <title>Login</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -60,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2>Acessar Conta</h2>
 
     <?php if (!empty($erro)): ?>
-        <div><?= htmlspecialchars($erro) ?></div>
+        <div id="erro"><?= htmlspecialchars($erro) ?></div>
     <?php endif; ?>
 
     <form action="login.php" method="POST">
@@ -75,6 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <button type="submit">Entrar</button>
+
+        
     </form>
 </div>
 

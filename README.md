@@ -1,2 +1,2 @@
 # Ugrad
-O Ugrad é um projeto
+O Ugrad é um projeto de

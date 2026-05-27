@@ -8,7 +8,7 @@ require_once 'config.php';
 if (isset($_SESSION['usuario_id'])) {
     header('Location: dashboard.php');
     exit;
-}f
+}
 
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

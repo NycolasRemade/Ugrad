@@ -35,6 +35,13 @@ CREATE TABLE extra_usuarios(
   FOREIGN KEY (turma) REFERENCES turmas(id)
 );
 
+CREATE TABLE codigo_instituicao(
+  id_instituicao int not null,
+  codigo varchar(25) not null,
+  foreign key(id_instituicao) references usuarios(id),
+  data_criacao timestamp DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE categorias(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(25)

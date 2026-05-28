@@ -24,14 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt_check->fetch()) { //Isso não faz muito sentido, não precisa ser um condicional, e se o fetch() desse erro,
                                         //não seria esse if() que detectaria e sim o PDO
 
-                $stmt_usuario = $pdo->prepare("SELECT id FROM extra_usuarios WHERE id = ?");
-                $stmt_usuario->execute([$_SESSION['usuario_id']]);
-
-                
                 $stmt_insert = $pdo->prepare('INSERT INTO extra_usuarios (id, instituicao) VALUES (?, ?)');
                 $stmt_insert->execute([$_SESSION['usuario_id'], $codigo_instituicao]);
-            
-
                 header('Location: dashboard.php');
                 exit;
                 

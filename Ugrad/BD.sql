@@ -10,29 +10,29 @@ CREATE TABLE usuarios(
   email varchar(128) unique,
   senha varchar(128),
   descricao varchar(500),
-  tipo int NOT NULL,
+  id_tipo int NOT NULL,
   ativada boolean,
   imagem_perfil longblob,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (tipo) REFERENCES tipos_usuario (id)
+  FOREIGN KEY (id_tipo) REFERENCES tipos_usuario (id)
 );
 
 CREATE TABLE turmas(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(25) NOT NULL,
-  instituicao int NOT NULL,
-  FOREIGN KEY (instituicao) REFERENCES usuarios(id)
+  id_professor int NOT NULL,
+  id_instituicao int NOT NULL,
+  FOREIGN KEY (id_professor) REFERENCES usuarios(id),
+  FOREIGN KEY (id_instituicao) REFERENCES usuarios(id)
 );
 
 CREATE TABLE extra_usuarios(
-  id int PRIMARY KEY NOT NULL,
-  FOREIGN KEY (id) REFERENCES usuarios (id),
-  turma int,
-  professor int,
-  instituicao int,
-  FOREIGN KEY (instituicao) REFERENCES usuarios(id),
-  FOREIGN KEY (professor) REFERENCES usuarios(id),
-  FOREIGN KEY (turma) REFERENCES turmas(id)
+  id_usuario int PRIMARY KEY NOT NULL,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios (id),
+  id_turma int,
+  id_instituicao int,
+  FOREIGN KEY (id_turma) REFERENCES turmas(id),
+  FOREIGN KEY (id_instituicao) REFERENCES usuarios(id)
 );
 
 CREATE TABLE codigo_instituicao(
@@ -64,8 +64,8 @@ CREATE TABLE projetos(
 );
 
 CREATE TABLE proj_dados(
-  id int PRIMARY KEY NOT NULL,
-  FOREIGN KEY (id) REFERENCES projetos(id),
+  id_projeto int PRIMARY KEY NOT NULL,
+  FOREIGN KEY (id_projeto) REFERENCES projetos(id),
   descricao text,
   historia text
 );

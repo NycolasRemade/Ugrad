@@ -13,23 +13,20 @@ if (isset($_SESSION['usuario_id'])) {
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $codigo_instituicao = filter_input(INPUT_POST, 'codigo_instituicao', FILTER_VALIDATE_INT);
-
+    $codigo_instituicao = trim($_POST['codigo_instituicao'] ?? '');
     if ($codigo_instituicao) {
 
         try {
 
-            $stmt_check = $pdo->prepare('SELECT id FROM usuarios WHERE id = ? AND tipo = 4');
+            $stmt_check = $pdo->prepare('SELECT id FROM codigo_instituicao WHERE codigo = ? AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)');
             $stmt_check->execute([$codigo_instituicao]);
-            $instituicao_valida = $stmt_check->fetch();
 
-            if ($instituicao_valida) {
+            if ($stmt_check->fetch()) {
 
-                $stmt_extra = $pdo->prepare("SELECT id FROM extra_usuarios WHERE id = ?");
-                $stmt_extra->execute([$_SESSION['usuario_id']]);
-                $existe_registro_extra = $stmt_extra->fetch();
+                $stmt_usuario = $pdo->prepare("SELECT id FROM extra_usuarios WHERE id = ?");
+                $stmt_usuario->execute([$_SESSION['usuario_id']]);
 
-                if ($existe_registro_extra) {
+                if ($stmt_usuario->fetch()) {
 
                     $stmt_update = $pdo->prepare('UPDATE extra_usuarios SET instituicao = ? WHERE id = ?');
                     $stmt_update->execute([$codigo_instituicao, $_SESSION['usuario_id']]);
@@ -38,16 +35,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt_insert->execute([$_SESSION['usuario_id'], $codigo_instituicao]);
                 }
 
-                $erro = 'Sucesso! Sua conta foi vinculada à instituição.';
+                header('Location: dashboard.php');
+                exit;
                 
             } else {
-                $erro = 'Código inválido. Nenhuma instituição ativa foi encontrada com este número.';
+                $erro = 'Código inválido. Nenhuma instituição ativa foi encontrada com este código.';
             }
         } catch (\PDOException $e) {
             $erro = 'Ocorreu um erro ao processar sua solicitação. Tente novamente.';
         }
     } else {
-        $erro = 'Por favor, digite um código numérico válido.';
+        $erro = 'Por favor, digite um código válido.';
     }
 }
 ?>

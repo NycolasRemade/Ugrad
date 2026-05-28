@@ -14,7 +14,7 @@ CREATE TABLE usuarios(
   ativada boolean,
   imagem_perfil longblob,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id_tipo) REFERENCES tipos_usuario (id)
+  FOREIGN KEY (tipo) REFERENCES tipos_usuario (id)
 );
 
 CREATE TABLE turmas(

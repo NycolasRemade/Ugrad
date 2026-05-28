@@ -10,7 +10,7 @@ CREATE TABLE usuarios(
   email varchar(128) unique,
   senha varchar(128),
   descricao varchar(500),
-  id_tipo int NOT NULL,
+  tipo int NOT NULL,
   ativada boolean,
   imagem_perfil longblob,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,

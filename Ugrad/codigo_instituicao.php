@@ -1,10 +1,6 @@
 <?php
 session_start();
 require_once 'config.php';
-// if (!isset($_SESSION['usuario_id'])) {
-//     header('Location: login.php');
-//     exit;
-// }
 if (isset($_SESSION['usuario_id'])) {
     header('Location: dashboard.php');
     exit;
@@ -18,14 +14,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
 
-            $stmt_check = $pdo->prepare('SELECT id FROM codigo_instituicao WHERE codigo = ? AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)');
+            //Checa se o código da instituição existe e não expirou (limite no 'INTERVAL 1 WEEK')
+            $stmt_check = $pdo->prepare('
+                    SELECT id FROM codigo_instituicao
+                    WHERE codigo = ?
+                    AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)
+                ');
             $stmt_check->execute([$codigo_instituicao]);
+            $codigo_valido = $stmt_check->fetch();
 
-            if ($stmt_check->fetch()) { //Isso não faz muito sentido, não precisa ser um condicional, e se o fetch() desse erro,
-                                        //não seria esse if() que detectaria e sim o PDO
+            if ($codigo_valido) {
 
-                $stmt_insert = $pdo->prepare('INSERT INTO extra_usuarios (id, instituicao) VALUES (?, ?)');
-                $stmt_insert->execute([$_SESSION['usuario_id'], $codigo_instituicao]);
+                //guarda o código temporariamente para ser utilizado na página
+                //da criação da conta, onde o usuário é criado no banco de dados
+                $_SESSION['codigo_instituicao'] = $codigo_instituicao;
                 header('Location: dashboard.php');
                 exit;
                 

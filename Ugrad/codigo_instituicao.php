@@ -27,14 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt_usuario = $pdo->prepare("SELECT id FROM extra_usuarios WHERE id = ?");
                 $stmt_usuario->execute([$_SESSION['usuario_id']]);
 
-                if ($stmt_usuario->fetch()) { //Mesma coisa aqui
-
-                    $stmt_update = $pdo->prepare('UPDATE extra_usuarios SET instituicao = ? WHERE id = ?');
-                    $stmt_update->execute([$codigo_instituicao, $_SESSION['usuario_id']]);
-                } else {  //Códiguê melhor
-                    $stmt_insert = $pdo->prepare('INSERT INTO extra_usuarios (id, instituicao) VALUES (?, ?)');
-                    $stmt_insert->execute([$_SESSION['usuario_id'], $codigo_instituicao]);
-                }
+                
+                $stmt_insert = $pdo->prepare('INSERT INTO extra_usuarios (id, instituicao) VALUES (?, ?)');
+                $stmt_insert->execute([$_SESSION['usuario_id'], $codigo_instituicao]);
+            
 
                 header('Location: dashboard.php');
                 exit;

@@ -21,16 +21,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_check = $pdo->prepare('SELECT id FROM codigo_instituicao WHERE codigo = ? AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)');
             $stmt_check->execute([$codigo_instituicao]);
 
-            if ($stmt_check->fetch()) {
+            if ($stmt_check->fetch()) { //Isso não faz muito sentido, não precisa ser um condicional, e se o fetch() desse erro,
+                                        //não seria esse if() que detectaria e sim o PDO
 
                 $stmt_usuario = $pdo->prepare("SELECT id FROM extra_usuarios WHERE id = ?");
                 $stmt_usuario->execute([$_SESSION['usuario_id']]);
 
-                if ($stmt_usuario->fetch()) {
+                if ($stmt_usuario->fetch()) { //Mesma coisa aqui
 
                     $stmt_update = $pdo->prepare('UPDATE extra_usuarios SET instituicao = ? WHERE id = ?');
                     $stmt_update->execute([$codigo_instituicao, $_SESSION['usuario_id']]);
-                } else {
+                } else {  //Códiguê melhor
                     $stmt_insert = $pdo->prepare('INSERT INTO extra_usuarios (id, instituicao) VALUES (?, ?)');
                     $stmt_insert->execute([$_SESSION['usuario_id'], $codigo_instituicao]);
                 }

@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erro = 'Erro no sistema. Tente novamente mais tarde.';
         }
     } else {
-        $erro = 'Preencha todos os campos corretamente.';
+        $erro = 'Senha ou Email incorretos!.';
     }
 }
 

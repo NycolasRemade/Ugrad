@@ -20,9 +20,7 @@ CREATE TABLE usuarios(
 CREATE TABLE turmas(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(25) NOT NULL,
-  id_professor int NOT NULL,
   id_instituicao int NOT NULL,
-  FOREIGN KEY (id_professor) REFERENCES usuarios(id),
   FOREIGN KEY (id_instituicao) REFERENCES usuarios(id)
 );
 

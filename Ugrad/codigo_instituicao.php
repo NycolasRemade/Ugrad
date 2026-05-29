@@ -15,19 +15,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
 
             //Checa se o código da instituição existe e não expirou (limite no 'INTERVAL 1 WEEK')
-            $stmt_check = $pdo->prepare('
+            $stmt = $pdo->prepare('
                     SELECT id FROM codigo_instituicao
                     WHERE codigo = ?
                     AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)
                 ');
-            $stmt_check->execute([$codigo_instituicao]);
-            $codigo_valido = $stmt_check->fetch();
+            $stmt->execute([$codigo_instituicao]);
+            $id_instituicao = $stmt->fetch();
 
-            if ($codigo_valido) {
+            if ($id_instituicao) {
 
                 //guarda o código temporariamente para ser utilizado na página
                 //da criação da conta, onde o usuário é criado no banco de dados
-                $_SESSION['codigo_instituicao'] = $codigo_instituicao;
+                $_SESSION['id_instituicao'] = $id_instituicao;
                 header('Location: dashboard.php');
                 exit;
                 

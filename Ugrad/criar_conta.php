@@ -9,16 +9,18 @@ if (isset($_SESSION['usuario_id'])) {
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $nome = trim($_POST['nome'] ?? '');
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';
+    $tipo = $_SESSION['usuario_tipo'] ?? 0;
 
-    if ($email && !empty($senha)) {
+    if (!empty($nome) && $email && !empty($senha) && $tipo > 0) {
         try {
 
-            //terminar de adicionar campos no HTML e aqui
-            //também inserir código da instituição em algum lugar
-            $stmt = $pdo->prepare('INSERT INTO usuarios(email, senha) VALUES (?, ?)');
-            $stmt->execute([$email, $senha]);
+            $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
+            $stmt->execute([$nome, $email, $senha, $tipo]);
+            // $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao) VALUES (?, ?)');
+            // $stmt->execute([$pdo->lastInsertId(), $_SESSION['usuario_id_instituicao']]);
             header('Location: dashboard.php');
             exit;
             
@@ -26,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erro = 'Erro no sistema. Tente novamente mais tarde.';
         }
     } else {
-        $erro = 'Email ou senha inválidos.';
+        $erro = 'Preencha todos os campos corretamente.';
     }
 }
 
@@ -44,8 +46,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div>Ugrad</div>
         <h2>Cadastro</h2>
         <form action="criar_conta.php" method="POST">
-            <input type="text" id="email" placeholder="Email" required>
-            <input type="password" id="senha" placeholder="Senha" required>
+            <input type="text" id="nome" name="nome" placeholder="Nome" required>
+            <input type="text" id="email" name="email" placeholder="Email" required>
+            <input type="password" id="senha" name="senha" placeholder="Senha" required>
+            <input type="password" id="confirma_senha" name="confirma_senha" placeholder="Confirmar senha" required>
             <button type="submit">→</button>
         </form>
         <div>
@@ -57,5 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span>Entrar com o Google</span>
         </button-->
       </div>
+    <script type="module">
+        const campoSenha = document.getElementById("senha");
+        const campoSenha2 = document.getElementById("confirma_senha");
+        document.querySelector("form").onsubmit = function(e) {
+            if (campoSenha.value !== campoSenha2.value) {
+                e.preventDefault();
+                alert("As senhas não coincidem!");
+            }
+        };
+    </script>
 </body>
 </html>

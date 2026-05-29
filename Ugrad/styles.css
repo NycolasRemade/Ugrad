@@ -6,15 +6,24 @@
 }
 
 @font-face {
-  font-family: 'Meringue';
+  font-family: 'Tan';
   font-style: normal;
-  src: 
+  src: url(TAN\ MERINGUE.woff2)
 }
 
 *{
     margin: 0;
     padding: 0;
     font-family: IBM;
+}
+
+.meringue{
+  font-family: tan;
+}
+
+h1{
+  font-style: normal;
+  font-weight: lighter;
 }
 
 

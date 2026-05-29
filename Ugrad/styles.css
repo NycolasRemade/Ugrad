@@ -27,9 +27,12 @@ body{
 }
 
 #logo_1{
-  width: 500px;
+  width: fit-content;
   background-color: white;
   position: absolute;
+  rotate: -4deg;
+  margin-top: 300px;
+  margin-left: 300px;
 }
 
 #logo_1 img{
@@ -41,8 +44,18 @@ body{
   font-size: 9em;
 }
 
+#logo_1 p{
+  font-size: 1.5em;
+  margin-left: 235px;
+  margin-top: -40px;
+}
+
 .box{
   box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
   background-color: white;
 }
 
+.loptions{
+  width: 673px;
+  height: 543px;
+}

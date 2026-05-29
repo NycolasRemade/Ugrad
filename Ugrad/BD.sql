@@ -36,10 +36,10 @@ CREATE TABLE extra_usuarios(
 );
 
 CREATE TABLE codigo_instituicao(
-  id_instituicao int not null,
-  codigo varchar(25) not null,
-  tipo int not null,
-  foreign key(id_instituicao) references usuarios(id),
+  id_instituicao int NOT NULL,
+  codigo varchar(25) NOT NULL,
+  tipo_usuario int NOT NULL,
+  FOREIGN KEY(id_instituicao) REFERENCES usuarios(id),
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP
 );
 

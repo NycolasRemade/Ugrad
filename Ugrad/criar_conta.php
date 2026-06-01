@@ -5,6 +5,10 @@ if (isset($_SESSION['usuario_id'])) {
     header('Location: dashboard.php');
     exit;
 }
+if (!isset($_SESSION['usuario_tipo'])) {
+    header('Location: codigo_instituicao.php');
+    exit;
+}
 
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,9 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
 
             $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
-            $stmt->execute([$nome, $email, $senha, $tipo]);
+            $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo]);
+
+            $_SESSION['usuario_id'] = $pdo->lastInsertId();
+
             // $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao) VALUES (?, ?)');
             // $stmt->execute([$pdo->lastInsertId(), $_SESSION['usuario_id_instituicao']]);
+            
             header('Location: dashboard.php');
             exit;
             
@@ -55,12 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div>
             <a href="login.php">Já tenho uma conta Ugrad</a>
         </div>
-        <!--button class="google-btn">
-            imagina ter que programar a integração com o treco de login do google kkkkkkkkk
-            <img src="imagens/Google.jpeg" alt="Google logo">
-            <span>Entrar com o Google</span>
-        </button-->
-      </div>
+    </div>
     <script type="module">
         const campoSenha = document.getElementById("senha");
         const campoSenha2 = document.getElementById("confirma_senha");

@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
 
-            //Checa se o código da instituição existe e não expirou (limite no 'INTERVAL 1 WEEK')
+            // Checa se o código da instituição existe e não expirou (limite no 'INTERVAL 1 WEEK')
             $stmt = $pdo->prepare('
                     SELECT id_instituicao, tipo_usuario FROM codigo_instituicao
                     WHERE codigo = ?
@@ -25,11 +25,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($codigo) {
 
-                //guarda o código temporariamente para ser utilizado na página
-                //da criação da conta, onde o usuário é criado no banco de dados
+                // guarda o código temporariamente para ser utilizado na página
+                // da criação da conta, onde o usuário é criado no banco de dados
                 $_SESSION['usuario_id_instituicao'] = $codigo['id_instituicao'];
-                $_SESSION['usuario_tipo'] = $codigo['tipo_usuario'];
-                header('Location: dashboard.php');
+                $_SESSION['usuario_tipo']           = $codigo['tipo_usuario'];
+                header('Location: criar_conta.php');
                 exit;
                 
             } else {
@@ -62,10 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 
-    <form action="vincular_instituicao.php" method="POST">
+    <form action="codigo_instituicao.php" method="POST">
         <div class="form-group">
             <label for="codigo_instituicao">Código da Instituição</label>
-            <input type="number" id="codigo_instituicao" name="codigo_instituicao" required>
+            <input id="codigo_instituicao" name="codigo_instituicao" required>
         </div>
 
         <button type="submit">Confirmar</button>

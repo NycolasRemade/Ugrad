@@ -1,8 +1,18 @@
--- tipos: usuário, professor, empresário, instituição, administrador
+CREATE DATABASE ugrad;
+USE ugrad;
+
+-- tipos: aluno, professor, empresário, instituição, administrador
 CREATE TABLE tipos_usuario(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(14) NOT NULL
 );
+INSERT INTO tipos_usuario (nome) VALUES 
+  ('ALUNO'),
+  ('PROFESSOR'),
+  ('EMPRESARIO'),
+  ('INSTITUICAO'),
+  ('ADMINISTRADOR');
+
 
 CREATE TABLE usuarios(
   id int PRIMARY KEY AUTO_INCREMENT,
@@ -11,7 +21,7 @@ CREATE TABLE usuarios(
   senha varchar(128),
   descricao varchar(500),
   tipo int NOT NULL,
-  ativada boolean,
+  ativada boolean DEFAULT TRUE,
   imagem_perfil longblob,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (tipo) REFERENCES tipos_usuario (id)
@@ -115,6 +125,11 @@ CREATE TABLE tipo_rep(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(25) NOT NULL
 );
+INSERT INTO tipo_rep (nome) VALUES
+  ('PROJETO'),
+  ('USUARIO'),
+  ('COMENTARIO'),
+  ('GENERICO');
 
 CREATE TABLE tabela_rep(
   id int PRIMARY KEY AUTO_INCREMENT,
@@ -134,3 +149,12 @@ CREATE TABLE reportagens(
 );
 
 
+
+-- CÓDIGO PARA TESTES -------------------------------------------------------------------
+
+INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
+  ('admin', 'admin@ugrad.com', 'BOTAR HASH AQUI', 'conta de teste', 5),
+  ('instituição', 'instituição@ugrad.com', 'BOTAR HASH AQUI', 'conta de teste', 4);
+
+INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario) VALUES
+  (1, 'abcdefgh', 1);

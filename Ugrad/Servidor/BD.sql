@@ -60,6 +60,10 @@ CREATE TABLE proj_estado(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(25)
 );
+INSERT INTO proj_estado (nome) VALUES
+  ('PRIVADO_PRIVADO'),
+  ('PUBLICO_PRIVADO'),
+  ('PUBLICO_PUBLICO');
 
 
 CREATE TABLE projetos(
@@ -93,6 +97,29 @@ CREATE TABLE proj_imagens(
   img longblob
 );
 
+CREATE TABLE proj_membros_status(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nome varchar(20) NOT NULL
+);
+INSERT INTO proj_membros_status (nome) VALUES
+  ('DONO'),
+  ('MEMBRO'),
+  ('CONVITE_PENDENTE');
+
+CREATE TABLE proj_membros(
+  id int PRIMARY KEY AUTO_INCREMENT,
+  id_convidante int NOT NULL,
+  id_convidado int NOT NULL,
+  id_projeto int NOT NULL,
+  status_membro int NOT NULL,
+  data_convite timestamp DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_convidante) REFERENCES usuarios (id),
+  FOREIGN KEY (id_convidado) REFERENCES usuarios (id),
+  FOREIGN KEY (id_projeto) REFERENCES projetos (id),
+  FOREIGN KEY (status_convite) REFERENCES status_convites (id)
+);
+
+
 CREATE TABLE comentarios(
   id int PRIMARY KEY AUTO_INCREMENT,
   id_usuario int NOT NULL,
@@ -102,23 +129,6 @@ CREATE TABLE comentarios(
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
   FOREIGN KEY (id_projeto) REFERENCES projetos(id)
-);
-
-CREATE TABLE status_convites(
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  nome varchar(20) NOT NULL
-);
-
-
-CREATE TABLE convites(
-  id int PRIMARY KEY AUTO_INCREMENT,
-  id_convidante int NOT NULL,
-  id_convidado int NOT NULL,
-  status_convite int NOT NULL,
-  data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id_convidante) REFERENCES usuarios (id),
-  FOREIGN KEY (id_convidado) REFERENCES usuarios (id),
-  FOREIGN KEY (status_convite) REFERENCES status_convites (id)
 );
 
 CREATE TABLE tipo_rep(

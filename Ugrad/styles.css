@@ -26,13 +26,19 @@ body{
   font-weight: lighter;
 }
 
+a{
+  font-style: normal;
+  text-decoration: none;
+  color: black;
+}
+
 #logo_1{
   width: fit-content;
   background-color: white;
   position: absolute;
   rotate: -4deg;
-  margin-top: 300px;
-  margin-left: 300px;
+  margin-top: 10em;
+  margin-left: 10%;
 }
 
 #logo_1 img{
@@ -56,6 +62,16 @@ body{
 }
 
 .loptions{
-  width: 673px;
+  width: 46%;
   height: 543px;
+  margin-top: 45px;
+  margin-left: 50.41%;
+}
+
+.btnstud{
+  width: 70%;
+  background-color: #FFECD2;
+  height: 91px;
+  margin-left: 15%;
+  margin-top: 87px;
 }

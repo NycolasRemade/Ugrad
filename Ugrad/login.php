@@ -18,20 +18,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$email]);
             $usuario = $stmt->fetch();
 
-            if ($usuario) {
-                if (password_verify($senha, $usuario['senha'])) {
+            if ($usuario && password_verify($senha, $usuario['senha'])) {
 
-                    session_regenerate_id(true);
+                session_regenerate_id(true);
 
-                    $_SESSION['usuario_id']   = $usuario['id'];
-                    $_SESSION['usuario_nome'] = $usuario['nome'];
-                    $_SESSION['usuario_tipo'] = $usuario['tipo'];
+                $_SESSION['usuario_id']   = $usuario['id'];
+                $_SESSION['usuario_nome'] = $usuario['nome'];
+                $_SESSION['usuario_tipo'] = $usuario['tipo'];
 
-                    header('Location: dashboard.php');
-                    exit;
-                } else {
-                    $erro = 'E-mail ou senha incorretos.';
-                }
+                header('Location: dashboard.php');
+                exit;
+
             } else {
                 $erro = 'E-mail ou senha incorretos.';
             }

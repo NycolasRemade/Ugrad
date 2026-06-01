@@ -66,12 +66,31 @@ a{
   height: 543px;
   margin-top: 45px;
   margin-left: 50.41%;
+  font-size: 32px;
+}
+
+.loptions div{
+  display: flex;
+}
+
+.loptions div p{
+  text-align: center;
+  width: 100%;
+  align-self: center;
 }
 
 .btnstud{
-  width: 70%;
+  width: 82%;
   background-color: #FFECD2;
   height: 91px;
+  margin-left: 9%;
+  margin-top: 50px;
+}
+
+.btn1{
+  width: 70%;
+  background-color: #EEEEEE;
+  height: 80px;
   margin-left: 15%;
-  margin-top: 87px;
+  margin-top: 40px;
 }

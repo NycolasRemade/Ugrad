@@ -6,6 +6,10 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
+//$stmt = $pdo->prepare('SELECT nome, email FROM usuarios WHERE id = ?');
+//$stmt->execute($_SESSION['usuario_id']);
+//$dados = $stmt->fetchAll();
+
 
 $stmt = $pdo->prepare('
     SELECT * FROM projetos 
@@ -29,12 +33,16 @@ $projetos = $stmt->fetchAll();
         <div class="pesquisa">Pesquisa de Projetos</div>
         <div class="conta">
             Conta
-            <span class="notificacao">1</span>
+            <span class="notificacao"></span>
         </div>
     </header>
 
     <main>
-        <h2>Olá, <?php echo htmlspecialchars($usuario); ?>!</h2>
+        <h2><a href="logout.php">Olá, <?php 
+        echo htmlspecialchars($_SESSION['usuario_id']);
+        echo '<br>';
+        echo htmlspecialchars($_SESSION['usuario_tipo'])
+        ?>!</a></h2>
 
         <section class="projetos">
             <h3>Meus projetos</h3>

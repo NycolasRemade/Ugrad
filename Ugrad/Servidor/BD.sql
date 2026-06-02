@@ -116,7 +116,7 @@ CREATE TABLE proj_membros(
   FOREIGN KEY (id_convidante) REFERENCES usuarios (id),
   FOREIGN KEY (id_convidado) REFERENCES usuarios (id),
   FOREIGN KEY (id_projeto) REFERENCES projetos (id),
-  FOREIGN KEY (status_convite) REFERENCES status_convites (id)
+  FOREIGN KEY (status_membro) REFERENCES proj_membros_status (id)
 );
 
 

@@ -17,7 +17,7 @@ $stmt->execute([$_SESSION['usuario_id']]);
 $projetos = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Painel - Ugrad</title>

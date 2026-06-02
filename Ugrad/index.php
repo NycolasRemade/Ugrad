@@ -6,4 +6,4 @@ if (isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-header('Location: login.php');
+header('Location: Ugrad.html');

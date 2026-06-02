@@ -53,14 +53,19 @@ a{
   scroll-behavior: smooth;
 }
 
+svg{
+  -webkit-filter: drop-shadow(10px 10px 4px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25))
+}
+
 #logo_1{
   width: fit-content;
   position: absolute;
   rotate: -4deg;
   margin-top: 14em;
   margin-left: 15em;
+  z-index: 99;
 }
-
 
 #logo_1 div{
   position: absolute;
@@ -71,7 +76,7 @@ img{
 }
 
 #logo_1 img{
-  -webkit-filter: drop-shadow(rgba(0, 0, 0, 0.25));
+  -webkit-filter: drop-shadow(10px 10px .5px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 0.5px rgba(0, 0, 0, 0.25));
   width: 42em;
   margin-top: -9em;
@@ -161,7 +166,7 @@ img{
 #only_used_once img{
   width: 60em;
   align-self: center;
-  -webkit-filter: drop-shadow(rgba(0, 0, 0, 0.25));
+  -webkit-filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
   margin-top: -130px;
 }
@@ -202,7 +207,7 @@ img{
 #navsticky img{
   width: 100%;
   margin-top: 0px;
-  -webkit-filter: drop-shadow(rgba(0, 0, 0, 0.25));
+  -webkit-filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
 }
 
@@ -236,7 +241,7 @@ img{
   width: 45em;
   margin-left: -30px;
   margin-top: -50px;
-  -webkit-filter: drop-shadow(rgba(0, 0, 0, 0.25));
+  -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
 }
 
@@ -272,3 +277,8 @@ img{
   
 }
 
+/*-------------------------------------------------*/
+
+#papel_login{
+  align-self: center;
+}

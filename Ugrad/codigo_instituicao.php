@@ -33,27 +33,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
                 
             } else {
-                $erro = 'Código inválido. Nenhuma instituição ativa foi encontrada com este código.';
+                $erro = 'Código inválido. Nenhuma instituição foi encontrada com este código.';
             }
         } catch (\PDOException $e) {
             $erro = 'Ocorreu um erro ao processar sua solicitação. Tente novamente.';
         }
     } else {
-        $erro = 'Por favor, digite um código válido.';
+        $erro = 'Verifique o código e tente novamente.';
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Vincular Instituição</title>
+    <link rel="stylesheet" href="styles.css">
+    <title>Seleção de Instituição</title>
 </head>
 <body>
 
+<div></div>
+    <div id="logo_1" style="scale: 70%; color: white; margin-top: 5em; margin-left: 4em">
+        <img src="Fotos/Logo_alt1.png" alt="logo_alt1" style="margin-top: -4.5em; rotate: 3.96deg; scale: 90%; margin-left: -6em">
+        <div>
+            <h1 class="meringue">Ugrad</h1>
+        </div>
+    </div>
+
+<svg xmlns="http://www.w3.org/2000/svg" width="952" height="520" viewBox="0 0 952 520" fill="none" id="papel_login">
+<path d="M392 3.8147e-06L0 234.899V519.399H951.5V0L392 3.8147e-06Z" fill="white"/>
+</svg>
+
 <div class="container">
-    <h2>Vincular Instituição</h2>
+    <h2></h2>
     <p>Insira abaixo o código de identificação fornecido pela sua instituição.</p>
 
     <?php if (!empty($erro)): ?>
@@ -68,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input id="codigo_instituicao" name="codigo_instituicao" required>
         </div>
 
-        <button type="submit">Confirmar</button>
+        <button type="submit">→</button>
     </form>
 
 </div>

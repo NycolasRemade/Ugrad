@@ -11,6 +11,12 @@
 }
 
 @font-face {
+  font-family: 'BMIP';
+  font-style: bolder;
+  src: url(Fontes/IBM\ Plex\ Mono\ -\ Grosso++.woff2);
+}
+
+@font-face {
   font-family: 'Tan';
   font-style: normal;
   src: url(Fontes/TAN\ MERINGUE.woff2)
@@ -208,8 +214,17 @@ img{
   margin-top: 50px;
 }
 
+.centrao{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .title_paper{
   margin-left: 10%;
+  margin-bottom: 200px;
+  align-self: flex-start;
 }
 
 .title_paper h1{
@@ -224,3 +239,36 @@ img{
   -webkit-filter: drop-shadow(rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
 }
+
+.long, .short{
+  padding-left: 50px;
+  padding-right: 50px;
+  font-size: 32px;
+  margin-top: 0px;
+  margin-bottom: 50px;
+}
+
+.long{
+  width: 77%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.short{
+  width: 50%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.long p, .short p{
+  font-family: BMI
+}
+
+.bold{
+  font-family: BMIP;
+}
+
+.polygonomedio{
+  
+}
+

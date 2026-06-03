@@ -15,11 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
 
             // Checa se o código da instituição existe e não expirou (limite no 'INTERVAL 1 WEEK')
-            $stmt = $pdo->prepare('
-                    SELECT id_instituicao, tipo_usuario FROM codigo_instituicao
+            $stmt = $pdo->prepare(
+                   'SELECT id_instituicao, tipo_usuario FROM codigo_instituicao
                     WHERE codigo = ?
-                    AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)
-                ');
+                    AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)'
+                );
             $stmt->execute([$codigo_instituicao]);
             $codigo = $stmt->fetch();
 

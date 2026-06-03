@@ -1,8 +1,18 @@
--- tipos: usuário, professor, empresário, instituição, administrador
+CREATE DATABASE ugrad;
+USE ugrad;
+
+-- tipos: aluno, professor, empresário, instituição, administrador
 CREATE TABLE tipos_usuario(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(14) NOT NULL
 );
+INSERT INTO tipos_usuario (nome) VALUES 
+  ('ALUNO'),
+  ('PROFESSOR'),
+  ('EMPRESARIO'),
+  ('INSTITUICAO'),
+  ('ADMINISTRADOR');
+
 
 CREATE TABLE usuarios(
   id int PRIMARY KEY AUTO_INCREMENT,
@@ -11,7 +21,7 @@ CREATE TABLE usuarios(
   senha varchar(128),
   descricao varchar(500),
   tipo int NOT NULL,
-  ativada boolean,
+  ativada boolean DEFAULT TRUE,
   imagem_perfil longblob,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (tipo) REFERENCES tipos_usuario (id)
@@ -50,6 +60,10 @@ CREATE TABLE proj_estado(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(25)
 );
+INSERT INTO proj_estado (nome) VALUES
+  ('PRIVADO_PRIVADO'),
+  ('PUBLICO_PRIVADO'),
+  ('PUBLICO_PUBLICO');
 
 
 CREATE TABLE projetos(
@@ -83,6 +97,29 @@ CREATE TABLE proj_imagens(
   img longblob
 );
 
+CREATE TABLE proj_membros_status(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nome varchar(20) NOT NULL
+);
+INSERT INTO proj_membros_status (nome) VALUES
+  ('DONO'),
+  ('MEMBRO'),
+  ('CONVITE_PENDENTE');
+
+CREATE TABLE proj_membros(
+  id int PRIMARY KEY AUTO_INCREMENT,
+  id_convidante int NOT NULL,
+  id_convidado int NOT NULL,
+  id_projeto int NOT NULL,
+  status_membro int NOT NULL,
+  data_convite timestamp DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_convidante) REFERENCES usuarios (id),
+  FOREIGN KEY (id_convidado) REFERENCES usuarios (id),
+  FOREIGN KEY (id_projeto) REFERENCES projetos (id),
+  FOREIGN KEY (status_membro) REFERENCES proj_membros_status (id)
+);
+
+
 CREATE TABLE comentarios(
   id int PRIMARY KEY AUTO_INCREMENT,
   id_usuario int NOT NULL,
@@ -94,27 +131,15 @@ CREATE TABLE comentarios(
   FOREIGN KEY (id_projeto) REFERENCES projetos(id)
 );
 
-CREATE TABLE status_convites(
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  nome varchar(20) NOT NULL
-);
-
-
-CREATE TABLE convites(
-  id int PRIMARY KEY AUTO_INCREMENT,
-  id_convidante int NOT NULL,
-  id_convidado int NOT NULL,
-  status_convite int NOT NULL,
-  data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id_convidante) REFERENCES usuarios (id),
-  FOREIGN KEY (id_convidado) REFERENCES usuarios (id),
-  FOREIGN KEY (status_convite) REFERENCES status_convites (id)
-);
-
 CREATE TABLE tipo_rep(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(25) NOT NULL
 );
+INSERT INTO tipo_rep (nome) VALUES
+  ('PROJETO'),
+  ('USUARIO'),
+  ('COMENTARIO'),
+  ('GENERICO');
 
 CREATE TABLE tabela_rep(
   id int PRIMARY KEY AUTO_INCREMENT,
@@ -134,3 +159,14 @@ CREATE TABLE reportagens(
 );
 
 
+
+-- CÓDIGO PARA TESTES -------------------------------------------------------------------
+
+INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
+  ('admin', 'admin@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 5),
+  -- senha: admin
+  ('instituição', 'instituição@ugrad.com', '$2y$10$cMmmO0Q30iL8Xd.MSfnQieiEfjcIVN6PTkfI0pHxbT3KuqFC.Ly3W', 'conta de teste', 4);
+  -- senha: instituição
+
+INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario) VALUES
+  (1, 'abcdefgh', 1);

@@ -5,8 +5,8 @@ if (isset($_SESSION['usuario_id'])) {
     header('Location: dashboard.php');
     exit;
 }
-if (!isset($_SESSION['usuario_tipo'])) {
-    header('Location: criar_conta_em.php');
+if (isset($_SESSION['usuario_tipo'])) {
+    header('Location: criar_conta.php');
     exit;
 }
 
@@ -16,20 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = trim($_POST['nome'] ?? '');
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';
-    $tipo = $_SESSION['usuario_tipo'] ?? 3;
+    $tipo = 3;
 
-    if (!empty($nome) && $email && !empty($senha) && $tipo > 0 || $tipo <= 4) {
+    if (!empty($nome) && $email && !empty($senha)) {
         try {
 
             $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
             $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo]);
 
             $_SESSION['usuario_id'] = $pdo->lastInsertId();
-
-            if ($tipo !== 3) {
-                $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao) VALUES (?, ?)');
-                $stmt->execute([$_SESSION['usuario_id'], $_SESSION['usuario_id_instituicao']]);
-            }
             
             header('Location: dashboard.php');
             exit;

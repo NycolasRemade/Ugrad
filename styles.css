@@ -1,0 +1,544 @@
+@font-face {
+  font-family: 'IBM';
+  font-style: normal;
+  src: url(Fontes/IBM\ Plex\ Mono\ -\ Regular.woff2);
+}
+
+@font-face {
+  font-family: 'BMI';
+  font-style: bold;
+  src: url(Fontes/IBM\ Plex\ Mono\ -\ Grosso.woff2);
+}
+
+@font-face {
+  font-family: 'BMIP';
+  font-style: bolder;
+  src: url(Fontes/IBM\ Plex\ Mono\ -\ Grosso++.woff2);
+}
+
+@font-face {
+  font-family: 'Tan';
+  font-style: normal;
+  src: url(Fontes/TAN\ MERINGUE.woff2)
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  font-family: IBM;
+}
+
+html{
+  display: flex;
+  flex-direction: column;
+}
+
+body{
+  background-color: #F2F2F7;
+  overflow-x: hidden;
+  width: 1920px;
+  align-self: center;
+}
+
+.meringue{
+  font-family: tan;
+  font-weight: lighter;
+}
+
+a{
+  font-style: normal;
+  text-decoration: none;
+  color: inherit;
+  scroll-behavior: smooth;
+}
+
+svg{
+  -webkit-filter: drop-shadow(10px 10px 4px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25))
+}
+
+#logo_1{
+  width: fit-content;
+  position: absolute;
+  rotate: -4deg;
+  margin-top: 14em;
+  margin-left: 15em;
+  z-index: 99;
+}
+
+#logo_1 div{
+  position: absolute;
+}
+
+img{
+  position: absolute
+}
+
+#logo_1 img{
+  -webkit-filter: drop-shadow(10px 10px .5px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(10px 10px 0.5px rgba(0, 0, 0, 0.25));
+  width: 42em;
+  margin-top: -9em;
+  margin-left: -4em;
+  rotate: -1deg;
+}
+
+#logo_1 h1{
+  font-size: 9em;
+}
+
+#logo_1 p{
+  font-size: 1.5em;
+  margin-left: 235px;
+  margin-top: -40px;
+  text-wrap: nowrap;
+  font-family: BMI;
+}
+
+.box{
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
+  background-color: white;
+}
+
+.loptions{
+  width: 46%;
+  height: 543px;
+  margin-top: 45px;
+  margin-left: 50.41%;
+  font-size: 32px;
+  max-width: 28em;
+}
+
+.loptions div{
+  display: flex;
+}
+
+.loptions div p{
+  text-align: center;
+  width: 100%;
+  align-self: center;
+  font-family: BMI;
+}
+
+.btnstud{
+  width: 82%;
+  background-color: #FFECD2;
+  height: 91px;
+  margin-left: 9%;
+  margin-top: 50px;
+}
+
+.btn1{
+  width: 70%;
+  background-color: #EEEEEE;
+  height: 80px;
+  margin-left: 15%;
+  margin-top: 40px;
+}
+
+#only_used_once{
+  width: 100%;
+  font-size: 32px;
+  margin-top: 160px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 300px;
+}
+
+#only_used_once p{
+  width: 50em;
+  align-self: center;
+}
+
+#only_used_once .meringue{
+  color: white;
+}
+
+.independent{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
+#only_used_once img{
+  width: 60em;
+  align-self: center;
+  -webkit-filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
+  margin-top: -130px;
+}
+
+.deep{
+  background-color: #F2F2F7;
+  box-shadow: inset 4px 4px 4px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  display: flex;
+  margin-top: 50px;
+  margin-left: calc(100% - 351px);
+}
+
+.deep p{
+  font-size: 32px;
+  align-self: center;
+  width: 100%;
+  color: black;
+  font-family: BMI;
+}
+
+#only_used_once .deep{
+  width: 351px;
+  height: 59px;
+}
+
+#navsticky{
+  position: sticky;
+  top: -30px;
+  margin-top: 00px;
+  color: white;
+  margin-left: 15px;
+  width: 100%;
+  height: 350px;
+  z-index: 989;
+}
+
+#navsticky img{
+  width: 100%;
+  margin-top: 0px;
+  -webkit-filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
+}
+
+#navsticky h1{
+  position: absolute;
+  font-size: 6em;
+  rotate: -3.96deg;
+  margin-left: 150px;
+  margin-top: 50px;
+}
+
+.centrao{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title_paper{
+  margin-left: 10%;
+  margin-bottom: 200px;
+  align-self: flex-start;
+}
+
+.title_paper h1{
+  font-size: 48px;
+  position: absolute;
+}
+
+.title_paper img{
+  width: 45em;
+  margin-left: -30px;
+  margin-top: -50px;
+  -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
+}
+
+.long, .short{
+  padding-left: 50px;
+  padding-right: 50px;
+  font-size: 32px;
+  margin-top: 0px;
+  margin-bottom: 50px;
+}
+
+.long{
+  width: 77%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.short{
+  width: 50%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.long p, .short p{
+  font-family: BMI
+}
+
+.bold{
+  font-family: BMIP;
+}
+
+.poly{
+  -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
+  width: 70%;
+  font-size: 32px;
+  margin-bottom: 50px;
+  height: 300px;
+}
+
+.poly p{
+  position: absolute;
+  padding-top: 80px;
+  padding-bottom: 50px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.poly img{
+  width: 100%;
+}
+
+footer{
+  width: 100%;
+  margin-top: 100px;
+  height: 450px;
+  color: white;
+  
+}
+
+footer img{
+  width: 1920px;
+  height: inherit;
+  align-self: center;
+  -webkit-filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
+}
+
+footer p{
+  width: 80%;
+  margin-left: 10%;
+  font-size: 32px;
+  position: absolute;
+  margin-top: 160px;
+}
+
+/*-------------------------------------------------*/
+
+#papel_login{
+  align-self: center;
+}
+
+/*-------------------------------------------------*/
+/* Novas estilizações para Login e Dashboard       */
+/*-------------------------------------------------*/
+
+#logo_1{
+  scale: 70%;
+  color: white;
+  margin-top: 5em;
+  margin-left: -800px;
+}
+
+#logo_1 img{
+  margin-top: -4.5em;
+  rotate: 3.96deg;
+  scale: 90%;
+  margin-left: -6em
+}
+
+/* Estilização do Card de Login */
+#papel_login {
+  margin-top: 13em;
+  padding: 40px;
+  padding-left: 240px;
+  width: 100%;
+  max-width: 850px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: transparent;
+  background-image: url('Fotos/Polygon_login.svg');
+}
+
+#papel_login h2 {
+  font-family: 'BMI', sans-serif;
+  font-size: 32px;
+  margin-bottom: 25px;
+  color: #333;
+  text-align: center;
+}
+
+/* Formulários */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-family: 'BMI', sans-serif;
+}
+
+.form-group input {
+  width: 450px;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #EEEEEE;
+  background-color: #F2F2F7;
+  font-family: 'IBM', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+  border-color: #333;
+}
+
+/* Botões */
+.form-group button[type="submit"] {
+  display: inline;
+  background-color: #333;
+  color: white;
+  padding: 15px;
+  width: 60px;
+  font-size: 18px;
+  font-family: 'BMI', sans-serif;
+  border: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Alertas de Erro */
+#erro {
+  background-color: #FFD2D2;
+  color: #D8000C;
+  padding: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-family: 'BMI', sans-serif;
+  border-left: 5px solid #D8000C;
+}
+
+/* Layout do Dashboard */
+#dashboard-header {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#dashboard-header .logo-text {
+  font-size: 28px;
+  font-family: 'BMIP', sans-serif;
+}
+
+#dashboard-header .search-bar {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10px 20px;
+  width: 40%;
+  font-size: 16px;
+}
+
+#dashboard-header .user-menu {
+  font-family: 'BMI', sans-serif;
+  font-size: 18px;
+  position: relative;
+}
+
+.dashboard-container {
+  width: 80%;
+  max-width: 1400px;
+  margin: 40px auto;
+  box-sizing: border-box;
+}
+
+.welcome-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.welcome-area h2 {
+  font-size: 36px;
+  font-family: 'BMI', sans-serif;
+}
+
+.btn-logout {
+  font-family: 'BMI', sans-serif;
+  font-size: 16px;
+  color: #D8000C;
+  border: 1px solid #D8000C;
+  padding: 8px 16px;
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.btn-logout:hover {
+  background-color: #FFD2D2;
+}
+
+/* Seção de Projetos */
+.secao-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #EEEEEE;
+  padding-bottom: 10px;
+}
+
+.secao-header h3 {
+  font-size: 24px;
+  font-family: 'BMI', sans-serif;
+}
+
+.btn-novo {
+  background-color: #FFECD2;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: 'BMI', sans-serif;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Grid e Cards de Projetos */
+.projetos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 15fr));
+  gap: 30px;
+  width: 100%;
+}
+
+.projeto-card {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 150px;
+  position: relative; /* Remove a propriedade absolute herdada genericamente se houver */
+}
+
+.projeto-titulo {
+  font-family: 'BMI', sans-serif;
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.projeto-membros {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.membro-avatar {
+  position: static; /* Remove o position absolute global das imagens para alinhar em linha */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}

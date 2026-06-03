@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = trim($_POST['nome'] ?? '');
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';
-    $tipo = $_SESSION['usuario_tipo'] ?? 0;
+    $tipo = $_SESSION['usuario_tipo'] ?? 3;
 
     if (!empty($nome) && $email && !empty($senha) && $tipo > 0 || $tipo <= 4) {
         try {
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($tipo !== 3) {
                 $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao) VALUES (?, ?)');
-                $stmt->execute([$pdo->lastInsertId(), $_SESSION['usuario_id_instituicao']]);
+                $stmt->execute([$_SESSION['usuario_id'], $_SESSION['usuario_id_instituicao']]);
             }
             
             header('Location: dashboard.php');

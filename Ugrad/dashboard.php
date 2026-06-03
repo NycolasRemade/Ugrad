@@ -45,18 +45,25 @@ $projetos = $stmt->fetchAll();
             <h3>Meus projetos</h3>
             <?php
             foreach ($projetos as $proj): 
-                $membros = $pdo->prepare('SELECT usuarios.imagem_perfil FROM usuarios INNER JOIN proj_membros WHERE proj_membros.id_projeto = ?');
+                $stmt = $pdo->prepare(
+                       'SELECT u.imagem_perfil 
+                        FROM usuarios u INNER JOIN proj_membros m
+                        ON u.id = m.id_convidado
+                        WHERE m.id_projeto = ?'
+                    );
+                $stmt->execute([$proj['id']]);
+                $membros = $stmt->fetchAll();
             ?>
                 <div>
                     <div>
-                        <?php foreach ($membros as $membro): ?>
-                            <?= $membro['imagem_perfil']; ?>
+                        <?php foreach ($membros as $m): ?>
+                            <img class="membro_projeto" src="<?= base64_encode($m['imagem_perfil']); ?>">
                         <?php endforeach; ?>
                     </div>
                     <p><?= htmlspecialchars($proj['nome']); ?></p>
                 </div>
             <?php endforeach; ?>
-            <button class="btn">+ Novo projeto</button>
+            <button>+ Novo projeto</button>
         </section>
     </main>
 </body>

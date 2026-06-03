@@ -37,7 +37,6 @@ body{
   background-color: #F2F2F7;
   overflow-x: hidden;
   width: 1920px;
-  height: 9000px;
   align-self: center;
 }
 
@@ -273,8 +272,40 @@ img{
   font-family: BMIP;
 }
 
-.polygonomedio{
-  
+.poly{
+  -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
+  width: 70%;
+  font-size: 32px;
+  margin-bottom: 50px;
+  height: 300px;
+}
+
+.poly p{
+  position: absolute;
+  padding-top: 80px;
+  padding-bottom: 50px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.poly img{
+  width: 100%;
+}
+
+footer{
+  width: 100%;
+  margin-top: 100px;
+  height: 400px;
+
+}
+
+footer img{
+  width: 1920px;
+  align-self: center;
+  -webkit-filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0px -10px 2px rgba(0, 0, 0, 0.25));
+
 }
 
 /*-------------------------------------------------*/

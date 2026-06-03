@@ -26,8 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $_SESSION['usuario_id'] = $pdo->lastInsertId();
 
-            $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao) VALUES (?, ?)');
-            $stmt->execute([$pdo->lastInsertId(), $_SESSION['usuario_id_instituicao']]);
+            if ($tipo !== 3) {
+                $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao) VALUES (?, ?)');
+                $stmt->execute([$pdo->lastInsertId(), $_SESSION['usuario_id_instituicao']]);
+            }
             
             header('Location: dashboard.php');
             exit;

@@ -163,8 +163,10 @@ CREATE TABLE reportagens(
 -- CÓDIGO PARA TESTES -------------------------------------------------------------------
 
 INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
-  ('admin', 'admin@ugrad.com', 'BOTAR HASH AQUI', 'conta de teste', 5),
-  ('instituição', 'instituição@ugrad.com', 'BOTAR HASH AQUI', 'conta de teste', 4);
+  ('admin', 'admin@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 5),
+  -- senha: admin
+  ('instituição', 'instituição@ugrad.com', '$2y$10$cMmmO0Q30iL8Xd.MSfnQieiEfjcIVN6PTkfI0pHxbT3KuqFC.Ly3W', 'conta de teste', 4);
+  -- senha: instituição
 
 INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario) VALUES
   (1, 'abcdefgh', 1);

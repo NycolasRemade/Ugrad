@@ -298,7 +298,6 @@ footer{
   margin-top: 100px;
   height: 450px;
   color: white;
-  
 }
 
 footer img{
@@ -321,7 +320,7 @@ footer p{
 /* Novas estilizações para Login e Dashboard       */
 /*-------------------------------------------------*/
 
-/*#logo_2{
+#logo_2{
   scale: 70%;
   color: white;
   margin-top: 5em;
@@ -335,7 +334,7 @@ footer p{
   margin-left: -6em
 }
 
-/* Estilização do Card de Login 
+/* Estilização do Card de Login */
 #papel_login {
   margin-top: 13em;
   padding: 40px;
@@ -357,7 +356,7 @@ footer p{
   text-align: center;
 }
 
-/* Formulários 
+/* Formulários */
 .form-group {
   margin-bottom: 20px;
 }
@@ -384,7 +383,7 @@ footer p{
   border-color: #333;
 }
 
-/* Botões 
+/* Botões */
 .form-group button[type="submit"] {
   display: inline;
   background-color: #333;
@@ -399,7 +398,7 @@ footer p{
 }
 
 
-/* Alertas de Erro 
+/* Alertas de Erro */
 #erro {
   background-color: #FFD2D2;
   color: #D8000C;
@@ -410,7 +409,7 @@ footer p{
   border-left: 5px solid #D8000C;
 }
 
-/* Layout do Dashboard 
+/* Layout do Dashboard */
 #dashboard-header {
   background-color: #333;
   color: white;
@@ -473,7 +472,7 @@ footer p{
   background-color: #FFD2D2;
 }
 
-/* Seção de Projetos 
+/* Seção de Projetos */
 .secao-header {
   display: flex;
   justify-content: space-between;
@@ -498,7 +497,7 @@ footer p{
   box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
-/* Grid e Cards de Projetos 
+/* Grid e Cards de Projetos */
 .projetos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 15fr));
@@ -512,7 +511,7 @@ footer p{
   flex-direction: column;
   justify-content: space-between;
   min-height: 150px;
-  position: relative; /* Remove a propriedade absolute herdada genericamente se houver 
+  position: relative; /* Remove a propriedade absolute herdada genericamente se houver */
 }
 
 .projeto-titulo {
@@ -529,7 +528,7 @@ footer p{
 }
 
 .membro-avatar {
-  position: static; /* Remove o position absolute global das imagens para alinhar em linha 
+  position: static; /* Remove o position absolute global das imagens para alinhar em linha */
   width: 40px;
   height: 40px;
   border-radius: 50%;

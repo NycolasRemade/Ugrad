@@ -8,7 +8,6 @@ if (isset($_SESSION['usuario_id'])) {
 
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';
 
@@ -19,16 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $usuario = $stmt->fetch();
 
             if ($usuario && password_verify($senha, $usuario['senha'])) {
-
                 session_regenerate_id(true);
-
                 $_SESSION['usuario_id']   = $usuario['id'];
                 $_SESSION['usuario_nome'] = $usuario['nome'];
                 $_SESSION['usuario_tipo'] = $usuario['tipo'];
 
                 header('Location: dashboard.php');
                 exit;
-
             } else {
                 $erro = 'E-mail ou senha incorretos.';
             }
@@ -40,38 +36,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Login - Ugrad</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="centrao">
 
-<div>
-    <h2>Acessar Conta</h2>
-
-    <?php if (!empty($erro)): ?>
-        <div id="erro"><?= htmlspecialchars($erro) ?></div>
-    <?php endif; ?>
-
-    <form action="login.php" method="POST">
-        <div class="form-group">
-            <label for="email">E-mail</label>
-            <input type="email" id="email" name="email" required autocomplete="email">
+    <div id="logo_1">
+        <img src="Fotos/Logo_alt1.png" alt="logo_alt1">
+        <div>
+            <h1 class="meringue">Ugrad</h1>
         </div>
-        
-        <div class="form-group">
-            <label for="senha">Senha</label>
-            <input type="password" id="senha" name="senha" required autocomplete="current-password">
+    </div>
+
+    <div id="papel_login" class="box">
+        <div>
+            <h2>Login</h2>
         </div>
 
-        <button type="submit">Entrar</button>
+        <?php if (!empty($erro)): ?>
+            <div id="erro"><?= htmlspecialchars($erro) ?></div>
+        <?php endif; ?>
 
-        
-    </form>
+        <form action="login.php" method="POST">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" required autocomplete="current-password">
+                <button type="submit">→</button>
+            </div>
+
+        </form>
+    </div>
 </div>
 
 </body>

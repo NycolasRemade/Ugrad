@@ -10,7 +10,6 @@ $stmt = $pdo->prepare('SELECT nome, email FROM usuarios WHERE id = ?');
 $stmt->execute([$_SESSION['usuario_id']]);
 $dados = $stmt->fetch();
 
-
 $stmt = $pdo->prepare('
     SELECT * FROM projetos 
     INNER JOIN proj_membros membros
@@ -19,51 +18,57 @@ $stmt = $pdo->prepare('
 ');
 $stmt->execute([$_SESSION['usuario_id']]);
 $projetos = $stmt->fetchAll();
-
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <title>Painel - Ugrad</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+    <link rel="stylesheet" href="styles.css"> </head>
 <body>
-    <header>
-        <div>Ugrad</div>
-        <div>Pesquisa de Projetos</div>
-        <div>
+    <header id="dashboard-header">
+        <div class="logo-text">Ugrad</div>
+        <div class="search-bar">Pesquisa de Projetos</div>
+        <div class="user-menu">
             Conta
             <span class="notificacao"></span>
         </div>
     </header>
 
-    <main>
-        <h2><a href="logout.php">Olá, <?= htmlspecialchars($dados['nome']); ?>!</a></h2>
+    <main class="dashboard-container">
+        <div class="welcome-area">
+            <h2>Olá, <?= htmlspecialchars($dados['nome']); ?>!</h2>
+            <a href="logout.php" class="btn-logout">Sair</a>
+        </div>
 
-        <section class="projetos">
-            <h3>Meus projetos</h3>
-            <?php
-            foreach ($projetos as $proj): 
-                $stmt = $pdo->prepare(
-                       'SELECT u.imagem_perfil 
-                        FROM usuarios u INNER JOIN proj_membros m
-                        ON u.id = m.id_convidado
-                        WHERE m.id_projeto = ?'
+        <section class="projetos-secao">
+            <div class="secao-header">
+                <h3>Meus projetos</h3>
+                <button class="btn-novo">+ Novo projeto</button>
+            </div>
+            
+            <div class="projetos-grid">
+                <?php
+                foreach ($projetos as $proj): 
+                    $stmt = $pdo->prepare(
+                           'SELECT u.imagem_perfil 
+                            FROM usuarios u INNER JOIN proj_membros m
+                            ON u.id = m.id_convidado
+                            WHERE m.id_projeto = ?'
                     );
-                $stmt->execute([$proj['id']]);
-                $membros = $stmt->fetchAll();
-            ?>
-                <div>
-                    <div>
-                        <?php foreach ($membros as $m): ?>
-                            <img class="membro_projeto" src="<?= base64_encode($m['imagem_perfil']); ?>">
-                        <?php endforeach; ?>
+                    $stmt->execute([$proj['id']]);
+                    $membros = $stmt->fetchAll();
+                ?>
+                    <div class="projeto-card box">
+                        <p class="projeto-titulo"><?= htmlspecialchars($proj['nome']); ?></p>
+                        <div class="projeto-membros">
+                            <?php foreach ($membros as $m): ?>
+                                <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="Membro">
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                    <p><?= htmlspecialchars($proj['nome']); ?></p>
-                </div>
-            <?php endforeach; ?>
-            <button>+ Novo projeto</button>
+                <?php endforeach; ?>
+            </div>
         </section>
     </main>
 </body>

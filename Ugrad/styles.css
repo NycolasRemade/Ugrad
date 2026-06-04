@@ -53,11 +53,11 @@ a{
 }
 
 svg{
-  -webkit-filter: drop-shadow(10px 10px 4px rgba(0, 0, 0, 0.25));
+  -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25))
 }
 
-#logo_1{
+#logo_1, #logo_2{
   width: fit-content;
   position: absolute;
   rotate: -4deg;
@@ -66,7 +66,7 @@ svg{
   z-index: 99;
 }
 
-#logo_1 div{
+#logo_1 div, #logo_2 div{
   position: absolute;
 }
 
@@ -74,7 +74,7 @@ img{
   position: absolute
 }
 
-#logo_1 img{
+#logo_1 img, #logo_2 img{
   -webkit-filter: drop-shadow(10px 10px .5px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 0.5px rgba(0, 0, 0, 0.25));
   width: 42em;
@@ -83,8 +83,9 @@ img{
   rotate: -1deg;
 }
 
-#logo_1 h1{
+#logo_1 h1, #logo_2 h1{
   font-size: 9em;
+  z-index: 991;
 }
 
 #logo_1 p{
@@ -294,7 +295,7 @@ img{
 }
 
 footer{
-  width: 100%;
+  width: 1920px;
   margin-top: 100px;
   height: 450px;
   color: white;
@@ -324,7 +325,7 @@ footer p{
   scale: 70%;
   color: white;
   margin-top: 5em;
-  margin-left: -800px;
+  margin-left: 4em;
 }
 
 #logo_2 img{
@@ -334,79 +335,123 @@ footer p{
   margin-left: -6em
 }
 
-/* Estilização do Card de Login */
-#papel_login {
-  margin-top: 13em;
-  padding: 40px;
-  padding-left: 240px;
-  width: 100%;
-  max-width: 850px;
-  box-sizing: border-box;
-  border-radius: 4px;
-  background-color: transparent;
-  background-image: url('Fotos/Polygon_login.svg');
-  align-self: center;
+#back{
+  position: absolute;
+  margin-top: 16.5em;
+  margin-left: 4.25em;
 }
 
-#papel_login h2 {
-  font-family: 'BMI', sans-serif;
+#back svg, #papel_login div svg{
+  -webkit-filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.25));
+  transition: .2s;
+}
+
+#back svg:hover, #papel_login div svg:hover{
+  
+  -webkit-filter: drop-shadow(5px 5px 1px rgba(0, 0, 0, 0.25));
+  filter: drop-shadow(5px 5px 1px rgba(0, 0, 0, 0.25));
+}
+
+#papel_login {
+  width: 100%;
+  margin-top: 13em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#papel_login svg{
+  position: absolute;
+  z-index: -50;
+}
+
+#papel_login h1 {
+  font-family: Tan;
+  font-size: 4em;
+  font-weight: 300;
+  position: absolute;
+  margin-left: 7em;
+  margin-top: .8em;
+  rotate: 1.74deg;
+}
+
+#papel_login p{
+  font-family: BMI;
+}
+
+#papel_login p[name='desc']{
+  margin-top: 9em;
+  margin-left: 4em;
+}
+
+#papel_login p[name='dci']{
+  font-size: 1.7em;
+  margin-top: 7em;
+  margin-left: 3.6em;
+}
+
+#form_login {
+  position: absolute;
+}
+
+#form_login div input {
+  border: none;
+  height: 72px;
+  width: 524px;
+  text-align: center;
   font-size: 32px;
-  margin-bottom: 25px;
-  color: #333;
+  background-color: #EEEEEE;
+}
+
+#form_login div input[name='codigo_instituicao']{
+  margin-top: 8em;
+}
+
+#form_login div button{
+  width: 0px;
+  height: 0px;
+  border: none;
+  cursor: pointer;
+}
+
+#form_login div svg{
+  margin-top: -3.6em;
+  margin-left: 1em;
+}
+
+#smallboxes{
+  display: inline-flexbox;
+  width: 952px;
+  height: 200px;
+  margin-left: 484px;
+  margin-top: 27px;  
+}
+
+.small{
+  box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
+  background-color: white;
+  width: fit-content;
+  padding: 10px;
   text-align: center;
 }
 
-/* Formulários */
-.form-group {
-  margin-bottom: 20px;
+.small p{
+  font-size: 13px;
+  font-family: BMI;
 }
 
-.form-group label {
-  display: block;
-  font-size: 16px;
-  margin-bottom: 8px;
-  font-family: 'BMI', sans-serif;
-}
-
-.form-group input {
-  width: 450px;
-  padding: 12px;
-  font-size: 16px;
-  border: 2px solid #EEEEEE;
-  background-color: #F2F2F7;
-  font-family: 'IBM', sans-serif;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.form-group input:focus {
-  border-color: #333;
-}
-
-/* Botões */
-.form-group button[type="submit"] {
-  display: inline;
-  background-color: #333;
-  color: white;
-  padding: 15px;
-  width: 60px;
-  font-size: 18px;
-  font-family: 'BMI', sans-serif;
-  border: none;
-  cursor: pointer;
-  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.2);
-}
-
-
-/* Alertas de Erro */
 #erro {
   background-color: #FFD2D2;
   color: #D8000C;
   padding: 12px;
-  margin-bottom: 20px;
   font-size: 14px;
   font-family: 'BMI', sans-serif;
   border-left: 5px solid #D8000C;
+  margin-top: -12em;
+  width: 500px;
+  align-self: center;
+  position: absolute;
 }
 
 /* Layout do Dashboard */

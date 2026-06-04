@@ -25,15 +25,14 @@ $projetos = $stmt->fetchAll();
     <meta charset="UTF-8">
     <title>Painel - Ugrad</title>
     <link rel="stylesheet" href="styles.css"> </head>
-<body>
-    <header id="dashboard-header">
-        <div class="logo-text">Ugrad</div>
-        <div class="search-bar">Pesquisa de Projetos</div>
-        <div class="user-menu">
-            Conta
-            <span class="notificacao"></span>
-        </div>
-    </header>
+<body onLoad="window.scroll(0, 0)">
+    
+    <div id="navbar">
+        <img src="Fotos/Polygon 2.png" alt="navbar">
+        <a href="#logo_1">
+            <h1 class="meringue">Ugrad</h1>
+        </a>
+    </div>
 
     <main class="dashboard-container">
         <div class="welcome-area">

@@ -29,53 +29,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $erro = 'E-mail ou senha incorretos.';
             }
         } catch (\PDOException $e) {
-            $erro = 'Erro no sistema. Tente novamente mais tarde.';
+            $erro = 'Erro ao verificar dados, tente novamente mais tarde.';
         }
     } else {
-        $erro = 'Por favor, insira um e-mail válido e preencha a senha.';
+        $erro = 'Insira um e-mail válido e a senha correta.';
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Login - Ugrad</title>
+    <title>Login</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="centrao">
 
-    <div id="logo_1">
+<body onLoad="window.scroll(0, 0)" style="overflow-y: hidden;">
+
+    <div id="logo_2">
         <img src="Fotos/Logo_alt1.png" alt="logo_alt1">
         <div>
             <h1 class="meringue">Ugrad</h1>
         </div>
     </div>
 
-    <div id="papel_login" class="box">
-        <div>
-            <h2>Login</h2>
-        </div>
+
+    <div id="back">
+        <a href="Ugrad.html">
+            <svg xmlns="http://www.w3.org/2000/svg" width="72" height="71" viewBox="0 0 72 71" fill="none">
+                <rect x="72" y="71" width="72" height="71" rx="35.5" transform="rotate(-180 72 71)" fill="#111111" />
+                <path d="M34.0322 26.805L35.9522 28.725L32.5122 32.165L30.5122 33.845L30.5522 33.965L34.3922 33.725H47.8322V36.445H34.3922L30.5522 36.205L30.5122 36.325L32.5122 38.005L35.9522 41.445L34.0322 43.365L25.7522 35.085L34.0322 26.805Z" fill="white" />
+            </svg>
+        </a>
+    </div>
+
+    <div id="papel_login" style="height: 520px;">
 
         <?php if (!empty($erro)): ?>
-            <div id="erro"><?= htmlspecialchars($erro) ?></div>
+            <div id="erro">
+                <?= htmlspecialchars($erro); ?>
+            </div>
         <?php endif; ?>
 
-        <form action="login.php" method="POST">
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required autocomplete="email">
-            </div>
-            
-            <div class="form-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required autocomplete="current-password">
-                <button type="submit">→</button>
-            </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="952" height="520" viewBox="0 0 952 520" fill="none">
+            <path d="M392 3.8147e-06L0 234.899V519.399H951.5V0L392 3.8147e-06Z" fill="white" />
+        </svg>
 
+        <h1>Login</h1>
+
+        <form action="login.php" method="POST" id="form_login">
+            <div>
+                <input type="email" class="input_login" name="email" required placeholder="Email">
+                <div style="margin-top: 20px;">
+                    <input type="password" class="input_login" name="senha" required placeholder="Senha">
+                    <button type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="72" height="71" viewBox="0 0 72 71" fill="none">
+                            <rect width="72" height="71" fill="#111111" />
+                            <path d="M37.9678 44.195L36.0478 42.275L39.4878 38.835L41.4878 37.155L41.4478 37.035L37.6078 37.275H24.1678V34.555H37.6078L41.4478 34.795L41.4878 34.675L39.4878 32.995L36.0478 29.555L37.9678 27.635L46.2478 35.915L37.9678 44.195Z" fill="white" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </form>
     </div>
-</div>
+
+    <div id="smallboxes">
+        <a href="criar_conta_em.php">
+            <div class="small">
+                <p>Não tenho uma conta <a class="meringue">Ugrad</a></p>
+            </div>
+        </a>
+    </div>
 
 </body>
+
 </html>

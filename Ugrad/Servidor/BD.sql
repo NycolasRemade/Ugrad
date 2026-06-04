@@ -17,8 +17,8 @@ INSERT INTO tipos_usuario (nome) VALUES
 CREATE TABLE usuarios(
   id int PRIMARY KEY AUTO_INCREMENT,
   nome varchar(64),
-  email varchar(128) unique,
-  senha varchar(128),
+  email varchar(128) unique NOT NULL,
+  senha varchar(128) NOT NULL,
   descricao varchar(500),
   tipo int NOT NULL,
   ativada boolean DEFAULT TRUE,

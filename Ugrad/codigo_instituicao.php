@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: criar_conta.php');
                 exit;
             } else {
-                $erro = 'Código inválido. Nenhuma instituição foi encontrada com este código.';
+                $erro = 'Código inválido, nenhuma instituição foi encontrada com este código.';
             }
         } catch (\PDOException $e) {
             $erro = 'Ocorreu um erro ao processar sua solicitação. Tente novamente.';
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles.css">
-    <title>Seleção de Instituição - Ugrad</title>
+    <title>Seleção de Instituição</title>
 </head>
 
 <body onLoad="window.scroll(0, 0)" style="overflow-y: hidden;">
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <path d="M392 3.8147e-06L0 234.899V519.399H951.5V0L392 3.8147e-06Z" fill="white" />
         </svg>
 
-        <h1>Login</h1>
+        <h1>Cadastro</h1>
         <p name='dci'>
             Digite o Código da instituição
         </p>
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </form>
 
-        <p name="desc">O código, após ser gerado, é válido apenas por 48 horas.<br><br>
+        <p name="desc">O código, após ser gerado, é válido apenas por 7 dias.<br><br>
 
         Caso tenha dúvidas, fale com um responsável da sua instituição</p>
     </div>

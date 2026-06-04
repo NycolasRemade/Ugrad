@@ -195,6 +195,13 @@ img{
 
 #navsticky{
   position: sticky;
+}
+
+#navbar{
+  position: fixed;
+}
+
+#navsticky, #navbar{
   top: -30px;
   margin-top: 00px;
   color: white;
@@ -204,14 +211,14 @@ img{
   z-index: 989;
 }
 
-#navsticky img{
-  width: 100%;
+#navsticky img , #navbar img{
+  width: 1920px;
   margin-top: 0px;
   -webkit-filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
 }
 
-#navsticky h1{
+#navsticky h1, #navbar h1{
   position: absolute;
   font-size: 6em;
   rotate: -3.96deg;
@@ -408,6 +415,14 @@ footer p{
   margin-top: 8em;
 }
 
+#form_login div input[name='email']{
+  margin-top: 7em
+}
+
+#form_login div input[name='nome']{
+  margin-top: 6em
+}
+
 #form_login div button{
   width: 0px;
   height: 0px;
@@ -418,6 +433,7 @@ footer p{
 #form_login div svg{
   margin-top: -3.6em;
   margin-left: 1em;
+  z-index: 0;
 }
 
 #smallboxes{
@@ -454,40 +470,11 @@ footer p{
   position: absolute;
 }
 
-/* Layout do Dashboard */
-#dashboard-header {
-  background-color: #333;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 50px;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-#dashboard-header .logo-text {
-  font-size: 28px;
-  font-family: 'BMIP', sans-serif;
-}
-
-#dashboard-header .search-bar {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 10px 20px;
-  width: 40%;
-  font-size: 16px;
-}
-
-#dashboard-header .user-menu {
-  font-family: 'BMI', sans-serif;
-  font-size: 18px;
-  position: relative;
-}
-
 .dashboard-container {
   width: 80%;
   max-width: 1400px;
   margin: 40px auto;
+  margin-top: 200px;
   box-sizing: border-box;
 }
 

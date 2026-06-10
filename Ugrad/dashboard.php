@@ -10,12 +10,12 @@ $stmt = $pdo->prepare('SELECT nome, email FROM usuarios WHERE id = ?');
 $stmt->execute([$_SESSION['usuario_id']]);
 $dados = $stmt->fetch();
 
-$stmt = $pdo->prepare('
-    SELECT * FROM projetos 
-    INNER JOIN proj_membros membros
-    ON membros.id_projeto = projetos.id
-    WHERE membros.id_convidado = ?
-');
+$stmt = $pdo->prepare(
+   'SELECT * FROM projetos 
+    INNER JOIN proj_membros membros 
+    ON membros.id_projeto = projetos.id 
+    WHERE membros.id_convidado = ?'
+);
 $stmt->execute([$_SESSION['usuario_id']]);
 $projetos = $stmt->fetchAll();
 ?>

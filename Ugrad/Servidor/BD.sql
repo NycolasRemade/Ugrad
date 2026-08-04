@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS ugrad;
 CREATE DATABASE ugrad;
 USE ugrad;
 
@@ -166,8 +167,20 @@ CREATE TABLE reportagens(
 INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
   ('admin', 'admin@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 5),
   -- senha: admin
-  ('instituição', 'instituição@ugrad.com', '$2y$10$cMmmO0Q30iL8Xd.MSfnQieiEfjcIVN6PTkfI0pHxbT3KuqFC.Ly3W', 'conta de teste', 4);
+  ('instituição', 'instituição@ugrad.com', '$2y$10$cMmmO0Q30iL8Xd.MSfnQieiEfjcIVN6PTkfI0pHxbT3KuqFC.Ly3W', 'conta de teste', 4),
   -- senha: instituição
+  ('outro', 'outro@ugrad.com', 'sem login', 'conta de teste', 1);
+  -- teste para pesquisa de usuários
+INSERT INTO turmas (nome, id_instituicao) VALUES
+  ('turma de teste', 2);
+INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
+  (1, 1, 2),
+  (3, 1, 2);
+
 
 INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario) VALUES
   (1, 'abcdefgh', 1);
+
+INSERT INTO categorias (nome) VALUES
+  ('categoria1'),
+  ('categoria2');

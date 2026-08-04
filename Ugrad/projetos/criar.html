@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novo Prejeto</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+    <h1>Novo Projeto</h1>
+
+    <form action="criar.php" method="POST">
+        <label>Nome do projeto<input type="text" name="nome-projeto" id="nome-projeto"></label><br>
+
+        <label>Convidar integrantes do grupo</label><br>
+        <div id="div-integrantes"></div>
+        <input type="text" name="integrantes" id="integrantes" hidden>
+        <button type="button" class="btn-novo" id="novo-integrante">+</button>
+        <input type="text" name="nome-integrante" id="nome-integrante" hidden>
+
+    </form>
+
+    <script>
+        const divIntegrantes = document.getElementById("div-integrantes");
+        const listaEscondidaIntegrantes = document.getElementById("integrantes");
+        const botaoNovoIntegrante = document.getElementById("novo-integrante");
+        const inputNomeIntegrante = document.getElementById("nome-integrante");
+        botaoNovoIntegrante.onclick = function() {
+            botaoNovoIntegrante.hidden = true;
+            inputNomeIntegrante.hidden = false;
+            inputNomeIntegrante.value = "";
+        };
+        inputNomeIntegrante.onkeydown = function(e) {
+            if (e.key !== "Enter") return;
+            const tagIntegrante = document.createElement("div");
+            tagIntegrante.className = "tag-integrante";
+            {
+                const botaoDelete = document.createElement("button");
+                botaoDelete.innerText = "X";
+                botaoDelete.onclick = function() {
+                    tagIntegrante.remove();
+                    atualizarListaIntegrantes();
+                };
+                const nomeIntegrante = document.createElement("div");
+                nomeIntegrante.innerText = inputNomeIntegrante.value;
+                const imagemIntegrante = document.createElement("img");
+                tagIntegrante.appendChild(nomeIntegrante);
+                tagIntegrante.appendChild(botaoDelete);
+            }
+            tagIntegrante.dataset.nome = inputNomeIntegrante.value;
+            divIntegrantes.appendChild(tagIntegrante);
+            atualizarListaIntegrantes();
+
+            botaoNovoIntegrante.hidden = false;
+            inputNomeIntegrante.hidden = true;
+        };
+        function atualizarListaIntegrantes() {
+            let integrantes = "";
+            for (const child of divIntegrantes.children) {
+                integrantes += child.dataset.nome + ",";
+            }
+            integrantes = integrantes.slice(0, -1);
+            listaEscondidaIntegrantes.value = integrantes;
+        }
+    </script>
+
+    <style>
+        /* temporario */
+        #div-integrantes {
+            display: inline-flex;
+        }
+        .tag-integrante {
+            display: flex;
+            align-items: center;
+            justify-content: left;
+            width: fit-content;
+            height: 48px;
+            margin: 8px;
+            padding: 8px;
+            background-color: white;
+            color: black;
+        }
+        .tag-integrante button {
+            height: 32px;
+            width: 32px;
+            text-align: center;
+
+        }
+    </style>
+</body>
+</html>

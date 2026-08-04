@@ -36,24 +36,24 @@ $projetos = $stmt->fetchAll();
 
     <main class="dashboard-container">
         <div class="welcome-area">
-            <h2>Olá, <?= htmlspecialchars($dados['nome']); ?>!</h2>
+            <h2>Olá, <a href="config_conta.php" style="text-decoration: underline;"><?= htmlspecialchars($dados['nome']); ?></a>!</h2>
             <a href="logout.php" class="btn-logout">Sair</a>
         </div>
 
         <section class="projetos-secao">
             <div class="secao-header">
                 <h3>Meus projetos</h3>
-                <button class="btn-novo">+ Novo projeto</button>
+                <a class="btn-novo" href="projetos/criar.php">+ Novo projeto</a>
             </div>
             
             <div class="projetos-grid">
                 <?php
                 foreach ($projetos as $proj): 
                     $stmt = $pdo->prepare(
-                           'SELECT u.imagem_perfil 
-                            FROM usuarios u INNER JOIN proj_membros m
-                            ON u.id = m.id_convidado
-                            WHERE m.id_projeto = ?'
+                       'SELECT u.imagem_perfil 
+                        FROM usuarios u INNER JOIN proj_membros m
+                        ON u.id = m.id_convidado
+                        WHERE m.id_projeto = ?'
                     );
                     $stmt->execute([$proj['id']]);
                     $membros = $stmt->fetchAll();

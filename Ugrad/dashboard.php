@@ -43,7 +43,7 @@ $projetos = $stmt->fetchAll();
         <section class="projetos-secao">
             <div class="secao-header">
                 <h3>Meus projetos</h3>
-                <a class="btn-novo" href="projetos/criar.php">+ Novo projeto</a>
+                <a class="btn-novo" href="projetos/criar_projeto.php">+ Novo projeto</a>
             </div>
             
             <div class="projetos-grid">

@@ -58,14 +58,14 @@ $projetos = $stmt->fetchAll();
                     $stmt->execute([$proj['id']]);
                     $membros = $stmt->fetchAll();
                 ?>
-                    <div class="projeto-card box">
+                    <a class="projeto-card box" href="editar_projeto">
                         <p class="projeto-titulo"><?= htmlspecialchars($proj['nome']); ?></p>
                         <div class="projeto-membros">
                             <?php foreach ($membros as $m): ?>
-                                <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="Membro">
+                                <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="">
                             <?php endforeach; ?>
                         </div>
-                    </div>
+                    </a>
                 <?php endforeach; ?>
             </div>
         </section>

@@ -105,7 +105,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div id="smallboxes">
         <a href="criar_conta_em.php">
-        <div class="small"><p>Quero cadastrar como investidor/empresa</p></div>
+            <div class="small"><p>Cadastrar como investidor/empresa</p></div>
+        </a>
+        <a href="login.php">
+            <div class="small">
+                <p>Já tenho uma conta <a class="meringue">Ugrad</a></p>
+            </div>
         </a>
     </div>
 

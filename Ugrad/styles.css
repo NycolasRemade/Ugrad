@@ -438,9 +438,9 @@ footer p{
 }
 
 #smallboxes{
-  display: inline-flexbox;
+  display: inline-flex;
+  justify-content: space-between;
   width: 952px;
-  height: 200px;
   margin-left: 484px;
   margin-top: 27px;  
 }

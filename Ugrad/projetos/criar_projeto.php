@@ -91,7 +91,7 @@ $lista_categorias = $categorias_query->fetchAll();
 
             <div id="membros-selector" style="display: none;">
                 <select id="select-membro" onchange="confirmarSelecao('membros')">
-                    <option value="">Pesquisar alunos na turma...</option>
+                    <option value="">Selecione um aluno da turma...</option>
                     <?php foreach ($lista_usuarios as $u): ?>
                         <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['nome'] ?: $u['email']) ?></option>
                     <?php endforeach; ?>
@@ -108,7 +108,7 @@ $lista_categorias = $categorias_query->fetchAll();
 
             <div id="categorias-selector" style="display: none;">
                 <select id="select-categoria" onchange="confirmarSelecao('categorias')">
-                    <option value="">Digite uma tag...</option>
+                    <option value="">Selecione uma categoria...</option>
                     <?php foreach ($lista_categorias as $c): ?>
                         <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?></option>
                     <?php endforeach; ?>

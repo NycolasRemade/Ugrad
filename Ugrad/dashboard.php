@@ -58,7 +58,7 @@ $projetos = $stmt->fetchAll();
                     $stmt->execute([$proj['id']]);
                     $membros = $stmt->fetchAll();
                 ?>
-                    <a class="projeto-card box" href="editar_projeto">
+                    <a class="projeto-card box" href="editar_projeto?nome=<?htmlspecialchars($proj['nome']); ?>">
                         <p class="projeto-titulo"><?= htmlspecialchars($proj['nome']); ?></p>
                         <div class="projeto-membros">
                             <?php foreach ($membros as $m): ?>

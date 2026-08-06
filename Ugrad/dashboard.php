@@ -10,14 +10,20 @@ $stmt = $pdo->prepare('SELECT nome, email FROM usuarios WHERE id = ?');
 $stmt->execute([$_SESSION['usuario_id']]);
 $dados = $stmt->fetch();
 
-$stmt = $pdo->prepare(
-   'SELECT * FROM projetos 
-    INNER JOIN proj_membros membros 
-    ON membros.id_projeto = projetos.id 
-    WHERE membros.id_convidado = ?'
+$stmt_projetos = $pdo->prepare(
+   'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto
+    FROM projetos p INNER JOIN proj_membros m 
+    ON m.id_projeto = p.id 
+    WHERE m.id_convidado = ?'
 );
-$stmt->execute([$_SESSION['usuario_id']]);
-$projetos = $stmt->fetchAll();
+$stmt_projetos->execute([$_SESSION['usuario_id']]);
+$projetos = $stmt_projetos->fetchAll();
+$stmt_membros = $pdo->prepare(
+   'SELECT u.imagem_perfil 
+    FROM usuarios u INNER JOIN proj_membros m
+    ON u.id = m.id_convidado
+    WHERE m.id_projeto = ?'
+);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,17 +55,11 @@ $projetos = $stmt->fetchAll();
             <div class="projetos-grid">
                 <?php
                 foreach ($projetos as $proj): 
-                    $stmt = $pdo->prepare(
-                       'SELECT u.imagem_perfil 
-                        FROM usuarios u INNER JOIN proj_membros m
-                        ON u.id = m.id_convidado
-                        WHERE m.id_projeto = ?'
-                    );
-                    $stmt->execute([$proj['id']]);
-                    $membros = $stmt->fetchAll();
+                    $stmt_membros->execute([$proj['id_do_projeto']]);
+                    $membros = $stmt_membros->fetchAll();
                 ?>
                     <a class="projeto-card box" href="editar_projeto">
-                        <p class="projeto-titulo"><?= htmlspecialchars($proj['nome']); ?></p>
+                        <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                         <div class="projeto-membros">
                             <?php foreach ($membros as $m): ?>
                                 <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="">

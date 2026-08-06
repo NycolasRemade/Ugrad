@@ -169,7 +169,9 @@ INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
   -- senha: admin
   ('instituição', 'instituição@ugrad.com', '$2y$10$cMmmO0Q30iL8Xd.MSfnQieiEfjcIVN6PTkfI0pHxbT3KuqFC.Ly3W', 'conta de teste', 4),
   -- senha: instituição
-  ('outro', 'outro@ugrad.com', 'sem login', 'conta de teste', 1);
+  ('outro', 'outro@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 1);
+  -- senha: admin
+
   -- teste para pesquisa de usuários
 INSERT INTO turmas (nome, id_instituicao) VALUES
   ('turma de teste', 2);

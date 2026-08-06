@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$usuario_id = 1;
+$usuario_id = $_SESSION['usuario_id'];
 
 $mensagem = '';
 $erro = '';
@@ -121,9 +121,9 @@ $stmt_convites = $pdo->prepare(
         u_conv.nome AS nome_convidante,
         t_conv.nome AS tipo_convidante
     FROM proj_membros pm
-    INNER JOIN projetos p ON pm.id_projeto = p.id
-    INNER JOIN usuarios u_conv ON pm.id_convidante = u_conv.id
-    INNER JOIN tipos_usuario t_conv ON u_conv.tipo = t_conv.id
+    JOIN projetos p ON pm.id_projeto = p.id
+    JOIN usuarios u_conv ON pm.id_convidante = u_conv.id
+    JOIN tipos_usuario t_conv ON u_conv.tipo = t_conv.id
     WHERE pm.id_convidado = ? AND pm.status_membro = 3'
 );
 $stmt_convites->execute([$usuario_id]);

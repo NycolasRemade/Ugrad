@@ -58,7 +58,7 @@ $stmt_membros = $pdo->prepare(
                     $stmt_membros->execute([$proj['id_do_projeto']]);
                     $membros = $stmt_membros->fetchAll();
                 ?>
-                    <a class="projeto-card box" href="editar_projeto?nome=<?htmlspecialchars($proj['nome_projeto']); ?>">
+                    <a class="projeto-card box" href="editar_projeto?nome=<?urlencode($proj['nome_projeto']); ?>">
                         <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                         <div class="projeto-membros">
                             <?php foreach ($membros as $m): ?>

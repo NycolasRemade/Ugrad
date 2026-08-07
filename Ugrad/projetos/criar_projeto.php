@@ -68,10 +68,11 @@ $lista_categorias = $categorias_query->fetchAll();
 ?>
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Novo projeto</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 

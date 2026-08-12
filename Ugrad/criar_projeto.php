@@ -1,8 +1,8 @@
 <?php
 session_start();
-require_once '../Servidor/config.php';
+require_once 'Servidor/config.php';
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../login.php');
+    header('Location: login.php');
     exit;
 }
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_projeto'])) {
             }
 
             $pdo->commit();
-            header("Location: ../dashboard.php");
+            header('Location: dashboard.php');
             exit;
         } catch (Exception $e) {
             $pdo->rollBack();

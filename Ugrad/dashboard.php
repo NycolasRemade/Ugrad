@@ -35,13 +35,14 @@ $stmt_membros = $pdo->prepare(
     
     <div id="navbar">
         <img src="Fotos/Polygon 2.png" alt="navbar">
-        <a href="#logo_1">
+        <a href="Ugrad.html">
             <h1 class="meringue">Ugrad</h1>
         </a>
     </div>
 
     <main class="dashboard-container">
         <div class="welcome-area">
+            <img src="Fotos/Polygon 6.png" alt="" id="nome_png">
             <h2>Olá, <a href="config_conta.php" style="text-decoration: underline;"><?= htmlspecialchars($dados['nome']); ?></a>!</h2>
             <a href="logout.php" class="btn-logout">Sair</a>
         </div>

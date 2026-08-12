@@ -196,18 +196,20 @@ img{
 #navsticky{
   position: sticky;
   height: 350px;
+  margin-left: 15px;
 }
 
 #navbar{
   position: fixed;
   height: 150px;
+  margin-left: 0px;
 }
 
 #navsticky, #navbar{
   top: -30px;
   margin-top: 00px;
   color: white;
-  margin-left: 15px;
+  
   width: 100%;
   z-index: 989;
 }
@@ -569,3 +571,8 @@ footer p{
   border: 2px solid white;
   box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
+
+/*-------------------------------------------------*/
+/*   Estilo para criação de projetos
+/*-------------------------------------------------*/
+

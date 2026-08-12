@@ -76,7 +76,14 @@ $lista_categorias = $categorias_query->fetchAll();
 </head>
 <body>
 
-    <h1>Novo projeto</h1>
+    <div id="navbar">
+        <img src="Fotos/Polygon 2.png" alt="navbar">
+        <a href="#logo_1">
+            <h1 class="meringue">Ugrad</h1>
+        </a>
+    </div>
+
+    <h1 style="margin-top: 200px">Novo projeto</h1>
 
     <form method="POST" action="">
 

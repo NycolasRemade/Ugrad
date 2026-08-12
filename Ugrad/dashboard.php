@@ -49,7 +49,7 @@ $stmt_membros = $pdo->prepare(
         <section class="projetos-secao">
             <div class="secao-header">
                 <h3>Meus projetos</h3>
-                <a class="btn-novo" href="projetos/criar_projeto.php">+ Novo projeto</a>
+                <a class="btn-novo" href="criar_projeto.php">+ Novo projeto</a>
             </div>
             
             <div class="projetos-grid">
@@ -58,7 +58,7 @@ $stmt_membros = $pdo->prepare(
                     $stmt_membros->execute([$proj['id_do_projeto']]);
                     $membros = $stmt_membros->fetchAll();
                 ?>
-                    <a class="projeto-card box" href="editar_projeto?nome=<?urlencode($proj['nome_projeto']); ?>">
+                    <a class="projeto-card box" href="editar_projeto.php?nome=<?= urlencode($proj['nome_projeto']); ?>">
                         <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                         <div class="projeto-membros">
                             <?php foreach ($membros as $m): ?>

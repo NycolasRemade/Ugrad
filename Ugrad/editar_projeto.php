@@ -23,18 +23,27 @@ if (empty($projeto)) {
 }
 $id_projeto = $projeto['id'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_comentario'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
+    $id_comentario = (int)$_POST['id_comentario'];
     $comentario_texto = trim($_POST['comentario'] ?? '');
     $nota = isset($_POST['nota']) ? (int) $_POST['nota'] : null;
     $feedback = 0;
 
     if (!empty($comentario_texto) && $id_projeto) {
-        $stmt_ins = $pdo->prepare(
-           'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
-            VALUES (?, ?, ?, ?, ?)'
-        );
-        $stmt_ins->execute([$_SESSION['usuario_id'], $id_projeto, $feedback, $comentario_texto, $nota]);
-
+        if ($id_comentario === 0) {
+            $stmt_ins = $pdo->prepare(
+               'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
+                VALUES (?, ?, ?, ?, ?)'
+            );
+            $stmt_ins->execute([$_SESSION['usuario_id'], $id_projeto, $feedback, $comentario_texto, $nota]);
+        } else {
+            $stmt_upd = $pdo->prepare(
+               'UPDATE comentarios
+                SET comentario = ?
+                WHERE id = ?'
+            );
+            $stmt_upd->execute([$comentario_texto, $id_comentario]);
+        }
         header('Location: editar_projeto.php?nome=' . urlencode($nome_projeto));
         exit;
     }
@@ -71,6 +80,12 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute([$id_projeto]);
 $comentarios = $stmt->fetchAll();
+
+$stmt = $pdo->prepare(
+    'SELECT c.id, c.comentario FROM comentarios c WHERE c.id_usuario = ?'
+);
+$stmt->execute([$_SESSION['usuario_id']]);
+$comentario_usuario = $stmt->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -100,7 +115,7 @@ $comentarios = $stmt->fetchAll();
             <?php if (!empty($projeto['img'])): ?>
                 <img src="data:image/jpeg;base64,<?= base64_encode($projeto['img']) ?>" alt="Imagem do Projeto">
             <?php else: ?>
-                <div style="width: 100%; height: 300px; background-color: #ccc; text-align: center; line-height: 300px;">
+                <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
                     [ Imagem do Projeto ]
                 </div>
             <?php endif; ?>
@@ -136,7 +151,7 @@ $comentarios = $stmt->fetchAll();
         <section>
             <p><strong>Bloco universal/com imagem:</strong> Conteúdo descritivo da seção de história do projeto...</p>
             
-            <div style="width: 80%; height: 200px; background-color: #ccc; margin: 10px 0; text-align: center; line-height: 200px;">
+            <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
                 [ Imagem da História ]
             </div>
 
@@ -169,7 +184,7 @@ $comentarios = $stmt->fetchAll();
         <br>
 
         <div>
-            <button type="button" onclick="toggleFormAvaliacao()">Deixe sua avaliação +</button>
+            <button type="button" onclick="toggleFormAvaliacao()"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
         </div>
 
         <br>
@@ -179,9 +194,9 @@ $comentarios = $stmt->fetchAll();
             <button type="button" onclick="toggleFormAvaliacao()">Cancelar x</button>
             <br><br>
             <form action="" method="POST">
-                <input type="hidden" name="salvar_comentario" value="1">
+                <input type="hidden" name="id_comentario" value="<?= (empty($comentario_usuario)) ? '0' : $comentario_usuario['id'] ?>">
                 <div>
-                    <textarea name="comentario" placeholder="Escreva uma avaliação..." rows="4" style="width: 100%;" required></textarea>
+                    <textarea name="comentario" placeholder="Escreva uma avaliação..." rows="4" required><?php if (!empty($comentario_usuario)) { echo $comentario_usuario['comentario']; }?></textarea>
                 </div>
                 <br>
                 <div>
@@ -203,18 +218,18 @@ $comentarios = $stmt->fetchAll();
         <main>
             <?php if (!empty($comentarios)): ?>
                 <?php foreach ($comentarios as $c): ?>
-                    <article>
-                        <header>
+                    <div>
+                        <div>
                             <strong><?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?> (<?= htmlspecialchars($c['nome_usuario']) ?>)</strong>
-                            <span><?= str_pad(str_repeat('★', $c['nota']), 5, '☆') ?></span>
-                        </header>
+                            <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
+                        </div>
                         
-                        <p><?= nl2br(htmlspecialchars($c['comentario'])) ?></p>
+                        <p><?= htmlspecialchars($c['comentario']) ?></p>
                         
-                        <footer>
+                        <div>
                             <small>Data: <?= date('d/m/Y', strtotime($c['data_criacao'])) ?></small>
-                        </footer>
-                    </article>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <p>Nenhuma avaliação cadastrada para este projeto ainda.</p>

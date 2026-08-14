@@ -70,5 +70,25 @@ $stmt_membros = $pdo->prepare(
             </div>
         </section>
     </main>
+
+<script>
+    function getTextWidth() {
+
+            inputText = "Olá, <?= htmlspecialchars($dados['nome']); ?>!";
+            font = "36px IBM";
+
+            canvas = document.createElement("canvas");
+            context = canvas.getContext("2d");
+            context.font = font;
+            width = context.measureText(inputText).width;
+            formattedWidth = Math.ceil(width) + 50;
+
+            document.getElementById('nome_png').style.width = formattedWidth + "px";
+        } 
+
+        getTextWidth()
+
+</script>
+
 </body>
 </html>

@@ -41,11 +41,10 @@ $stmt_membros = $pdo->prepare(
     </div>
 
     <main class="dashboard-container">
-        <div class="welcome-area">
+        <a href="config_conta.php"><div class="welcome-area">
             <img src="Fotos/Polygon 6.png" alt="" id="nome_png">
-            <h2>Olá, <a href="config_conta.php" style="text-decoration: underline;"><?= htmlspecialchars($dados['nome']); ?></a>!</h2>
-            <a href="logout.php" class="btn-logout">Sair</a>
-        </div>
+            <h2>Olá, <?= htmlspecialchars($dados['nome']); ?>!</h2>
+        </div></a>
 
         <section class="projetos-secao">
             <div class="secao-header">

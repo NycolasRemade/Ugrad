@@ -483,19 +483,18 @@ footer p{
 
 .welcome-area {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
-  transition: .3s;
-  width: 300px;
 }
 
 .welcome-area h2 {
   font-size: 36px;
-  font-family: 'BMI';
+  font-family: 'BMI', sans-serif;
 }
 
 .btn-logout {
-  font-family: 'BMI';
+  font-family: 'BMI', sans-serif;
   font-size: 16px;
   color: #D8000C;
   border: 1px solid #D8000C;
@@ -515,17 +514,13 @@ footer p{
   margin-left: -30px;
   height: 108px;
   min-width: 250px;
-  transition: .5s;
-  width: inherit;
+  transition: .5s
 }
 
-.welcome-area:hover #nome_png{
+#nome_png:hover{
+  margin-left: -35px;
   -webkit-filter: drop-shadow(15px 15px 3px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(15px 15px 3px rgba(0, 0, 0, 0.25));
-}
-
-.welcome-area:hover{
-    margin-left: -5px;
 }
 
 /* Seção de Projetos */

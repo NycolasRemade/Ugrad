@@ -13,11 +13,32 @@ $stmt = $pdo->prepare(
    'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
     FROM projetos p 
     LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-    WHERE p.id = ?'
+    WHERE p.nome = ?'
 );
 $stmt->execute([$nome_projeto]);
 $projeto = $stmt->fetch();
+if (empty($projeto)) {
+    header('Location: dashboard.php');
+    exit;
+}
 $id_projeto = $projeto['id'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_comentario'])) {
+    $comentario_texto = trim($_POST['comentario'] ?? '');
+    $nota = isset($_POST['nota']) ? (int) $_POST['nota'] : null;
+    $feedback = 0;
+
+    if (!empty($comentario_texto) && $id_projeto) {
+        $stmt_ins = $pdo->prepare(
+           'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
+            VALUES (?, ?, ?, ?, ?)'
+        );
+        $stmt_ins->execute([$_SESSION['usuario_id'], $id_projeto, $feedback, $comentario_texto, $nota]);
+
+        header('Location: editar_projeto.php?nome=' . urlencode($nome_projeto));
+        exit;
+    }
+}
 
 // membros do projeto
 $stmt = $pdo->prepare(
@@ -41,7 +62,7 @@ $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 // comentários/avaliações
 $stmt = $pdo->prepare(
-   'SELECT c.comentario, c.feedback, c.data_criacao, u.nome AS nome_usuario, tu.nome AS tipo_usuario 
+   'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, u.nome AS nome_usuario, tu.nome AS tipo_usuario 
     FROM comentarios c
     JOIN usuarios u ON c.id_usuario = u.id
     JOIN tipos_usuario tu ON u.tipo = tu.id
@@ -148,18 +169,44 @@ $comentarios = $stmt->fetchAll();
         <br>
 
         <div>
-            <button type="button">Deixe sua avaliação +</button>
+            <button type="button" onclick="toggleFormAvaliacao()">Deixe sua avaliação +</button>
         </div>
 
         <br>
 
+        <!-- ENTRADA DE TEXTO E FORMULÁRIO DE AVALIAÇÃO -->
+        <div id="form-avaliacao-container" style="display: none;">
+            <button type="button" onclick="toggleFormAvaliacao()">Cancelar x</button>
+            <br><br>
+            <form action="" method="POST">
+                <input type="hidden" name="salvar_comentario" value="1">
+                <div>
+                    <textarea name="comentario" placeholder="Escreva uma avaliação..." rows="4" style="width: 100%;" required></textarea>
+                </div>
+                <br>
+                <div>
+                    <div>
+                        <label for="nota">Nota:</label>
+                        <select name="nota" id="nota">
+                            <option value="5">★★★★★ (5)</option>
+                            <option value="4">★★★★☆ (4)</option>
+                            <option value="3">★★★☆☆ (3)</option>
+                            <option value="2">★★☆☆☆ (2)</option>
+                            <option value="1">★☆☆☆☆ (1)</option>
+                        </select>
+                    </div>
+                    <button type="submit">→</button>
+                </div>
+            </form>
+        </div>
+
         <main>
             <?php if (!empty($comentarios)): ?>
                 <?php foreach ($comentarios as $c): ?>
-                    <article style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+                    <article>
                         <header>
                             <strong><?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?> (<?= htmlspecialchars($c['nome_usuario']) ?>)</strong>
-                            <span><?= $c['feedback'] ? '★★★★★' : '★★★☆☆' ?></span>
+                            <span><?= str_pad(str_repeat('★', $c['nota']), 5, '☆') ?></span>
                         </header>
                         
                         <p><?= nl2br(htmlspecialchars($c['comentario'])) ?></p>
@@ -182,7 +229,24 @@ $comentarios = $stmt->fetchAll();
             document.getElementById('aba-historia').style.display = 'none';
             document.getElementById('aba-avaliacoes').style.display = 'none';
 
-            document.getElementById('aba-' + nomeAba).style.display = 'block';
+            const bloco = document.getElementById('aba-' + nomeAba);
+            if (bloco) {
+                bloco.style.display = 'block';
+                location.hash = nomeAba;
+            } else {
+                document.getElementById('aba-visao-geral').style.display = 'block';
+                location.hash = 'visao-geral';
+            }
+        }
+        if (location.hash && location.hash !== '#') mudarAba(location.hash.slice(1));
+
+        function toggleFormAvaliacao() {
+            const formContainer = document.getElementById('form-avaliacao-container');
+            if (formContainer.style.display === 'none') {
+                formContainer.style.display = 'block';
+            } else {
+                formContainer.style.display = 'none';
+            }
         }
     </script>
 

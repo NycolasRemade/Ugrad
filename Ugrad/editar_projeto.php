@@ -40,9 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
             $stmt_upd = $pdo->prepare(
                'UPDATE comentarios
                 SET comentario = ?
-                WHERE id = ?'
+                WHERE id = ? AND usuario_id = ?'
             );
-            $stmt_upd->execute([$comentario_texto, $id_comentario]);
+            $stmt_upd->execute([$comentario_texto, $id_comentario, $_SESSION['usuario_id']]);
         }
         header('Location: editar_projeto.php?nome=' . urlencode($nome_projeto));
         exit;
@@ -82,7 +82,7 @@ $stmt->execute([$id_projeto]);
 $comentarios = $stmt->fetchAll();
 
 $stmt = $pdo->prepare(
-    'SELECT c.id, c.comentario FROM comentarios c WHERE c.id_usuario = ?'
+    'SELECT id, comentario FROM comentarios WHERE id_usuario = ?'
 );
 $stmt->execute([$_SESSION['usuario_id']]);
 $comentario_usuario = $stmt->fetch();

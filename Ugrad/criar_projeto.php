@@ -74,7 +74,7 @@ $lista_categorias = $categorias_query->fetchAll();
     <title>Novo projeto</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body  onLoad="window.scroll(0, 0)" style="overflow-y: hidden;">
+<body  onLoad="window.scroll(0, 0)" style="overflow-y: hidden;" id='criacao_projetos'>
 
     <div id="navbar">
         <img src="Fotos/Polygon 2.png" alt="navbar">

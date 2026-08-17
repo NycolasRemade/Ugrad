@@ -95,7 +95,7 @@ $lista_categorias = $categorias_query->fetchAll();
         </div>
         <br>
         <div>
-            <label>Convidar integrantes do grupo</label><br>
+            <label>Integrantes do grupo</label><br>
 
             <div id="membros-selecionados"></div>
 
@@ -108,7 +108,12 @@ $lista_categorias = $categorias_query->fetchAll();
                 </select>
             </div>
 
-            <button type="button" onclick="mostrarSeletor('membros')">+</button>
+            <button type="button" class="plus" onclick="mostrarSeletor('membros')">
+                <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="72" height="72" fill="#111111"/>
+                <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
+                </svg>
+            </button>
         </div>
         <br>
         <div>
@@ -125,7 +130,12 @@ $lista_categorias = $categorias_query->fetchAll();
                 </select>
             </div>
 
-            <button type="button" onclick="mostrarSeletor('categorias')">+</button>
+            <button type="button" class="plus" onclick="mostrarSeletor('categorias')">
+                <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="72" height="72" fill="#111111"/>
+                <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
+                </svg>
+            </button>
         </div>
         <br>
         <div>

@@ -74,7 +74,7 @@ $lista_categorias = $categorias_query->fetchAll();
     <title>Novo projeto</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body  onLoad="window.scroll(0, 0)" style="overflow-y: hidden;" id='criacao_projetos'>
+<body  onLoad="window.scroll(0, 0)" style="overflow-y: hidden; overflow-x: hidden">
 
     <div id="navbar">
         <img src="Fotos/Polygon 2.png" alt="navbar">
@@ -83,9 +83,9 @@ $lista_categorias = $categorias_query->fetchAll();
         </a>
     </div>
 
+    <div id="criacao_projetos">
 
-
-    <h1 style="margin-top: 200px">Novo projeto</h1>
+    <h1>Novo projeto</h1>
 
     <form method="POST" action="">
 
@@ -134,6 +134,7 @@ $lista_categorias = $categorias_query->fetchAll();
         </div>
 
     </form>
+    </div>
 
     <script>
         function mostrarSeletor(tipo) {

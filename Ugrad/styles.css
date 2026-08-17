@@ -598,5 +598,24 @@ footer p{
 /*-------------------------------------------------*/
 
 #criacao_projetos{
-  
+  width: 80%;
+  margin-left: 10%;
+}
+
+#criacao_projetos h1{
+  margin-top: 200px;
+  margin-bottom: 40px;
+  font-size: 43px;
+}
+
+#criacao_projetos label{
+  font-size: 30px;
+}
+
+#criacao_projetos div input {
+  border: none;
+  height: 72px;
+  width: 524px;
+  font-size: 32px;
+  background-color: #EEEEEE;
 }

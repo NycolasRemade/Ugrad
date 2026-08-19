@@ -637,3 +637,18 @@ footer p{
 #categorias-selecionados, #membros-selecionados{
   display: flex;
 }
+
+.multiple_inline{
+  display: flex;
+}
+
+.selector select{
+  border: none;
+  height: 64px;
+  width: 524px;
+  font-size: 32px;
+  background-color: #ffffff;
+  box-shadow: inset 0 4px 4px rgba(0, 0, 0, 0.25);
+  padding-left: 20px;
+  margin-top: 10px;
+}

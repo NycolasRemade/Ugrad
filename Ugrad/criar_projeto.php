@@ -97,10 +97,11 @@ $lista_categorias = $categorias_query->fetchAll();
         <div>
             <label>Integrantes do grupo</label><br>
 
+            <div class="multiple_inline">
             <div id="membros-selecionados"></div>
 
-            <div id="membros-selector" style="display: none;">
-                <select id="select-membro" onchange="confirmarSelecao('membros')">
+            <div id="membros selector" class='selector' style="display: none;">
+                <select id="select membro" onchange="confirmarSelecao('membros')">
                     <option value="">Selecione um aluno da turma...</option>
                     <?php foreach ($lista_usuarios as $u): ?>
                         <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['nome'] ?: $u['email']) ?></option>
@@ -114,15 +115,17 @@ $lista_categorias = $categorias_query->fetchAll();
                 <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
                 </svg>
             </button>
+            </div>
         </div>
         <br>
         <div>
             <label>Categorias</label><br>
 
+            <div class="multiple_inline">
             <div id="categorias-selecionados"></div>
 
-            <div id="categorias-selector" style="display: none;">
-                <select id="select-categoria" onchange="confirmarSelecao('categorias')">
+            <div id="categorias selector" class='selector' style="display: none;">
+                <select id="select categoria" onchange="confirmarSelecao('categorias')">
                     <option value="">Selecione uma categoria...</option>
                     <?php foreach ($lista_categorias as $c): ?>
                         <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?></option>
@@ -136,6 +139,7 @@ $lista_categorias = $categorias_query->fetchAll();
                 <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
                 </svg>
             </button>
+            </div>
         </div>
         <br>
         <div>
@@ -148,11 +152,17 @@ $lista_categorias = $categorias_query->fetchAll();
 
     <script>
         function mostrarSeletor(tipo) {
-            const selectorDiv = document.getElementById(tipo + '-selector');
-            selectorDiv.style.display = 'block';
+            const selectorDiv = document.getElementById(tipo + ' selector');
+
+            if (selectorDiv.style.display === 'none') {
+                selectorDiv.style.display = 'block';
+            }
+            else{
+                selectorDiv.style.display = 'none';
+            }
         }
         function confirmarSelecao(tipo) {
-            const select = document.getElementById((tipo === 'membros') ? 'select-membro' : 'select-categoria');
+            const select = document.getElementById((tipo === 'membros') ? 'select membro' : 'select categoria');
             const value = select.value;
             const text = select.options[select.selectedIndex].text;
 
@@ -160,7 +170,7 @@ $lista_categorias = $categorias_query->fetchAll();
 
             if (document.getElementById(tipo + '-item-' + value)) {
                 select.selectedIndex = 0;
-                document.getElementById(tipo + '-selector').style.display = 'none';
+                document.getElementById(tipo + ' selector').style.display = 'none';
                 return;
             }
 
@@ -176,7 +186,7 @@ $lista_categorias = $categorias_query->fetchAll();
             container.appendChild(itemDiv);
 
             select.selectedIndex = 0;
-            document.getElementById(tipo + '-selector').style.display = 'none';
+            document.getElementById(tipo + ' selector').style.display = 'none';
         }
         function removerItem(elementId) {
             const element = document.getElementById(elementId);

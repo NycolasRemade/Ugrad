@@ -23,6 +23,12 @@ if (empty($projeto)) {
 }
 $id_projeto = $projeto['id'];
 
+$stmt = $pdo->prepare(
+    'SELECT id, comentario, nota FROM comentarios WHERE id_usuario = ?'
+);
+$stmt->execute([$_SESSION['usuario_id']]);
+$comentario_usuario = $stmt->fetch();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
     $id_comentario = (int)$_POST['id_comentario'];
     $comentario_texto = trim($_POST['comentario'] ?? '');
@@ -30,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
     $feedback = 0;
 
     if (!empty($comentario_texto) && $id_projeto) {
-        if ($id_comentario === 0) {
+        if (empty($comentario_usuario)) {
             $stmt_ins = $pdo->prepare(
                'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
                 VALUES (?, ?, ?, ?, ?)'
@@ -39,10 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
         } else {
             $stmt_upd = $pdo->prepare(
                'UPDATE comentarios
-                SET comentario = ?
-                WHERE id = ? AND id_usuario = ?'
+                SET comentario = ?, nota = ?
+                WHERE id_usuario = ?'
             );
-            $stmt_upd->execute([$comentario_texto, $id_comentario, $_SESSION['usuario_id']]);
+            $stmt_upd->execute([$comentario_texto, $nota, $_SESSION['usuario_id']]);
         }
         header('Location: editar_projeto.php?nome=' . urlencode($nome_projeto));
         exit;
@@ -81,11 +87,6 @@ $stmt = $pdo->prepare(
 $stmt->execute([$id_projeto]);
 $comentarios = $stmt->fetchAll();
 
-$stmt = $pdo->prepare(
-    'SELECT id, comentario FROM comentarios WHERE id_usuario = ?'
-);
-$stmt->execute([$_SESSION['usuario_id']]);
-$comentario_usuario = $stmt->fetch();
 ?>
 
 <!DOCTYPE html>
@@ -177,7 +178,21 @@ $comentario_usuario = $stmt->fetch();
     <!-- AVALIAÇÕES -->
     <div id="aba-avaliacoes" style="display: none;">
         <div>
-            <h2>Avaliações ★★★★☆</h2>
+            <h2>Avaliações <?php 
+                $total_comentarios = count($comentarios);
+                if ($total_comentarios > 0) {
+                    $soma_notas = array_sum(array_column($comentarios, 'nota'));
+                    $media_nota = (int) round($soma_notas / $total_comentarios * 2) / 2;
+                    $estrelas_cheias = (int) floor($media_nota);
+                    if ($estrelas_cheias === $media_nota) {
+                        echo str_repeat('★', $estrelas_cheias) . str_repeat('☆', 5 - $estrelas_cheias);
+                    } else {
+                        echo str_repeat('★', $estrelas_cheias) . '⯪' . str_repeat('☆', 4 - $estrelas_cheias);
+                    }
+                } else {
+                    echo '☆☆☆☆☆';
+                }
+            ?></h2>
             <button type="button">Filtros +</button>
         </div>
 
@@ -200,16 +215,19 @@ $comentario_usuario = $stmt->fetch();
                 </div>
                 <br>
                 <div>
-                    <div>
-                        <label for="nota">Nota:</label>
-                        <select name="nota" id="nota">
-                            <option value="5">★★★★★ (5)</option>
-                            <option value="4">★★★★☆ (4)</option>
-                            <option value="3">★★★☆☆ (3)</option>
-                            <option value="2">★★☆☆☆ (2)</option>
-                            <option value="1">★☆☆☆☆ (1)</option>
-                        </select>
-                    </div>
+                <?php if (empty($comentario_usuario)): ?>
+                    <input type="hidden" name="nota" id="nota_input" value="5">
+                    <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
+                        <span onclick="definirNota(1)">★</span><span onclick="definirNota(2)">★</span><span onclick="definirNota(3)">★</span><span onclick="definirNota(4)">★</span><span onclick="definirNota(5)">★</span>
+                    </span>
+                <?php else: ?>
+                    <input type="hidden" name="nota" id="nota_input" value="<?= $comentario_usuario['nota'] ?>">
+                    <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
+                        <?php $nota = (int)$comentario_usuario['nota'];
+                        for ($i = 1; $i <= $nota; $i++): ?><span onclick="definirNota(<?= $i ?>)">★</span><?php endfor;
+                        for ($i = $nota + 1; $i <= 5; $i++): ?><span onclick="definirNota(<?= $i ?>)">☆</span><?php endfor; ?>
+                    </span>
+                <?php endif; ?>
                     <button type="submit">→</button>
                 </div>
             </form>
@@ -220,7 +238,7 @@ $comentario_usuario = $stmt->fetch();
                 <?php foreach ($comentarios as $c): ?>
                     <div>
                         <div>
-                            <strong><?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?> (<?= htmlspecialchars($c['nome_usuario']) ?>)</strong>
+                            <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
                             <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
                         </div>
                         
@@ -262,6 +280,18 @@ $comentario_usuario = $stmt->fetch();
             } else {
                 formContainer.style.display = 'none';
             }
+        }
+
+        function definirNota(valor) {
+            document.getElementById('nota_input').value = valor;
+            const estrelas = document.querySelectorAll('#estrelas-rating span');
+            estrelas.forEach(function(estrela, index) {
+                if (index < valor) {
+                    estrela.textContent = '★';
+                } else {
+                    estrela.textContent = '☆';
+                }
+            });
         }
     </script>
 

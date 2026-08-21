@@ -543,7 +543,8 @@ footer p{
 }
 
 .btn-novo {
-  background-color: #FFECD2;
+  background-color: #000000;
+  color: #FFFFFF;
   border: none;
   padding: 10px 20px;
   font-size: 16px;

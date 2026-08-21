@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
             $stmt_upd = $pdo->prepare(
                'UPDATE comentarios
                 SET comentario = ?
-                WHERE id = ? AND usuario_id = ?'
+                WHERE id = ? AND id_usuario = ?'
             );
             $stmt_upd->execute([$comentario_texto, $id_comentario, $_SESSION['usuario_id']]);
         }

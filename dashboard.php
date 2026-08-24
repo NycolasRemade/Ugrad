@@ -10,20 +10,6 @@ $stmt = $pdo->prepare('SELECT nome, email, tipo FROM usuarios WHERE id = ?');
 $stmt->execute([$_SESSION['usuario_id']]);
 $dados = $stmt->fetch();
 
-$stmt_projetos = $pdo->prepare(
-   'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto
-    FROM projetos p INNER JOIN proj_membros m 
-    ON m.id_projeto = p.id 
-    WHERE m.id_convidado = ?'
-);
-$stmt_projetos->execute([$_SESSION['usuario_id']]);
-$projetos = $stmt_projetos->fetchAll();
-$stmt_membros = $pdo->prepare(
-   'SELECT u.imagem_perfil 
-    FROM usuarios u INNER JOIN proj_membros m
-    ON u.id = m.id_convidado
-    WHERE m.id_projeto = ?'
-);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,10 +29,26 @@ $stmt_membros = $pdo->prepare(
     <main class="dashboard-container">
         <a href="config_conta.php"><div class="welcome-area">
             <img src="Fotos/Polygon 6.png" alt="" id="nome_png">
-            <h2>Olá, <?= htmlspecialchars($dados['nome']); ?>!</h2>
+            <h2>Olá, <?= htmlspecialchars($dados['nome']) ?>!</h2>
         </div></a>
 
-        <?php if ($dados['tipo'] === 1): ?>
+        <?php if ($dados['tipo'] === 1): // ALUNO 
+            $stmt_projetos = $pdo->prepare(
+               'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto
+                FROM projetos p INNER JOIN proj_membros m 
+                ON m.id_projeto = p.id 
+                WHERE m.id_convidado = ?'
+            );
+            $stmt_projetos->execute([$_SESSION['usuario_id']]);
+            $projetos = $stmt_projetos->fetchAll();
+            $stmt_membros = $pdo->prepare(
+               'SELECT u.imagem_perfil 
+                FROM usuarios u INNER JOIN proj_membros m
+                ON u.id = m.id_convidado
+                WHERE m.id_projeto = ?'
+            );
+        ?>
+
         <section class="projetos-secao">
             <div class="secao-header">
                 <h3>Meus projetos</h3>
@@ -54,22 +56,98 @@ $stmt_membros = $pdo->prepare(
             </div>
             
             <div class="projetos-grid">
-                <?php
-                foreach ($projetos as $proj): 
-                    $stmt_membros->execute([$proj['id_do_projeto']]);
-                    $membros = $stmt_membros->fetchAll();
-                ?>
-                    <a class="projeto-card box" href="editar_projeto.php?nome=<?= urlencode($proj['nome_projeto']); ?>">
-                        <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
-                        <div class="projeto-membros">
-                            <?php foreach ($membros as $m): ?>
-                                <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="">
-                            <?php endforeach; ?>
-                        </div>
-                    </a>
-                <?php endforeach; ?>
+            <?php
+            foreach ($projetos as $proj): 
+                $stmt_membros->execute([$proj['id_do_projeto']]);
+                $membros = $stmt_membros->fetchAll();
+            ?>
+                <a class="projeto-card box" href="editar_projeto.php?nome=<?= urlencode($proj['nome_projeto']); ?>">
+                    <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
+                    <div class="projeto-membros">
+                        <?php foreach ($membros as $m): ?>
+                            <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="">
+                        <?php endforeach; ?>
+                    </div>
+                </a>
+            <?php endforeach; ?>
             </div>
         </section>
+
+        <?php elseif ($dados['tipo'] === 4): // INSTITUIÇÂO 
+            $stmt = $pdo->prepare('SELECT nome FROM turmas WHERE id_instituicao = ?');
+            $stmt->execute([$_SESSION['usuario_id']]);
+            $turmas = $stmt->fetchAll();
+
+            $stmt = $pdo->prepare(
+               'SELECT * 
+                FROM usuarios u INNER JOIN extra_usuarios e 
+                ON e.id_usuario = u.id 
+                WHERE u.tipo = ? AND e.id_instituicao = ?'
+            );
+            $stmt->execute(['2', $_SESSION['usuario_id']]);
+            $professores = $stmt->fetchAll();
+            $stmt->execute(['1', $_SESSION['usuario_id']]);
+            $alunos = $stmt->fetchAll();
+
+            $stmt = $pdo->prepare(
+                'SELECT'
+            );
+        ?>
+
+        <details>
+            <summary>
+                <span>Turmas fixadas</span>
+            </summary>
+        </details>
+
+        <details open>
+            <summary>
+                    <span>Turmas</span>
+                    <button>+</button>
+            </summary>
+            <div>
+            <?php foreach ($turmas as $t): ?>
+                <div><?= $t['nome'] ?></div>
+            <?php endforeach; ?>
+            </div>
+        </details>
+
+        <details open>
+            <summary>
+                    <span>Professores</span>
+                    <button>+</button>
+            </summary>
+            <div>
+            <?php foreach ($professores as $p): ?>
+                <div><?= $p['nome'] ?></div>
+            <?php endforeach; ?>
+            </div>
+        </details>
+
+        <details>
+            <summary>
+                <span>Alunos</span>
+            </summary>
+            <div>
+            <?php foreach ($alunos as $a): ?>
+                <div><?= $a['nome'] ?></div>
+            <?php endforeach; ?>
+            </div>
+        </details>
+
+        <details open>
+            <summary>
+                <span>Projetos dos alunos</span>
+            </summary>
+            <div>
+                <div><span>Projeto1</span></div>
+                <div><span>Projeto2</span></div>
+                <div><span>Projeto3</span></div>
+            </div>
+        </details>
+
+
+
         <?php endif; ?>
     </main>
 

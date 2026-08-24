@@ -168,8 +168,8 @@ CREATE TABLE reportagens(
 INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
   ('admin', 'admin@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 5),
   -- senha: admin
-  ('instituição', 'instituição@ugrad.com', '$2y$10$cMmmO0Q30iL8Xd.MSfnQieiEfjcIVN6PTkfI0pHxbT3KuqFC.Ly3W', 'conta de teste', 4),
-  -- senha: instituição
+  ('instituição', 'instituicao@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 4),
+  -- senha: admin
   ('outro', 'outro@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 1);
   -- senha: admin
 
@@ -178,6 +178,7 @@ INSERT INTO turmas (nome, id_instituicao) VALUES
   ('turma de teste', 2);
 INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
   (1, 1, 2),
+  (2, 1, 2),
   (3, 1, 2);
 
 

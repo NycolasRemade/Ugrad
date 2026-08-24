@@ -143,8 +143,8 @@ $lista_categorias = $categorias_query->fetchAll();
         </div>
         <br>
         <div>
-            <button type="button" onclick="window.history.back()">Cancelar</button>
-            <button type="submit" name="criar_projeto">Criar</button>
+            <button type="button" onclick="window.history.back()" class="btn-novo btn-secundario">Cancelar</button>
+            <button type="submit" name="criar_projeto" class="btn-novo">Criar</button>
         </div>
 
     </form>
@@ -180,7 +180,7 @@ $lista_categorias = $categorias_query->fetchAll();
             itemDiv.innerHTML = `
                 <span>${text}</span>
                 <input type="hidden" name="${tipo}[]" value="${value}">
-                <button type="button" onclick="removerItem('${tipo}-item-${value}')">x</button>
+                <button type="button" onclick="removerItem('${tipo}-item-${value}')" class="btn-novo">x</button>
             `;
 
             container.appendChild(itemDiv);

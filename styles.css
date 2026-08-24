@@ -560,6 +560,11 @@ footer p{
   box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
+.btn-secundario {
+  background-color: #FFFFFF;
+  color: #000000;
+}
+
 /* Grid e Cards de Projetos */
 .projetos-grid {
   display: grid;

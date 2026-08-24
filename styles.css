@@ -127,6 +127,7 @@ img{
   height: 91px;
   margin-left: 9%;
   margin-top: 50px;
+  transition: .3s;
 }
 
 .btn1{
@@ -135,6 +136,12 @@ img{
   height: 80px;
   margin-left: 15%;
   margin-top: 40px;
+  transition: .3s;
+}
+
+.btnstud:hover, .btn1:hover{
+  scale: 101%;
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
 }
 
 #only_used_once{

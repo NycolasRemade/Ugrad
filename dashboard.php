@@ -6,7 +6,7 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT nome, email FROM usuarios WHERE id = ?');
+$stmt = $pdo->prepare('SELECT nome, email, tipo FROM usuarios WHERE id = ?');
 $stmt->execute([$_SESSION['usuario_id']]);
 $dados = $stmt->fetch();
 
@@ -46,6 +46,7 @@ $stmt_membros = $pdo->prepare(
             <h2>Olá, <?= htmlspecialchars($dados['nome']); ?>!</h2>
         </div></a>
 
+        <?php if ($dados['tipo'] === 1): ?>
         <section class="projetos-secao">
             <div class="secao-header">
                 <h3>Meus projetos</h3>
@@ -69,6 +70,7 @@ $stmt_membros = $pdo->prepare(
                 <?php endforeach; ?>
             </div>
         </section>
+        <?php endif; ?>
     </main>
 
 <script>

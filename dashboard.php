@@ -6,8 +6,10 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
+$id_usuario = $_SESSION['usuario_id'];
+
 $stmt = $pdo->prepare('SELECT nome, email, tipo FROM usuarios WHERE id = ?');
-$stmt->execute([$_SESSION['usuario_id']]);
+$stmt->execute([$id_usuario]);
 $dados = $stmt->fetch();
 
 ?>
@@ -32,14 +34,14 @@ $dados = $stmt->fetch();
             <h2>Olá, <?= htmlspecialchars($dados['nome']) ?>!</h2>
         </div></a>
 
-        <?php if ($dados['tipo'] === 1): // ALUNO 
+        <?php if ($dados['tipo'] === 1 || $dados['tipo'] === 5): // ALUNO ou ADMINISTRADOR
             $stmt_projetos = $pdo->prepare(
                'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto
                 FROM projetos p INNER JOIN proj_membros m 
                 ON m.id_projeto = p.id 
                 WHERE m.id_convidado = ?'
             );
-            $stmt_projetos->execute([$_SESSION['usuario_id']]);
+            $stmt_projetos->execute([$id_usuario]);
             $projetos = $stmt_projetos->fetchAll();
             $stmt_membros = $pdo->prepare(
                'SELECT u.imagem_perfil 
@@ -65,7 +67,7 @@ $dados = $stmt->fetch();
                     <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                     <div class="projeto-membros">
                         <?php foreach ($membros as $m): ?>
-                            <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="">
+                            <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="Foto de perfil">
                         <?php endforeach; ?>
                     </div>
                 </a>
@@ -75,7 +77,7 @@ $dados = $stmt->fetch();
 
         <?php elseif ($dados['tipo'] === 4): // INSTITUIÇÂO 
             $stmt = $pdo->prepare('SELECT nome FROM turmas WHERE id_instituicao = ?');
-            $stmt->execute([$_SESSION['usuario_id']]);
+            $stmt->execute([$id_usuario]);
             $turmas = $stmt->fetchAll();
 
             $stmt = $pdo->prepare(
@@ -84,14 +86,23 @@ $dados = $stmt->fetch();
                 ON e.id_usuario = u.id 
                 WHERE u.tipo = ? AND e.id_instituicao = ?'
             );
-            $stmt->execute(['2', $_SESSION['usuario_id']]);
+            $stmt->execute(['2', $id_usuario]);
             $professores = $stmt->fetchAll();
-            $stmt->execute(['1', $_SESSION['usuario_id']]);
+            $stmt->execute(['1', $id_usuario]);
             $alunos = $stmt->fetchAll();
 
             $stmt = $pdo->prepare(
-                'SELECT'
+               'SELECT p.id, p.nome, p.img, u.imagem_perfil
+                FROM projetos p INNER JOIN proj_membros pm
+                ON pm.id_projeto = p.id
+                INNER JOIN usuarios u
+                ON pm.id_convidado = u.id
+                INNER JOIN extra_usuarios eu
+                ON eu.id_usuario = u.id
+                WHERE eu.id_instituicao = ?'
             );
+            $stmt->execute([$id_usuario]);
+            $projetos = $stmt->fetchAll();
         ?>
 
         <details>
@@ -118,8 +129,8 @@ $dados = $stmt->fetch();
                     <button>+</button>
             </summary>
             <div>
-            <?php foreach ($professores as $p): ?>
-                <div><?= $p['nome'] ?></div>
+            <?php foreach ($professores as $prof): ?>
+                <div><?= $prof['nome'] ?></div>
             <?php endforeach; ?>
             </div>
         </details>
@@ -140,9 +151,21 @@ $dados = $stmt->fetch();
                 <span>Projetos dos alunos</span>
             </summary>
             <div>
-                <div><span>Projeto1</span></div>
-                <div><span>Projeto2</span></div>
-                <div><span>Projeto3</span></div>
+            <?php
+            $tamanho = count($projetos);
+            $id_projeto = '';
+            for ($i = 0; $i < $tamanho; $i++):
+                $proj = $projetos[$i];
+                $id_projeto = $proj['id'];
+            ?>
+                <div>
+                    <?php while ($id_projeto === $proj['id']): ?>
+                        <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($proj['imagem_perfil']); ?>" alt="Foto de perfil">
+                    <?php $i++;
+                    endwhile; ?>
+                    <span><?= $proj['nome'] ?></span>
+                </div>
+            <?php endfor; ?>
             </div>
         </details>
 

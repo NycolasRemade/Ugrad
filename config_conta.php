@@ -11,10 +11,10 @@ $usuario_id = $_SESSION['usuario_id'];
 $mensagem = '';
 $erro = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // imagem de perfil
-    if (isset($_POST['acao']) && $_POST['acao'] === 'alterar_imagem') {
+    if ($_POST['acao'] === 'alterar_imagem') {
         if (isset($_FILES['imagem_perfil']) && $_FILES['imagem_perfil']['error'] === UPLOAD_ERR_OK) {
             $imagem_blob = file_get_contents($_FILES['imagem_perfil']['tmp_name']);
 
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // nome
-    if (isset($_POST['acao']) && $_POST['acao'] === 'alterar_nome') {
+    if ($_POST['acao'] === 'alterar_nome') {
         $nome = trim($_POST['nome']);
         if (!empty($nome)) {
             $stmt = $pdo->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // e-mail
-    if (isset($_POST['acao']) && $_POST['acao'] === 'alterar_email') {
+    if ($_POST['acao'] === 'alterar_email') {
         $email = trim($_POST['email']);
         if (!empty($email)) {
             try {
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // senha
-    if (isset($_POST['acao']) && $_POST['acao'] === 'alterar_senha') {
+    if ($_POST['acao'] === 'alterar_senha') {
         $senha = trim($_POST['senha']);
         if (!empty($senha)) {
             $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // descrição
-    if (isset($_POST['acao']) && $_POST['acao'] === 'alterar_descricao') {
+    if ($_POST['acao'] === 'alterar_descricao') {
         $descricao = trim($_POST['descricao']);
         $stmt = $pdo->prepare('UPDATE usuarios SET descricao = ? WHERE id = ?');
         $stmt->execute([$descricao, $usuario_id]);
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // aceitar convite de projeto
-    if (isset($_POST['acao']) && $_POST['acao'] === 'aceitar_convite') {
+    if ($_POST['acao'] === 'aceitar_convite') {
         $id_convite = intval($_POST['id_convite']);
         // Status 2 corresponde a MEMBRO
         $stmt = $pdo->prepare('UPDATE proj_membros SET status_membro = 2 WHERE id = ? AND id_convidado = ?');
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // recusar convite de projeto
-    if (isset($_POST['acao']) && $_POST['acao'] === 'recusar_convite') {
+    if ($_POST['acao'] === 'recusar_convite') {
         $id_convite = intval($_POST['id_convite']);
         $stmt = $pdo->prepare('DELETE FROM proj_membros WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
@@ -88,14 +88,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // sair da conta
-    if (isset($_POST['acao']) && $_POST['acao'] === 'sair_conta') {
+    if ($_POST['acao'] === 'sair_conta') {
         session_destroy();
         header("Location: login.php");
         exit;
     }
 
     // excluir conta
-    if (isset($_POST['acao']) && $_POST['acao'] === 'excluir_conta') {
+    if ($_POST['acao'] === 'excluir_conta') {
         $stmt = $pdo->prepare('UPDATE usuarios SET ativada = FALSE WHERE id = ?');
         $stmt->execute([$usuario_id]);
         session_destroy();
@@ -160,7 +160,7 @@ $convites = $stmt_convites->fetchAll();
             <form method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="acao" value="alterar_imagem">
                 <input type="file" name="imagem_perfil" accept="image/*" required>
-                <button type="submit">Alterar imagem</button>
+                <button type="submit">Definir imagem</button>
             </form>
         </div>
 

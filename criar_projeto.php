@@ -58,7 +58,7 @@ $usuarios_query = $pdo->query(
    "SELECT u.id, u.nome, u.email 
     FROM usuarios u INNER JOIN extra_usuarios e
     ON u.id = e.id_usuario
-    WHERE e.id_instituicao = $usuario_id_instituicao AND u.id != $usuario_id"
+    WHERE u.tipo != 4 AND e.id_instituicao = $usuario_id_instituicao AND u.id != $usuario_id"
 );
 $lista_usuarios = $usuarios_query->fetchAll();
 

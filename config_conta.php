@@ -139,6 +139,15 @@ $convites = $stmt_convites->fetchAll();
 </head>
 <body onLoad="window.scroll(0, 0)">
 
+    <div id="navbar">
+        <img src="Fotos/Polygon 2.png" alt="navbar">
+        <a href="dashboard.php">
+            <h1 class="meringue">Ugrad</h1>
+        </a>
+    </div>
+
+    <div class='config_container'>
+
     <?php if ($mensagem): ?>
         <p><strong><?= htmlspecialchars($mensagem) ?></strong></p>
     <?php endif; ?>
@@ -254,6 +263,6 @@ $convites = $stmt_convites->fetchAll();
             Ao excluir a conta, ela ainda será recuperável por 7 dias; Após o prazo, não há nada que podemos fazer por você.
         </p>
     </div>
-
+    </div>
 </body>
 </html>

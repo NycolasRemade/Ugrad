@@ -480,7 +480,7 @@ footer p{
   position: absolute;
 }
 
-.dashboard-container {
+.dashboard-container, .config_container {
   width: 80%;
   max-width: 1400px;
   margin: 40px auto;
@@ -697,4 +697,12 @@ footer p{
   cursor: pointer;
   background-color: inherit;
   padding: 10px 20px;
+}
+
+/*-------------------------------------------------*/
+/*   Estilo para configuração de conta
+/*-------------------------------------------------*/
+
+#config_container{
+
 }

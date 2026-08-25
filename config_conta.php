@@ -135,8 +135,9 @@ $convites = $stmt_convites->fetchAll();
 <head>
     <meta charset="UTF-8">
     <title>Perfil e Configurações</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body onLoad="window.scroll(0, 0)">
 
     <?php if ($mensagem): ?>
         <p><strong><?= htmlspecialchars($mensagem) ?></strong></p>

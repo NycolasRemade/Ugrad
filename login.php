@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                'SELECT u.id, u.nome, u.senha, u.tipo, e.id_instituicao
                 FROM usuarios u INNER JOIN extra_usuarios e
                 ON u.id = e.id_usuario
-                WHERE u.email = ?'
+                WHERE u.email = ? AND u.ativada = 1'
             );
             $stmt->execute([$email]);
             $usuario = $stmt->fetch();

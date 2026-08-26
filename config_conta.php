@@ -156,7 +156,6 @@ $convites = $stmt_convites->fetchAll();
         <p><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    <a href="dashboard.php"><button>< Voltar</button></a>
     <div>
 
         <div>
@@ -169,7 +168,7 @@ $convites = $stmt_convites->fetchAll();
             <form method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="acao" value="alterar_imagem">
                 <input type="file" name="imagem_perfil" accept="image/*" required>
-                <button type="submit">Definir imagem</button>
+                <button type="submit" class='btn-novo'>Definir imagem</button>
             </form>
         </div>
 
@@ -179,7 +178,7 @@ $convites = $stmt_convites->fetchAll();
             <input type="hidden" name="acao" value="alterar_nome">
             <label for="nome">Nome</label><br>
             <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" required>
-            <button type="submit">Alterar</button>
+            <button type="submit" class='btn-novo'>Alterar</button>
         </form>
 
         <br>
@@ -188,7 +187,7 @@ $convites = $stmt_convites->fetchAll();
             <input type="hidden" name="acao" value="alterar_email">
             <label for="email">E-mail</label><br>
             <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
-            <button type="submit">Alterar</button>
+            <button type="submit" class='btn-novo'>Alterar</button>
         </form>
 
         <br>
@@ -197,7 +196,7 @@ $convites = $stmt_convites->fetchAll();
             <input type="hidden" name="acao" value="alterar_senha">
             <label for="senha">Senha</label><br>
             <input type="password" id="senha" name="senha" placeholder="Nova senha" required>
-            <button type="submit">Alterar</button>
+            <button type="submit" class='btn-novo'>Alterar</button>
         </form>
 
         <br>
@@ -206,14 +205,14 @@ $convites = $stmt_convites->fetchAll();
             <input type="hidden" name="acao" value="alterar_descricao">
             <label for="descricao">Descrição</label><br>
             <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea><br>
-            <button type="submit">Alterar</button>
+            <button type="submit" class='btn-novo'>Alterar</button>
         </form>
 
         <br>
 
         <form method="POST">
             <input type="hidden" name="acao" value="sair_conta">
-            <button type="submit">Sair da conta</button>
+            <button type="submit" class='btn-novo'>Sair da conta</button>
         </form>
     </div>
 
@@ -254,7 +253,7 @@ $convites = $stmt_convites->fetchAll();
     <div>
         <form method="POST" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
             <input type="hidden" name="acao" value="excluir_conta">
-            <button type="submit">Excluir minha conta</button>
+            <button type="submit" class='btn-novo excluir'>Excluir minha conta</button>
         </form>
         <p>
             A exclusão de conta retira todas as informações relacionadas a ela que podem identificá-la, como links de contato, créditos de projetos e avaliações, porém comentários permanecerão, apenas sem a possibilidade de ver o perfil e seu nome.

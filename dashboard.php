@@ -44,7 +44,7 @@ $dados = $stmt->fetch();
             $stmt_projetos->execute([$id_usuario]);
             $projetos = $stmt_projetos->fetchAll();
             $stmt_membros = $pdo->prepare(
-               'SELECT u.imagem_perfil 
+               'SELECT u.imagem_perfil, u.nome
                 FROM usuarios u INNER JOIN proj_membros m
                 ON u.id = m.id_convidado
                 WHERE m.id_projeto = ?'
@@ -63,11 +63,11 @@ $dados = $stmt->fetch();
                 $stmt_membros->execute([$proj['id_do_projeto']]);
                 $membros = $stmt_membros->fetchAll();
             ?>
-                <a class="projeto-card box" href="editar_projeto.php?nome=<?= urlencode($proj['nome_projeto']); ?>">
+                <a class="projeto-card box">
                     <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                     <div class="projeto-membros">
                         <?php foreach ($membros as $m): ?>
-                            <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" alt="Foto de perfil">
+                            <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($m['imagem_perfil']); ?>" title="<?= htmlspecialchars($m['nome']); ?>">
                         <?php endforeach; ?>
                     </div>
                 </a>
@@ -92,7 +92,7 @@ $dados = $stmt->fetch();
             $alunos = $stmt->fetchAll();
 
             $stmt = $pdo->prepare(
-               'SELECT p.id, p.nome, p.img, u.imagem_perfil
+               'SELECT p.id, p.nome, p.img, u.imagem_perfil, u.nome AS nome_usuario
                 FROM projetos p INNER JOIN proj_membros pm
                 ON pm.id_projeto = p.id
                 INNER JOIN usuarios u
@@ -118,7 +118,7 @@ $dados = $stmt->fetch();
             </summary>
             <div>
             <?php foreach ($turmas as $t): ?>
-                <div><?= $t['nome'] ?></div>
+                <div><?= htmlspecialchars($t['nome']) ?></div>
             <?php endforeach; ?>
             </div>
         </details>
@@ -130,7 +130,7 @@ $dados = $stmt->fetch();
             </summary>
             <div>
             <?php foreach ($professores as $prof): ?>
-                <div><?= $prof['nome'] ?></div>
+                <div><?= htmlspecialchars($prof['nome']) ?></div>
             <?php endforeach; ?>
             </div>
         </details>
@@ -141,7 +141,7 @@ $dados = $stmt->fetch();
             </summary>
             <div>
             <?php foreach ($alunos as $a): ?>
-                <div><?= $a['nome'] ?></div>
+                <div><?= htmlspecialchars($a['nome']) ?></div>
             <?php endforeach; ?>
             </div>
         </details>
@@ -150,21 +150,23 @@ $dados = $stmt->fetch();
             <summary>
                 <span>Projetos dos alunos</span>
             </summary>
-            <div>
+            <div class="projetos-grid">
+
             <?php
             $tamanho = count($projetos);
-            $id_projeto = '';
             for ($i = 0; $i < $tamanho; $i++):
-                $proj = $projetos[$i];
-                $id_projeto = $proj['id'];
+                $id_projeto = $projetos[$i]['id'];
             ?>
-                <div>
-                    <?php while ($id_projeto === $proj['id']): ?>
-                        <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($proj['imagem_perfil']); ?>" alt="Foto de perfil">
-                    <?php $i++;
-                    endwhile; ?>
-                    <span><?= $proj['nome'] ?></span>
-                </div>
+                <a class="projeto-card box" href="editar_projeto.php?nome=<?= urlencode($projetos[$i]['nome']); ?>">
+                    <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
+
+                    <div class="projeto-membros">
+                    <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
+                        <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($projetos[$i]['imagem_perfil']); ?>" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>">
+                    <?php $i++; endwhile; $i--;?>
+                    </div>
+                </a>
+
             <?php endfor; ?>
             </div>
         </details>

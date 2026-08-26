@@ -77,7 +77,7 @@ $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 // comentários/avaliações
 $stmt = $pdo->prepare(
-   'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, u.nome AS nome_usuario, tu.nome AS tipo_usuario 
+   'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
     FROM comentarios c
     JOIN usuarios u ON c.id_usuario = u.id
     JOIN tipos_usuario tu ON u.tipo = tu.id
@@ -238,6 +238,7 @@ $comentarios = $stmt->fetchAll();
                 <?php foreach ($comentarios as $c): ?>
                     <div>
                         <div>
+                            <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($c['imagem_perfil']); ?>" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
                             <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
                             <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
                         </div>

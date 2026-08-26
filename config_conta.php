@@ -162,7 +162,7 @@ $convites = $stmt_convites->fetchAll();
             <?php if (!empty($usuario['imagem_perfil'])): ?>
                 <img src="data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>" width="100" height="100" alt="Foto de Perfil"><br>
             <?php else: ?>
-                <div>U</div>
+                <div><a class='meringue'>U</a></div>
             <?php endif; ?>
 
             <form method="POST" enctype="multipart/form-data">

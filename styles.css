@@ -468,12 +468,12 @@ footer p{
 }
 
 #erro {
-  background-color: #FFD2D2;
-  color: #D8000C;
+  background-color: #b47373;
+  color: #C50000;
   padding: 12px;
   font-size: 14px;
   font-family: 'BMI', sans-serif;
-  border-left: 5px solid #D8000C;
+  border-left: 5px solid #C50000;
   margin-top: -12em;
   width: 500px;
   align-self: center;
@@ -748,3 +748,4 @@ footer p{
 #message{
   position: absolute;
 }
+

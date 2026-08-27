@@ -153,14 +153,14 @@ $convites = $stmt_convites->fetchAll();
     <?php endif; ?>
 
     <?php if ($erro): ?>
-        <p id='message'><strong><?= htmlspecialchars($erro) ?></strong></p>
+        <p id='erro'><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    <div>
+    <div id='edit_container'>
 
-        <div>
+        <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><img class='config' src="data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>"alt="Foto de Perfil"></div>
+                <div id="kirkle"><img class="config" src="data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>"alt="Foto de Perfil"></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>
@@ -173,6 +173,8 @@ $convites = $stmt_convites->fetchAll();
         </div>
 
         <br>
+
+        <div id='variables_container'>
 
         <form method="POST">
             <input type="hidden" name="acao" value="alterar_nome">
@@ -215,8 +217,9 @@ $convites = $stmt_convites->fetchAll();
             <button type="submit" class='btn-novo'>Sair da conta</button>
         </form>
     </div>
+            </div>
 
-    <hr>
+
 
     <div>
         <h3>Convites de Projetos</h3>
@@ -248,7 +251,6 @@ $convites = $stmt_convites->fetchAll();
         <?php endif; ?>
     </div>
 
-    <hr>
 
     <div>
         <form method="POST" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">

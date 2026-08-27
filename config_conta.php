@@ -149,20 +149,20 @@ $convites = $stmt_convites->fetchAll();
     <div class='config_container'>
 
     <?php if ($mensagem): ?>
-        <p><strong><?= htmlspecialchars($mensagem) ?></strong></p>
+        <p id='message'><strong><?= htmlspecialchars($mensagem) ?></strong></p>
     <?php endif; ?>
 
     <?php if ($erro): ?>
-        <p><strong><?= htmlspecialchars($erro) ?></strong></p>
+        <p id='message'><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
     <div>
 
         <div>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <img src="data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>" width="100" height="100" alt="Foto de Perfil"><br>
+                <div id="kirkle"><img class='config' src="data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>"alt="Foto de Perfil"></div>
             <?php else: ?>
-                <div><a class='meringue'>U</a></div>
+                <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>
 
             <form method="POST" enctype="multipart/form-data">

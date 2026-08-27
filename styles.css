@@ -720,8 +720,31 @@ footer p{
   flex-direction: column;
 }
 
+#kirkle, .config{
+  height: 270px;
+  width: 270px;
+  border-radius: 50%;
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
+  color: #00000080;
+}
 
+#kirkle{
+  background-color: #D9D9DF;
+  display: flex;
+}
+
+#kirkle a{
+  align-self: center;
+  margin-left: calc(40% - 15px);
+  margin-top: 20%;
+  font-size: 130px;
+  rotate: -8.49deg;
+}
 
 .excluir{
   background-color: #C50000;
+}
+
+#message{
+  position: absolute;
 }

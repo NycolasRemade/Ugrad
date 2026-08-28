@@ -30,7 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                     mkdir(__DIR__ . '/fotos-perfil/', 0755, true);
                 }
 
-                $nome_imagem_perfil = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(random_bytes(16))) . time();
+                $stmt = $pdo->prepare('SELECT imagem_perfil FROM usuarios WHERE id = ?');
+                $stmt->execute([$usuario_id]);
+                $nome_imagem_perfil = $stmt->fetch();
+                if (!$nome_imagem_perfil) {
+                    $nome_imagem_perfil = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(random_bytes(16))) . time();
+                }
+
                 $destino = __DIR__ . '/fotos-perfil/' . $nome_imagem_perfil . '.webp';
                 $mime = $imgInfo['mime'];
                 $imagem_nova = NULL;

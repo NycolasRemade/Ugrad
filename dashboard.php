@@ -12,21 +12,12 @@ $stmt = $pdo->prepare('SELECT nome, email, tipo FROM usuarios WHERE id = ?');
 $stmt->execute([$id_usuario]);
 $dados = $stmt->fetch();
 
+
+//////////////////////////////////
+$title = 'Painel - Ugrad';
+$href = 'Ugrad.html';
+include 'header.php'
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Painel - Ugrad</title>
-    <link rel="stylesheet" href="styles.css"> </head>
-<body onLoad="window.scroll(0, 0)">
-    
-    <div id="navbar">
-        <img src="Fotos/Polygon 2.png" alt="navbar">
-        <a href="Ugrad.html">
-            <h1 class="meringue">Ugrad</h1>
-        </a>
-    </div>
 
     <main class="dashboard-container">
         <a href="config_conta.php"><div class="welcome-area">

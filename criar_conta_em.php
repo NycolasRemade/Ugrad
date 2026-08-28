@@ -37,16 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+//////////////////////////////////
+$title = 'Cadastro';
+include 'header.php'
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
 
 <body onLoad="window.scroll(0, 0)" style="overflow-y: hidden;">
 

@@ -22,6 +22,11 @@
   src: url(Fontes/TAN\ MERINGUE.woff2)
 }
 
+@keyframes fadeaway {
+  0% {opacity: 100%;}
+  100%{opacity: 0%;}
+}
+
 *{
   margin: 0;
   padding: 0;
@@ -747,5 +752,11 @@ footer p{
 
 #message{
   position: absolute;
+  animation: 'fadeaway' .4s;
+  animation-delay: 1s;
+  margin-top: -50px;
+  animation-fill-mode: forwards;
 }
+
+
 

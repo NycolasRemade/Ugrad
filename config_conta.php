@@ -37,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                         break;
                     case 'image/png':
                         $imagem_nova = imagecreatefrompng($imagem['tmp_name']);
-                        imagepalettetotruecolor($imagem_nova);
-                        imagealphablending($imagem_nova, false);
-                        imagesavealpha($imagem_nova, true);
+                        // imagepalettetotruecolor($imagem_nova);
+                        // imagealphablending($imagem_nova, false);
+                        // imagesavealpha($imagem_nova, true);
                         $sucesso = imagewebp($imagem_nova, $destino, 70);
                         break;
                     case 'image/webp':

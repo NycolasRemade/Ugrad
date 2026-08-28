@@ -226,6 +226,8 @@ include 'header.php'
             </div>
 
         <br>
+        </div>
+
         <div id='descr_container'>
 
         <form method="POST">
@@ -241,6 +243,7 @@ include 'header.php'
             <input type="hidden" name="acao" value="sair_conta">
             <button type="submit" class='btn-novo'>Sair da conta</button>
         </form>
+            </div>
 
 
 
@@ -287,7 +290,7 @@ include 'header.php'
             Ao excluir a conta, ela ainda será recuperável por 7 dias; Após o prazo, não há nada que podemos fazer por você.
         </p>
     </div>
-    </div>
-    </div>
+    
+    
 </body>
 </html>

@@ -19,14 +19,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         if (isset($_FILES['imagem_perfil'])) {
 
             $imagem = $_FILES['imagem_perfil'];
-            if ($imagem['error'] !== UPLOAD_ERR_OK) {
+            $imgInfo = getimagesize($imagem['tmp_name']);
+
+            if ($imagem['error'] !== UPLOAD_ERR_OK || !$imgInfo) {
                 $erro = 'Erro no upload.';
             } else {
                 $imagem_blob = file_get_contents($imagem['tmp_name']);
                 echo '<h2>' . $imagem['tmp_name'] . '</h2>';
 
-                $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
-                $stmt->execute([$imagem_blob, $usuario_id]);
+                $destino = '/fotos-perfil/' . urlencode($_SESSION['usuario_nome']) . '.webp';
+                $mime = $imgInfo['mime'];
+                $imagem_nova = NULL;
+                switch ($mime) {
+                    case 'image/jpeg':
+                        $imagem_nova = imagecreatefromjpeg($imagem['tmp_name']);
+                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        break;
+                    case 'image/png':
+                        $imagem_nova = imagecreatefrompng($imagem['tmp_name']);
+                        imagepalettetotruecolor($imagem_nova);
+                        imagealphablending($imagem_nova, false);
+                        imagesavealpha($imagem_nova, true);
+                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        break;
+                    case 'image/webp':
+                        $imagem_nova = imagecreatefromwebp($imagem['tmp_name']);
+                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        break;
+                    default:
+                        $erro = 'Selecione uma imagem válida.';
+                }
+                if (!$sucesso)
+                imagedestroy($imagem_nova);
+                // $imagem_blob = file_get_contents($imagem['tmp_name']);
+                // echo '<h2>' . $imagem['tmp_name'] . '</h2>';
 
                 $mensagem = 'Imagem de perfil atualizada!';
             }

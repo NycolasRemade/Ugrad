@@ -11,22 +11,25 @@ $usuario_id = $_SESSION['usuario_id'];
 $mensagem = '';
 $erro = '';
 
-$max_allowed_packet = $db->query( 'SELECT @@global.max_allowed_packet' )->fetch();
+$max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // imagem de perfil
     if ($_POST['acao'] === 'alterar_imagem') {
         if (isset($_FILES['imagem_perfil'])) {
+
             $imagem = $_FILES['imagem_perfil'];
             if ($imagem['error'] !== UPLOAD_ERR_OK) {
                 $erro = 'Erro no upload.';
+            } else {
+                $imagem_blob = file_get_contents($imagem['tmp_name']);
+                echo '<h2>' . $imagem['tmp_name'] . '</h2>';
+
+                $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
+                $stmt->execute([$imagem_blob, $usuario_id]);
+
+                $mensagem = 'Imagem de perfil atualizada!';
             }
-            $imagem_blob = file_get_contents($imagem['tmp_name']);
-
-            $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
-            $stmt->execute([$imagem_blob, $usuario_id]);
-
-            $mensagem = 'Imagem de perfil atualizada!';
         } else {
             $erro = 'Selecione uma imagem válida.';
         }
@@ -165,7 +168,7 @@ $convites = $stmt_convites->fetchAll();
 
         <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><img class="config" src="data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>"alt="Foto de Perfil"></div>
+                <div id="kirkle"><div class="config" style="background-image: url(data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>)"alt="Foto de Perfil"></div></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>

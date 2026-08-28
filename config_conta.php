@@ -223,6 +223,7 @@ include 'header.php'
             <input type="password" id="senha" name="senha" placeholder="Nova senha" required>
             <button type="submit" class='btn-novo'>Alterar</button>
         </form>
+            </div>
 
         <br>
         <div id='descr_container'>
@@ -240,7 +241,6 @@ include 'header.php'
             <input type="hidden" name="acao" value="sair_conta">
             <button type="submit" class='btn-novo'>Sair da conta</button>
         </form>
-    </div>
 
 
 

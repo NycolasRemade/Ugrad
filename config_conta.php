@@ -19,17 +19,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         if (isset($_FILES['imagem_perfil'])) {
 
             $imagem = $_FILES['imagem_perfil'];
-            if ($imagem['error'] !== UPLOAD_ERR_OK) {
+            $imgInfo = getimagesize($imagem);
+
+            if ($imagem['error'] !== UPLOAD_ERR_OK || !$imgInfo) {
                 $erro = 'Erro no upload.';
             } else {
-                $imagem_blob = file_get_contents($imagem['tmp_name']);
-                echo '<h2>' . $imagem['tmp_name'] . '</h2>';
 
-                $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
-                $stmt->execute([$imagem_blob, $usuario_id]);
+                $destino = '/fotos-perfil/' . urlencode($_SESSION['usuario_nome']) . '.webp';
+                $mime = $imgInfo['mime'];
+                $imagem_nova = NULL;
+                switch ($mime) {
+                    case 'image/jpeg':
+                        $imagem_nova = imagecreatefromjpeg($imagem);
+                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        break;
+                    case 'image/png':
+                        $imagem_nova = imagecreatefrompng($imagem);
+                        imagepalettetotruecolor($imagem_nova);
+                        imagealphablending($imagem_nova, false);
+                        imagesavealpha($imagem_nova, true);
+                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        break;
+                    case 'image/webp':
+                        $imagem_nova = imagecreatefromwebp($imagem);
+                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        break;
+                    default:
+                        $erro = 'Selecione uma imagem válida.';
+                }
+                if (!$sucesso)
+                imagedestroy($imagem_nova);
+                // $imagem_blob = file_get_contents($imagem['tmp_name']);
+                // echo '<h2>' . $imagem['tmp_name'] . '</h2>';
 
-                $mensagem = 'Imagem de perfil atualizada!';
+                // $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
+                // $stmt->execute([$imagem_blob, $usuario_id]);
+
+                // $mensagem = 'Imagem de perfil atualizada!';
             }
+
         } else {
             $erro = 'Selecione uma imagem válida.';
         }
@@ -168,7 +196,7 @@ $convites = $stmt_convites->fetchAll();
 
         <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><div class="config" style="background-image: url(data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>)"alt="Foto de Perfil"></div></div>
+                <div id="kirkle"><div class="config" style="background-image: url(/fotos-perfil/<?= urlencode($_SESSION['usuario_nome']) ?>.webp)"alt="Foto de Perfil"></div></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>

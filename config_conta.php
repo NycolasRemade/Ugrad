@@ -37,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                         break;
                     case 'image/png':
                         $imagem_nova = imagecreatefrompng($imagem['tmp_name']);
-                        // imagepalettetotruecolor($imagem_nova);
-                        // imagealphablending($imagem_nova, false);
-                        // imagesavealpha($imagem_nova, true);
+                        imagepalettetotruecolor($imagem_nova);
+                        imagealphablending($imagem_nova, false);
+                        imagesavealpha($imagem_nova, true);
                         $sucesso = imagewebp($imagem_nova, $destino, 70);
                         break;
                     case 'image/webp':
@@ -183,7 +183,7 @@ include 'header.php'
 
         <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><div class="config" style="background-image: url(data:image/jpeg;base64,<?= base64_encode($usuario['imagem_perfil']) ?>)"alt="Foto de Perfil"></div></div>
+                <div id="kirkle"><div class="config" style="background-image: url(/fotos-perfil/<?= $usuario['nome'] ?>.webp)"alt="Foto de Perfil"></div></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>

@@ -65,23 +65,13 @@ $lista_usuarios = $usuarios_query->fetchAll();
 
 $categorias_query = $pdo->query('SELECT id, nome FROM categorias');
 $lista_categorias = $categorias_query->fetchAll();
+
+
+//////////////////////////////////
+$title = 'Novo Projeto';
+$href = 'dashboard.php';
+include 'header.php'
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Novo projeto</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body  onLoad="window.scroll(0, 0)" style="overflow-y: hidden; overflow-x: hidden">
-
-    <div id="navbar">
-        <img src="Fotos/Polygon 2.png" alt="navbar">
-        <a href="dashboard.php">
-            <h1 class="meringue">Ugrad</h1>
-        </a>
-    </div>
 
     <div id="criacao_projetos">
 

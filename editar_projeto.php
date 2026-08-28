@@ -87,18 +87,11 @@ $stmt = $pdo->prepare(
 $stmt->execute([$id_projeto]);
 $comentarios = $stmt->fetchAll();
 
+//////////////////////////////////
+$title = urldecode($_GET['nome'] ?? 'Projeto');
+$href = 'dashboard.php';
+include 'header.php'
 ?>
-
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title><?= urldecode($_GET['nome'] ?? 'Projeto') ?></title>
-</head>
-<body>
 
     <nav>
         <button type="button" onclick="mudarAba('visao-geral')">Visão geral</button>

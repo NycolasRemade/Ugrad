@@ -136,24 +136,13 @@ $stmt_convites = $pdo->prepare(
 );
 $stmt_convites->execute([$usuario_id]);
 $convites = $stmt_convites->fetchAll();
+
+
+//////////////////////////////////
+$title = 'Perfil e Configurações';
+$href = 'dashboard.php';
+include 'header.php'
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Perfil e Configurações</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body onLoad="window.scroll(0, 0)">
-
-    <div id="navbar">
-        <img src="Fotos/Polygon 2.png" alt="navbar">
-        <a href="dashboard.php">
-            <h1 class="meringue">Ugrad</h1>
-        </a>
-    </div>
-
     <div class='config_container'>
 
     <?php if ($mensagem): ?>

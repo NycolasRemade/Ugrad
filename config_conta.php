@@ -25,9 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                 $erro = 'Erro no upload.';
             } else {
                 $imagem_blob = file_get_contents($imagem['tmp_name']);
-                echo '<h2>' . $imagem['tmp_name'] . '</h2>';
 
-                $destino = '/fotos-perfil/' . urlencode($_SESSION['usuario_nome']) . '.webp';
+                if (!is_dir(__DIR__ . '/fotos-perfil/')) {
+                    mkdir(__DIR__ . '/fotos-perfil/', 0755, true);
+                }
+
+                $nome_imagem_perfil = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(random_bytes(16))) . time();
+                $destino = __DIR__ . '/fotos-perfil/' . $nome_imagem_perfil . '.webp';
                 $mime = $imgInfo['mime'];
                 $imagem_nova = NULL;
                 switch ($mime) {
@@ -51,8 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                 }
                 if (!$sucesso)
                 imagedestroy($imagem_nova);
-                // $imagem_blob = file_get_contents($imagem['tmp_name']);
-                // echo '<h2>' . $imagem['tmp_name'] . '</h2>';
+
+                $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
+                $stmt->execute([$nome_imagem_perfil, $usuario_id]);
 
                 $mensagem = 'Imagem de perfil atualizada!';
             }
@@ -183,7 +188,7 @@ include 'header.php'
 
         <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><div class="config" style="background-image: url(/fotos-perfil/<?= $usuario['nome'] ?>.webp)"alt="Foto de Perfil"></div></div>
+                <div id="kirkle"><div class="config" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp)"alt="Foto de Perfil"></div></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>

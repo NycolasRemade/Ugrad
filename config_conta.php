@@ -11,12 +11,17 @@ $usuario_id = $_SESSION['usuario_id'];
 $mensagem = '';
 $erro = '';
 
+$max_allowed_packet = $db->query( 'SELECT @@global.max_allowed_packet' )->fetch();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // imagem de perfil
     if ($_POST['acao'] === 'alterar_imagem') {
-        if (isset($_FILES['imagem_perfil']) && $_FILES['imagem_perfil']['error'] === UPLOAD_ERR_OK) {
-            $imagem_blob = file_get_contents($_FILES['imagem_perfil']['tmp_name']);
+        if (isset($_FILES['imagem_perfil'])) {
+            $imagem = $_FILES['imagem_perfil'];
+            if ($imagem['error'] !== UPLOAD_ERR_OK) {
+                $erro = 'Erro no upload.';
+            }
+            $imagem_blob = file_get_contents($imagem['tmp_name']);
 
             $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
             $stmt->execute([$imagem_blob, $usuario_id]);

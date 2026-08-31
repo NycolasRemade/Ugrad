@@ -32,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
                 $stmt = $pdo->prepare('SELECT imagem_perfil FROM usuarios WHERE id = ?');
                 $stmt->execute([$usuario_id]);
-                $nome_imagem_perfil = $stmt->fetch();
-                if (!$nome_imagem_perfil) {
-                    $nome_imagem_perfil = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode(random_bytes(16))) . time();
+                $nome_imagem_perfil = $stmt->fetch()['imagem_perfil'];
+                if (empty($nome_imagem_perfil)) {
+                    $nome_imagem_perfil = 'u' . time();
                 }
 
                 $destino = __DIR__ . '/fotos-perfil/' . $nome_imagem_perfil . '.webp';
@@ -194,7 +194,7 @@ include 'header.php'
 
         <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><div class="config" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp)"alt="Foto de Perfil"></div></div>
+                <div id="kirkle"><div class="config" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp)" alt="Foto de Perfil"></div></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>

@@ -39,7 +39,8 @@ include 'header.php'
                'SELECT u.imagem_perfil, u.nome
                 FROM usuarios u INNER JOIN proj_membros m
                 ON u.id = m.id_convidado
-                WHERE m.id_projeto = ?'
+                WHERE m.id_projeto = ?
+                ORDER BY m.status_membro DESC, m.data_convite DESC'
             );
         ?>
 
@@ -59,7 +60,7 @@ include 'header.php'
                     <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                     <div class="projeto-membros">
                         <?php foreach ($membros as $m): ?>
-                            <div class="membro-avatar" style="background-image: url(fotos-perfil/<?= $m['imagem_perfil'] ?>.webp?t=<?= time() ?>)" title="<?= htmlspecialchars($m['nome']); ?>"></div>
+                            <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($m['imagem_perfil']) ?>')" title="<?= htmlspecialchars($m['nome']); ?>"></div>
                         <?php endforeach; ?>
                     </div>
                 </a>
@@ -91,7 +92,8 @@ include 'header.php'
                 ON pm.id_convidado = u.id
                 INNER JOIN extra_usuarios eu
                 ON eu.id_usuario = u.id
-                WHERE eu.id_instituicao = ?'
+                WHERE eu.id_instituicao = ?
+                ORDER BY p.id ASC, pm.status_membro DESC, pm.data_convite DESC'
             );
             $stmt->execute([$id_usuario]);
             $projetos = $stmt->fetchAll();
@@ -154,7 +156,7 @@ include 'header.php'
 
                     <div class="projeto-membros">
                     <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
-                        <div class="membro-avatar" style="background-image: url(fotos-perfil/<?= $projetos[$i]['imagem_perfil'] ?>.webp?t=<?= time() ?>)" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
+                        <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
                     <?php $i++; endwhile; $i--;?>
                     </div>
                 </a>

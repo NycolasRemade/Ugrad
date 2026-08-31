@@ -15,65 +15,47 @@ $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch()
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // imagem de perfil
-    if ($_POST['acao'] === 'alterar_imagem') {
-        if (isset($_FILES['imagem_perfil'])) {
-
-            $imagem = $_FILES['imagem_perfil'];
+    if ($_POST['acao'] === 'alterar_imagem' && isset($_FILES['imagem_perfil'])) {
+        $imagem = $_FILES['imagem_perfil'];
+        if (
+            $imagem['size'] > 5 * 1024 * 1024 || 
+            $imagem['error'] === UPLOAD_ERR_INI_SIZE || 
+            $imagem['error'] === UPLOAD_ERR_FORM_SIZE
+        ) {
+            $erro = 'A imagem excede o tamanho máximo permitido de 5MB.';
+        } elseif ($imagem['error'] !== UPLOAD_ERR_OK) {
+            $erro = 'Erro no upload.';
+        } else {
             $imgInfo = getimagesize($imagem['tmp_name']);
-
-            if ($imagem['error'] !== UPLOAD_ERR_OK || !$imgInfo) {
-                $erro = 'Erro no upload.';
-            } else {
-                $imagem_blob = file_get_contents($imagem['tmp_name']);
-
-                $pasta_destino = __DIR__ . '/fotos-perfil/';
-                if (!is_dir($pasta_destino)) {
-                    mkdir($pasta_destino, 0755, true);
-                }
-
-                $stmt = $pdo->prepare('SELECT imagem_perfil FROM usuarios WHERE id = ?');
-                $stmt->execute([$usuario_id]);
-                $nome_imagem_perfil = $stmt->fetch()['imagem_perfil'];
-                if (empty($nome_imagem_perfil)) {
-                    $nome_imagem_perfil = 'u' . time();
-                }
-
-                $destino = $pasta_destino . $nome_imagem_perfil . '.webp';
-                $mime = $imgInfo['mime'];
-                $imagem_nova = NULL;
-
+            switch ($imgInfo['mime']) {
+                case 'image/jpeg':
+                    $imagem_original = imagecreatefromjpeg($imagem['tmp_name']);
+                    break;
+                case 'image/png':
+                    $imagem_original = imagecreatefrompng($imagem['tmp_name']);
+                    imagepalettetotruecolor($imagem_original);
+                    imagealphablending($imagem_original, false);
+                    imagesavealpha($imagem_original, true);
+                    break;
+                case 'image/webp':
+                    $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
+                    break;
+                default:
+                    $erro = 'Apenas os formatos .jpeg, .png e .webp são suportados. Selecione uma imagem válida.';
+            }
+            if ($imagem_original) {
                 ob_start();
-                switch ($mime) {
-                    case 'image/jpeg':
-                        $imagem_original = imagecreatefromjpeg($imagem['tmp_name']);
-                        $sucesso = imagewebp($imagem_original, $destino, 70);
-                        break;
-                    case 'image/png':
-                        $imagem_original = imagecreatefrompng($imagem['tmp_name']);
-                        imagepalettetotruecolor($imagem_original);
-                        imagealphablending($imagem_original, false);
-                        imagesavealpha($imagem_original, true);
-                        $sucesso = imagewebp($imagem_original, $destino, 70);
-                        break;
-                    case 'image/webp':
-                        $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
-                        $sucesso = imagewebp($imagem_original, $destino, 70);
-                        break;
-                    default:
-                        $erro = 'Apenas os formatos .jpeg, .png e .webp são suportados; Selecione uma imagem válida.';
-                }
+                imagewebp($imagem_original, null, 70);
                 imagedestroy($imagem_original);
                 $imagem_nova = ob_get_clean();
 
                 $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
-                $stmt->bindParam('bs', null, $usuario_id);
-                $stmt->send_long_data(0, $imagem_nova);
+                $stmt->bindParam(1, $imagem_nova, PDO::PARAM_LOB);
+                $stmt->bindParam(2, $usuario_id);
                 $stmt->execute();
 
                 $mensagem = 'Imagem de perfil atualizada!';
             }
-        } else {
-            $erro = 'Selecione uma imagem válida.';
         }
     }
 
@@ -199,7 +181,7 @@ include 'header.php'
 
         <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><div class="config" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp?t=<?= time() ?>)" alt="Foto de Perfil"></div></div>
+                <div id="kirkle"><div class="config" style="background-image: url('data:image/webp;base64,<?= base64_encode($usuario['imagem_perfil']) ?>')" alt="Foto de Perfil"></div></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>

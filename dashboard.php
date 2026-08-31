@@ -20,6 +20,7 @@ include 'header.php'
 ?>
 
     <main class="dashboard-container">
+
         <a href="config_conta.php"><div class="welcome-area">
             <img src="Fotos/Polygon 6.png" alt="" id="nome_png">
             <h2>Olá, <?= htmlspecialchars($dados['nome']) ?>!</h2>
@@ -168,7 +169,8 @@ include 'header.php'
     </main>
 
 <script>
-    function getTextWidth() {
+
+        function getTextWidth() {
 
             inputText = "Olá, <?= htmlspecialchars($dados['nome']); ?>!";
             font = "36px IBM";
@@ -180,10 +182,10 @@ include 'header.php'
             formattedWidth = Math.ceil(width) + 50;
 
             document.getElementById('nome_png').style.width = formattedWidth + "px";
-        } 
+            console.log(formattedWidth)
+    }
 
-        getTextWidth()
-
+    getTextWidth()
 </script>
 
 </body>

@@ -259,14 +259,12 @@ include 'header.php'
             <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea>
             <button type="submit" class='btn-novo'>Alterar</button>
         </form>
+        </div>
 
         <form method="POST">
             <input type="hidden" name="acao" value="sair_conta">
             <button type="submit" class='btn-novo'>Sair da conta</button>
         </form>
-            </div>
-
-
 
     <div>
         <h3>Convites de Projetos</h3>

@@ -231,7 +231,7 @@ include 'header.php'
                 <?php foreach ($comentarios as $c): ?>
                     <div>
                         <div>
-                            <img class="membro-avatar" src="data:image/jpeg;base64,<?= base64_encode($c['imagem_perfil']); ?>" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
+                            <img class="membro-avatar" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp)" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
                             <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
                             <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
                         </div>

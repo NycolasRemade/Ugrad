@@ -26,8 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             } else {
                 $imagem_blob = file_get_contents($imagem['tmp_name']);
 
-                if (!is_dir(__DIR__ . '/fotos-perfil/')) {
-                    mkdir(__DIR__ . '/fotos-perfil/', 0755, true);
+                $pasta_destino = __DIR__ . '/fotos-perfil/';
+                if (!is_dir($pasta_destino)) {
+                    mkdir($pasta_destino, 0755, true);
                 }
 
                 $stmt = $pdo->prepare('SELECT imagem_perfil FROM usuarios WHERE id = ?');
@@ -37,33 +38,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                     $nome_imagem_perfil = 'u' . time();
                 }
 
-                $destino = __DIR__ . '/fotos-perfil/' . $nome_imagem_perfil . '.webp';
+                $destino = $pasta_destino . $nome_imagem_perfil . '.webp';
                 $mime = $imgInfo['mime'];
                 $imagem_nova = NULL;
+
+                ob_start();
                 switch ($mime) {
                     case 'image/jpeg':
-                        $imagem_nova = imagecreatefromjpeg($imagem['tmp_name']);
-                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        $imagem_original = imagecreatefromjpeg($imagem['tmp_name']);
+                        $sucesso = imagewebp($imagem_original, $destino, 70);
                         break;
                     case 'image/png':
-                        $imagem_nova = imagecreatefrompng($imagem['tmp_name']);
-                        imagepalettetotruecolor($imagem_nova);
-                        imagealphablending($imagem_nova, false);
-                        imagesavealpha($imagem_nova, true);
-                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        $imagem_original = imagecreatefrompng($imagem['tmp_name']);
+                        imagepalettetotruecolor($imagem_original);
+                        imagealphablending($imagem_original, false);
+                        imagesavealpha($imagem_original, true);
+                        $sucesso = imagewebp($imagem_original, $destino, 70);
                         break;
                     case 'image/webp':
-                        $imagem_nova = imagecreatefromwebp($imagem['tmp_name']);
-                        $sucesso = imagewebp($imagem_nova, $destino, 70);
+                        $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
+                        $sucesso = imagewebp($imagem_original, $destino, 70);
                         break;
                     default:
                         $erro = 'Apenas os formatos .jpeg, .png e .webp são suportados; Selecione uma imagem válida.';
                 }
-                if (!$sucesso)
-                imagedestroy($imagem_nova);
+                imagedestroy($imagem_original);
+                $imagem_nova = ob_get_clean();
 
                 $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
-                $stmt->execute([$nome_imagem_perfil, $usuario_id]);
+                $stmt->bindParam('bs', null, $usuario_id);
+                $stmt->send_long_data(0, $imagem_nova);
+                $stmt->execute();
 
                 $mensagem = 'Imagem de perfil atualizada!';
             }
@@ -194,7 +199,7 @@ include 'header.php'
 
         <div class='img_container'>
             <?php if (!empty($usuario['imagem_perfil'])): ?>
-                <div id="kirkle"><div class="config" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp)" alt="Foto de Perfil"></div></div>
+                <div id="kirkle"><div class="config" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp?t=<?= time() ?>)" alt="Foto de Perfil"></div></div>
             <?php else: ?>
                 <div id="kirkle"><a class='meringue'>U</a></div>
             <?php endif; ?>

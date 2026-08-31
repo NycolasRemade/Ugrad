@@ -59,7 +59,7 @@ include 'header.php'
                     <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                     <div class="projeto-membros">
                         <?php foreach ($membros as $m): ?>
-                            <img class="membro-avatar" style="background-image: url(fotos-perfil/<?= $usuario['imagem_perfil'] ?>.webp)" title="<?= htmlspecialchars($m['nome']); ?>">
+                            <div class="membro-avatar" style="background-image: url(fotos-perfil/<?= $m['imagem_perfil'] ?>.webp?t=<?= time() ?>)" title="<?= htmlspecialchars($m['nome']); ?>"></div>
                         <?php endforeach; ?>
                     </div>
                 </a>
@@ -154,7 +154,7 @@ include 'header.php'
 
                     <div class="projeto-membros">
                     <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
-                        <img class="membro-avatar" style="background-image: url(fotos-perfil/<?= $projetos[$i]['imagem_perfil'] ?>.webp)" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>">
+                        <div class="membro-avatar" style="background-image: url(fotos-perfil/<?= $projetos[$i]['imagem_perfil'] ?>.webp?t=<?= time() ?>)" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
                     <?php $i++; endwhile; $i--;?>
                     </div>
                 </a>

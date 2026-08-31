@@ -23,7 +23,7 @@ CREATE TABLE usuarios(
   descricao varchar(500),
   tipo int NOT NULL,
   ativada boolean DEFAULT TRUE,
-  imagem_perfil varchar(64),
+  imagem_perfil longblob,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (tipo) REFERENCES tipos_usuario (id)
 );

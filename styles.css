@@ -769,11 +769,25 @@ footer p{
 
 #variables_container form input{
   border: none;
-  height: 64px;
+  height: 41px;
   width: 524px;
-  font-size: 32px;
+  font-size: 16px;
   background-color: #ffffff;
   
   padding-left: 20px;
+  margin-top: 10px;
+}
+
+textarea{
+  resize: none;
+  border: none;
+  min-height: 300px;
+  width: 900px;
+  font-size: 16px;
+  background-color: #ffffff;
+  
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
   margin-top: 10px;
 }

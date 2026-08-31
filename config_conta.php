@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                         $sucesso = imagewebp($imagem_nova, $destino, 70);
                         break;
                     default:
-                        $erro = 'Selecione uma imagem válida.';
+                        $erro = 'Apenas os formatos .jpeg, .png e .webp são suportados; Selecione uma imagem válida.';
                 }
                 if (!$sucesso)
                 imagedestroy($imagem_nova);
@@ -244,11 +244,9 @@ include 'header.php'
         <form method="POST">
             <input type="hidden" name="acao" value="alterar_descricao">
             <label for="descricao">Descrição</label><br>
-            <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea><br>
+            <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea>
             <button type="submit" class='btn-novo'>Alterar</button>
         </form>
-
-        <br>
 
         <form method="POST">
             <input type="hidden" name="acao" value="sair_conta">

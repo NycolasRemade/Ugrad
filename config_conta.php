@@ -298,12 +298,14 @@ include 'header.php'
         <?php endif; ?>
     </div>
 
+    <br>
 
     <div>
         <form method="POST" onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
             <input type="hidden" name="acao" value="excluir_conta">
             <button type="submit" class='btn-novo excluir'>Excluir minha conta</button>
         </form>
+        <br>
         <p>
             A exclusão de conta retira todas as informações relacionadas a ela que podem identificá-la, como links de contato, créditos de projetos e avaliações, porém comentários permanecerão, apenas sem a possibilidade de ver o perfil e seu nome.
         </p>

@@ -237,16 +237,18 @@ include 'header.php'
 
         <br>
         </div>
-
+        
         <div id='descr_container'>
 
         <form method="POST">
             <input type="hidden" name="acao" value="alterar_descricao">
             <label for="descricao">Descrição</label><br>
+            <div id='textarea_fix'>
             <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea>
-            <button type="submit" class='btn-novo'>Alterar</button>
+            <button type="submit" class='btn-novo '>Alterar</button>
+            </div>
         </form>
-        </div>
+            </div>
 
         <form method="POST">
             <input type="hidden" name="acao" value="sair_conta">

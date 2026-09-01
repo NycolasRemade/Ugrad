@@ -738,6 +738,12 @@ footer p{
   justify-content: space-between;
 }
 
+.img_container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 #kirkle, .config{
   height: 270px;
   width: 270px;
@@ -763,6 +769,10 @@ footer p{
   rotate: -8.49deg;
 }
 
+#botao-imagem-perfil{
+  margin-top: 20px;
+}
+
 .excluir{
   background-color: #C50000;
 }
@@ -777,7 +787,8 @@ footer p{
 
 #descr_container{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  padding-top: 20px;
 }
 
 #variables_container form input{
@@ -795,7 +806,7 @@ textarea{
   resize: none;
   border: none;
   min-height: 300px;
-  width: 500px;
+  width: 800px;
   font-size: 16px;
   background-color: #ffffff;
   
@@ -803,4 +814,8 @@ textarea{
   padding-right: 20px;
   padding-top: 20px;
   margin-top: 10px;
+}
+
+.btn_alterar_textarea{
+  align-self: flex-start;
 }

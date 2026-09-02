@@ -20,7 +20,7 @@ CREATE TABLE usuarios(
   nome varchar(64),
   email varchar(128) unique NOT NULL,
   senha varchar(128) NOT NULL,
-  descricao varchar(500),
+  descricao varchar(1000),
   tipo int NOT NULL,
   ativada boolean DEFAULT TRUE,
   imagem_perfil longblob,

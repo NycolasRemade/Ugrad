@@ -243,17 +243,22 @@ include 'header.php'
         <form method="POST">
             <input type="hidden" name="acao" value="alterar_descricao">
             <label for="descricao">Descrição</label><br>
-            <div id='textarea_fix'>
-            <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea>
+            <div class='textarea_fix'>
+            <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea> 
+            <div class='btn_alterar_textarea'>
             <button type="submit" class='btn-novo '>Alterar</button>
+            </div>
             </div>
         </form>
             </div>
 
-        <form method="POST">
+        <form method="POST" style='margin-top: 50px'>
             <input type="hidden" name="acao" value="sair_conta">
             <button type="submit" class='btn-novo'>Sair da conta</button>
         </form>
+
+        <br>
+        <br>
 
     <div>
         <h3>Convites de Projetos</h3>

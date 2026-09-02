@@ -96,6 +96,11 @@ include 'header.php'
     </div>
 
     <div id="smallboxes">
+
+        <a href="codigo_instituicao.php">
+            <div class="small"><p>Cadastrar como estudante/professor</p></div>
+        </a>
+
         <a href="login.php">
             <div class="small">
                 <p>Já tenho uma conta <a class="meringue">Ugrad</a></p>

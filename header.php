@@ -15,5 +15,12 @@
         <a href="<?=$href?>">
             <h1 class="meringue">Ugrad</h1>
         </a>
+
+        <?php if(isset($pdp)): ?>
+        <a href="pesquisa_de_projetos.php">
+            <h2 class="meringue">Pesquisa de Projetos</h2>
+        </a>
+        <?php endif;?>
+
     </div>
 <?php endif;?>

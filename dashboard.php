@@ -16,6 +16,7 @@ $dados = $stmt->fetch();
 //////////////////////////////////
 $title = 'Painel - Ugrad';
 $href = 'Ugrad.html';
+$pdp = true;
 include 'header.php'
 ?>
 

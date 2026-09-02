@@ -188,8 +188,6 @@ img{
   box-shadow: inset 4px 4px 4px rgba(0, 0, 0, 0.5);
   text-align: center;
   display: flex;
-  margin-top: 50px;
-  margin-left: calc(100% - 351px);
 }
 
 .deep p{
@@ -203,6 +201,8 @@ img{
 #only_used_once .deep{
   width: 351px;
   height: 59px;
+  margin-left: calc(100% - 351px);
+  margin-top: 50px;
 }
 
 #navsticky{
@@ -239,6 +239,13 @@ img{
   rotate: -3.96deg;
   margin-left: 150px;
   margin-top: 50px;
+}
+
+#navbar h2{
+  position: absolute;
+  font-size: 1.5em;
+  margin-left: calc(50% - 170px);
+  margin-top: 80px;
 }
 
 .centrao{
@@ -824,4 +831,53 @@ textarea{
   align-self: self-start;
   margin-top: 10px;
   margin-left: 10px;
+}
+
+/*-------------------------------------------------*/
+/*   Estilo para edição de projetos
+/*-------------------------------------------------*/
+
+#mudaraba{
+  display: flex;
+  flex-direction: row;
+  margin-left: 50px;
+}
+
+.deepmod{
+  width: 214px;
+  height: 46px;
+  background-color: #F2F2F7;
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.5);
+  display: flex;
+  text-align: center;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.deepmod p{
+  font-size: 24px;
+  color: black;
+  font-family: BMI;
+  align-self: center;
+  width: 100%;
+}
+
+.btn-novo_mod{
+  background-color: #000000;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  width: 214px;
+  height: 46px;
+  margin-left: 20px;
+  text-align: center;
+}
+
+.btn-novo_mod p{
+  font-size: 24px;
+  color: rgb(255, 255, 255);
+  font-family: BMI;
+  align-self: center;
+  width: 100%;
 }

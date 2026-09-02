@@ -111,10 +111,10 @@ include 'header.php'
 ?>
     <div style="height: 200px"></div>
 
-    <nav>
-        <button type="button" onclick="mudarAba('visao-geral')" id='btn_visao-geral'>Visão geral</button>
-        <button type="button" onclick="mudarAba('historia')" id='btn_historia'>História</button>
-        <button type="button" onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'>Avaliações</button>
+    <nav id='mudaraba'>
+        <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
+        <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
+        <div onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'><p>Avaliações</p></div>
     </nav>
 
     <hr>
@@ -279,21 +279,25 @@ include 'header.php'
             document.getElementById('aba-historia').style.display = 'none';
             document.getElementById('aba-avaliacoes').style.display = 'none';
 
-            //document.getElementById('btn_visao-geral').className = 'btn-novo';
-            //document.getElementById('btn_historia').style.display = 'none';
-            //document.getElementById('btn_avaliacoes').style.display = 'none';
+            document.getElementById('btn_visao-geral').className = 'deepmod';
+            document.getElementById('btn_historia').className = 'deepmod';
+            document.getElementById('btn_avaliacoes').className = 'deepmod';
 
             const bloco = document.getElementById('aba-' + nomeAba);
-            //const botao = document.getElementById('btn_' + nomeAba);
+            const botao = document.getElementById('btn_' + nomeAba);
             
             if (bloco) {
                 bloco.style.display = 'block';
                 location.hash = nomeAba;
+                botao.className = 'btn-novo_mod';
             } else {
                 document.getElementById('aba-visao-geral').style.display = 'block';
                 location.hash = 'visao-geral';
             }
         }
+
+        mudarAba('visao-geral');
+
         if (location.hash && location.hash !== '#') mudarAba(location.hash.slice(1));
 
         function toggleFormAvaliacao() {

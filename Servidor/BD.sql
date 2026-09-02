@@ -130,6 +130,7 @@ CREATE TABLE comentarios(
   comentario varchar(1000),
   nota int,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
+  data_edicao timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
   FOREIGN KEY (id_projeto) REFERENCES projetos(id)
 );

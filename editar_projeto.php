@@ -6,22 +6,35 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$nome_projeto = $_GET['nome'];
+$id_projeto = $_GET['id'];
 
+$stmt = null;
 // dados do projeto
-$stmt = $pdo->prepare(
-   'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
-    FROM projetos p 
-    LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-    WHERE p.nome = ?'
-);
-$stmt->execute([$nome_projeto]);
+if ($_SESSION['usuario_tipo'] === 1) {
+    $stmt = $pdo->prepare(
+       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+        FROM projetos p 
+        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
+        JOIN proj_membros pm ON p.id = pm.id_projeto
+        WHERE p.id = ? AND pm.id_convidado = ?'
+    );
+} elseif ($_SESSION['usuario_tipo'] === 2) {
+    $stmt = $pdo->prepare(
+       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+        FROM projetos p 
+        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
+        JOIN proj_membros pm ON p.id = pm.id_projeto
+        JOIN usuarios u ON fjdsklfsd
+        WHERE p.id = ? AND '
+    );
+}
+$stmt->execute([$id_projeto, $_SESSION['usuario_id']]);
 $projeto = $stmt->fetch();
 if (empty($projeto)) {
     header('Location: dashboard.php');
     exit;
 }
-$id_projeto = $projeto['id'];
+$nome_projeto = $projeto['nome'];
 
 $stmt = $pdo->prepare(
     'SELECT id, comentario, nota FROM comentarios WHERE id_usuario = ?'
@@ -50,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
             );
             $stmt_upd->execute([$comentario_texto, $nota, $_SESSION['usuario_id']]);
         }
-        header('Location: editar_projeto.php?nome=' . urlencode($nome_projeto));
+        header('Location: editar_projeto.php?id=' . $id_projeto);
         exit;
     }
 }
@@ -77,7 +90,7 @@ $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 // comentários/avaliações
 $stmt = $pdo->prepare(
-   'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
+   'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
     FROM comentarios c
     JOIN usuarios u ON c.id_usuario = u.id
     JOIN tipos_usuario tu ON u.tipo = tu.id
@@ -92,6 +105,7 @@ $title = urldecode($_GET['nome'] ?? 'Projeto');
 $href = 'dashboard.php';
 include 'header.php'
 ?>
+    <div style="height: 200px"></div>
 
     <nav>
         <button type="button" onclick="mudarAba('visao-geral')">Visão geral</button>
@@ -231,15 +245,20 @@ include 'header.php'
                 <?php foreach ($comentarios as $c): ?>
                     <div>
                         <div>
-                            <img class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
-                            <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
+                            <div class="projeto-membros">
+                                <img class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
+                            </div>
+                                <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
                             <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
                         </div>
                         
                         <p><?= htmlspecialchars($c['comentario']) ?></p>
                         
                         <div>
-                            <small>Data: <?= date('d/m/Y', strtotime($c['data_criacao'])) ?></small>
+                            <small>Data: <?= date('d/m/Y H:i', strtotime($c['data_criacao'])) ?></small>
+                            <?php if ($c['data_criacao'] !== $c['data_edicao']): ?>
+                            <br><small>Editada em: <?= date('d/m/Y H:i', strtotime($c['data_edicao'])) ?></small>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>

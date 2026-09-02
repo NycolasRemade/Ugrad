@@ -56,7 +56,7 @@ include 'header.php'
                 $stmt_membros->execute([$proj['id_do_projeto']]);
                 $membros = $stmt_membros->fetchAll();
             ?>
-                <a class="projeto-card box">
+                <a class="projeto-card box" href="editar_projeto.php?id=<?= $proj['id_do_projeto'] ?>">
                     <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                     <div class="projeto-membros">
                         <?php foreach ($membros as $m): ?>
@@ -79,9 +79,9 @@ include 'header.php'
                 ON e.id_usuario = u.id 
                 WHERE u.tipo = ? AND e.id_instituicao = ?'
             );
-            $stmt->execute(['2', $id_usuario]);
+            $stmt->execute([2, $id_usuario]);
             $professores = $stmt->fetchAll();
-            $stmt->execute(['1', $id_usuario]);
+            $stmt->execute([1, $id_usuario]);
             $alunos = $stmt->fetchAll();
 
             $stmt = $pdo->prepare(
@@ -151,7 +151,7 @@ include 'header.php'
             for ($i = 0; $i < $tamanho; $i++):
                 $id_projeto = $projetos[$i]['id'];
             ?>
-                <a class="projeto-card box" href="editar_projeto.php?nome=<?= urlencode($projetos[$i]['nome']); ?>">
+                <a class="projeto-card box" href="editar_projeto.php?id=<?= $projetos[$i]['id'] ?>">
                     <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
 
                     <div class="projeto-membros">

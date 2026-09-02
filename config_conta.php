@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                     $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
                     break;
                 default:
-                    $erro = 'Apenas os formatos .jpeg, .png e .webp são suportados. Selecione uma imagem válida.';
+                    $erro = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
             }
             if ($imagem_original) {
                 ob_start();

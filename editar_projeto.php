@@ -89,7 +89,8 @@ $stmt->execute([$id_projeto]);
 $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 // comentários/avaliações
-$stmt = $pdo->prepare(
+try {
+    $stmt = $pdo->prepare(
    'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
     FROM comentarios c
     JOIN usuarios u ON c.id_usuario = u.id
@@ -99,6 +100,9 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute([$id_projeto]);
 $comentarios = $stmt->fetchAll();
+} catch (PDOException) {
+    $mensagem = "Não foi possível acessar os comentários do projeto = ";
+}
 
 //////////////////////////////////
 $title = urldecode($_GET['nome'] ?? 'Projeto');
@@ -108,9 +112,9 @@ include 'header.php'
     <div style="height: 200px"></div>
 
     <nav>
-        <button type="button" onclick="mudarAba('visao-geral')">Visão geral</button>
-        <button type="button" onclick="mudarAba('historia')">História</button>
-        <button type="button" onclick="mudarAba('avaliacoes')">Avaliações</button>
+        <button type="button" onclick="mudarAba('visao-geral')" id='btn_visao-geral'>Visão geral</button>
+        <button type="button" onclick="mudarAba('historia')" id='btn_historia'>História</button>
+        <button type="button" onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'>Avaliações</button>
     </nav>
 
     <hr>
@@ -275,7 +279,13 @@ include 'header.php'
             document.getElementById('aba-historia').style.display = 'none';
             document.getElementById('aba-avaliacoes').style.display = 'none';
 
+            //document.getElementById('btn_visao-geral').className = 'btn-novo';
+            //document.getElementById('btn_historia').style.display = 'none';
+            //document.getElementById('btn_avaliacoes').style.display = 'none';
+
             const bloco = document.getElementById('aba-' + nomeAba);
+            //const botao = document.getElementById('btn_' + nomeAba);
+            
             if (bloco) {
                 bloco.style.display = 'block';
                 location.hash = nomeAba;

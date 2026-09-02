@@ -20,7 +20,7 @@ CREATE TABLE usuarios(
   nome varchar(64),
   email varchar(128) unique NOT NULL,
   senha varchar(128) NOT NULL,
-  descricao varchar(500),
+  descricao varchar(1000),
   tipo int NOT NULL,
   ativada boolean DEFAULT TRUE,
   imagem_perfil longblob,
@@ -64,7 +64,8 @@ CREATE TABLE proj_estado(
 INSERT INTO proj_estado (nome) VALUES
   ('PRIVADO_PRIVADO'),
   ('PUBLICO_PRIVADO'),
-  ('PUBLICO_PUBLICO');
+  ('PUBLICO_PUBLICO'),
+  ('EM_REVISAO');
 
 
 CREATE TABLE projetos(

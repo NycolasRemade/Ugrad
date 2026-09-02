@@ -806,7 +806,7 @@ textarea{
   resize: none;
   border: none;
   min-height: 300px;
-  width: 800px;
+  width: 51.2em;
   font-size: 16px;
   background-color: #ffffff;
   
@@ -816,6 +816,12 @@ textarea{
   margin-top: 10px;
 }
 
+.textarea_fix{
+  display: flex;
+}
+
 .btn_alterar_textarea{
-  align-self: flex-start;
+  align-self: self-start;
+  margin-top: 10px;
+  margin-left: 10px;
 }

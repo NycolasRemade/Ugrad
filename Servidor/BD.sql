@@ -64,7 +64,8 @@ CREATE TABLE proj_estado(
 INSERT INTO proj_estado (nome) VALUES
   ('PRIVADO_PRIVADO'),
   ('PUBLICO_PRIVADO'),
-  ('PUBLICO_PUBLICO');
+  ('PUBLICO_PUBLICO'),
+  ('EM_REVISAO');
 
 
 CREATE TABLE projetos(

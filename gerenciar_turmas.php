@@ -173,7 +173,7 @@ $alunos = $stmt_alunos->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= $t['id'] ?></td>
                         <td>
                             <div id="div_nome_turma_<?= $t['id'] ?>" style="display: block;">
-                                <p id="nome_turma_<?= $t['id'] ?>"><?= htmlspecialchars($t['nome']) ?></p>
+                                <?= htmlspecialchars($t['nome']) ?>
                                 <button type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)">Editar</button>
                             </div>
                             <div id="form_editar_turma_<?= $t['id'] ?>" style="display: none;">

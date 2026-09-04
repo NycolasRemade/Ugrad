@@ -106,7 +106,7 @@ include 'header.php'
         <details>
             <summary>
                     <span>Turmas</span>
-                    <button>+</button>
+                    <a href="gerenciar_turmas.php">+</a>
             </summary>
             <div>
             <?php foreach ($turmas as $t): ?>
@@ -191,7 +191,7 @@ include 'header.php'
         <details>
             <summary>
                     <span>Turmas</span>
-                    <button>+</button>
+                    <a href="gerenciar_turmas.php">+</a>
             </summary>
             <div>
             <?php foreach ($turmas as $t): ?>

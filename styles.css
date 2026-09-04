@@ -834,6 +834,38 @@ textarea{
 }
 
 /*-------------------------------------------------*/
+/*   Estilo para pesquisa de projetos
+/*-------------------------------------------------*/
+
+#title_paper{
+  position: absolute;
+  margin-top: 200px;
+  margin-left: 50%;
+}
+
+#title_paper img{
+  width: 694px;
+  height: 152px;
+  position: inherit;
+}
+
+#title_paper h1{
+  position: inherit;
+}
+
+#main_paper{
+  width: 1253px;
+  height: 500px;
+  padding: 10px 10px;
+  background-color: white;
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
+  margin-left: calc(50% - 626.5px);
+  margin-top: 400px;
+}
+
+
+
+/*-------------------------------------------------*/
 /*   Estilo para edição de projetos
 /*-------------------------------------------------*/
 

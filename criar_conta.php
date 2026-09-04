@@ -25,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo]);
 
             $_SESSION['usuario_id'] = $pdo->lastInsertId();
+            $_SESSION['usuario_nome'] = $nome;
 
             if ($tipo !== 3) {
                 $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao) VALUES (?, ?)');

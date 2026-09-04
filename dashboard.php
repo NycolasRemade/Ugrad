@@ -68,6 +68,88 @@ include 'header.php'
             <?php endforeach; ?>
             </div>
         </section>
+        <?php elseif ($dados['tipo'] === 2): // PROFESSOR
+            $stmt = $pdo->prepare('SELECT nome FROM turmas WHERE id_instituicao = ?');
+            $stmt->execute([$_SESSION['usuario_id_instituicao']]);
+            $turmas = $stmt->fetchAll();
+
+            $stmt = $pdo->prepare(
+               'SELECT * 
+                FROM usuarios u INNER JOIN extra_usuarios e 
+                ON e.id_usuario = u.id 
+                WHERE u.tipo = 1 AND e.id_instituicao = ?'
+            );
+            $stmt->execute([$_SESSION['usuario_id_instituicao']]);
+            $alunos = $stmt->fetchAll();
+
+            $stmt = $pdo->prepare(
+               'SELECT p.id, p.nome, p.img, u.imagem_perfil, u.nome AS nome_usuario
+                FROM projetos p INNER JOIN proj_membros pm
+                ON pm.id_projeto = p.id
+                INNER JOIN usuarios u
+                ON pm.id_convidado = u.id
+                INNER JOIN extra_usuarios eu
+                ON eu.id_usuario = u.id
+                WHERE eu.id_instituicao = ?
+                ORDER BY p.id ASC, pm.status_membro DESC, pm.data_convite DESC'
+            );
+            $stmt->execute([$_SESSION['usuario_id_instituicao']]);
+            $projetos = $stmt->fetchAll();
+        ?>
+
+        <details>
+            <summary>
+                <span>Turmas fixadas</span>
+            </summary>
+        </details>
+
+        <details>
+            <summary>
+                    <span>Turmas</span>
+                    <button>+</button>
+            </summary>
+            <div>
+            <?php foreach ($turmas as $t): ?>
+                <div><?= htmlspecialchars($t['nome']) ?></div>
+            <?php endforeach; ?>
+            </div>
+        </details>
+
+        <details>
+            <summary>
+                <span>Alunos</span>
+            </summary>
+            <div>
+            <?php foreach ($alunos as $a): ?>
+                <div><?= htmlspecialchars($a['nome']) ?></div>
+            <?php endforeach; ?>
+            </div>
+        </details>
+
+        <details open>
+            <summary>
+                <span>Projetos dos alunos</span>
+            </summary>
+            <div class="projetos-grid">
+
+            <?php
+            $tamanho = count($projetos);
+            for ($i = 0; $i < $tamanho; $i++):
+                $id_projeto = $projetos[$i]['id'];
+            ?>
+                <a class="projeto-card box" href="editar_projeto.php?id=<?= $projetos[$i]['id'] ?>">
+                    <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
+
+                    <div class="projeto-membros">
+                    <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
+                        <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
+                    <?php $i++; endwhile; $i--;?>
+                    </div>
+                </a>
+
+            <?php endfor; ?>
+            </div>
+        </details>
 
         <?php elseif ($dados['tipo'] === 4): // INSTITUIÇÂO 
             $stmt = $pdo->prepare('SELECT nome FROM turmas WHERE id_instituicao = ?');
@@ -106,7 +188,7 @@ include 'header.php'
             </summary>
         </details>
 
-        <details open>
+        <details>
             <summary>
                     <span>Turmas</span>
                     <button>+</button>
@@ -118,7 +200,7 @@ include 'header.php'
             </div>
         </details>
 
-        <details open>
+        <details>
             <summary>
                     <span>Professores</span>
                     <button>+</button>
@@ -165,8 +247,6 @@ include 'header.php'
             <?php endfor; ?>
             </div>
         </details>
-
-
 
         <?php endif; ?>
     </main>

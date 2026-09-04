@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // 6. Consulta Turmas da Instituição
 $stmt_turmas = $pdo->prepare('SELECT id, nome FROM turmas WHERE id_instituicao = ? ORDER BY nome ASC');
 $stmt_turmas->execute([$id_instituicao]);
-$turmas = $stmt_turmas->fetchAll(PDO::FETCH_ASSOC);
+$turmas = $stmt_turmas->fetchAll();
 
 // 7. Consulta Alunos da Instituição ou disponíveis no sistema
 $stmt_alunos = $pdo->prepare('
@@ -114,7 +114,14 @@ $stmt_alunos = $pdo->prepare('
     ORDER BY u.nome ASC
 ');
 $stmt_alunos->execute([$id_instituicao]);
-$alunos = $stmt_alunos->fetchAll(PDO::FETCH_ASSOC);
+$alunos = $stmt_alunos->fetchAll();
+
+$alunos_por_turma = [];
+foreach ($alunos as $a) {
+    if (!empty($a['id_turma'])) {
+        $alunos_por_turma[$a['id_turma']][] = $a;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -150,10 +157,10 @@ $alunos = $stmt_alunos->fetchAll(PDO::FETCH_ASSOC);
         <form action="" method="POST">
             <input type="hidden" name="acao" value="criar_turma">
             
-            <label for="nome_turma">Nome da Nova Turma (máx 25 caracteres):</label><br>
+            <label for="nome_turma">Nova turma (máx 25 caracteres):</label><br>
             <input type="text" id="nome_turma" name="nome_turma" maxlength="25" required>
             
-            <button type="submit">Criar Turma</button>
+            <button type="submit">Criar turma</button>
         </form>
         <br>
     </div>
@@ -162,28 +169,93 @@ $alunos = $stmt_alunos->fetchAll(PDO::FETCH_ASSOC);
         <table border="1" cellpadding="5" cellspacing="0">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nome Atual</th>
-                    <th>Editar Nome</th>
+                    <th>Turmas e alunos</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($turmas as $t): ?>
+                <?php foreach ($turmas as $t): 
+                    $alunos_da_turma = $alunos_por_turma[$t['id']] ?? [];
+                ?>
                     <tr>
-                        <td><?= $t['id'] ?></td>
                         <td>
+                            <!-- Editar nome da turma -->
                             <div id="div_nome_turma_<?= $t['id'] ?>" style="display: block;">
                                 <?= htmlspecialchars($t['nome']) ?>
-                                <button type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)">Editar</button>
+                                <button type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)">Alterar nome</button>
+                                <button type="button" onclick="toggleAddAlunoTurma(<?= $t['id'] ?>)">+ Adicionar Aluno</button>
                             </div>
                             <div id="form_editar_turma_<?= $t['id'] ?>" style="display: none;">
                                 <form action="" method="POST">
                                     <input type="hidden" name="acao" value="editar_turma">
                                     <input type="hidden" name="id_turma" value="<?= $t['id'] ?>">
-                                    <input onchange="salvarOuCancelarEditarTurma(<?= $t['id'] ?>)" type="text" name="novo_nome" value="<?= htmlspecialchars($t['nome']) ?>" maxlength="25" required>
-                                    <button id="botao_form_editar_turma_<?= $t['id'] ?>" type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)">Cancelar</button>
+                                    <input oninput="inputChangeEditarTurma(<?= $t['id'] ?>)" type="text" name="novo_nome" value="<?= htmlspecialchars($t['nome']) ?>" maxlength="25" required>
+                                    <button id="botao_form_turma_<?= $t['id'] ?>" type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)">Cancelar</button>
                                 </form>
                             </div>
+
+                            <!-- Adicionar alunos à turma -->
+                            <div id="form_add_aluno_turma_<?= $t['id'] ?>" style="display: none;">
+                                <br>
+                                <form action="" method="POST">
+                                    <input type="hidden" name="acao" value="adicionar_aluno">
+                                    <input type="hidden" name="id_turma" value="<?= $t['id'] ?>">
+                                    
+                                    <label for="select_aluno_<?= $t['id'] ?>">Adicionar aluno:</label>
+                                    <select id="select_aluno_<?= $t['id'] ?>" name="id_aluno" required>
+                                        <option value="">-- Selecione o Aluno --</option>
+                                        <?php 
+                                        foreach ($alunos as $a): 
+                                            if ($a['id_turma'] != $t['id']): 
+                                        ?>
+                                            <option value="<?= $a['id'] ?>">
+                                                <?= htmlspecialchars($a['nome']) ?>
+                                                <?= $a['nome_turma'] ? '- Turma Atual: ' . htmlspecialchars($a['nome_turma']) : '- (Sem turma)' ?>
+                                            </option>
+                                        <?php 
+                                            endif;
+                                        endforeach; 
+                                        ?>
+                                    </select>
+                                    
+                                    <button type="submit">Adicionar</button>
+                                    <button type="button" onclick="toggleAddAlunoTurma(<?= $t['id'] ?>)">Cancelar</button>
+                                </form>
+                            </div>
+
+                            <!-- Lista de alunos na turma -->
+                             <details>
+                                <summary>Alunos na turma (<?= count($alunos_da_turma) ?>)</summary>
+                                <br>
+                                <?php if (count($alunos_da_turma) > 0): ?>
+                                    <table border="1" cellpadding="3" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>E-mail</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($alunos_da_turma as $al): ?>
+                                                <tr>
+                                                    <td><?= htmlspecialchars($al['nome']) ?></td>
+                                                    <td><?= htmlspecialchars($al['email']) ?></td>
+                                                    <td>
+                                                        <form action="" method="POST">
+                                                            <input type="hidden" name="acao" value="remover_aluno">
+                                                            <input type="hidden" name="id_aluno" value="<?= $al['id'] ?>">
+                                                            <button type="submit">Remover da Turma</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                <?php else: ?>
+                                    <p><em>Nenhum aluno nesta turma ainda.</em></p>
+                                <?php endif; ?>
+                            </details>
+
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -213,10 +285,18 @@ $alunos = $stmt_alunos->fetchAll(PDO::FETCH_ASSOC);
                 div_form.style.display = 'none';
             }
         }
-        function salvarOuCancelarEditarTurma(id) {
-            const botao_enviar_form = document.getElementById('botao_form_editar_turma_' + id);
-            botao_enviar_form.type = "submit";
-            botao_enviar_form.innerText = "Salvar";
+        function inputChangeEditarTurma(id) {
+            const botao_form = document.getElementById('botao_form_turma_' + id);
+            botao_form.type = "submit";
+            botao_form.innerText = "Salvar";
+        }
+        function toggleAddAlunoTurma(id) {
+            const div_form = document.getElementById('form_add_aluno_turma_' + id);
+            if (div_form.style.display === 'none') {
+                div_form.style.display = 'block';
+            } else {
+                div_form.style.display = 'none';
+            }
         }
     </script>
 

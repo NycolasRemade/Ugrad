@@ -1,10 +1,9 @@
 <?php
-include 'header.php'
+include 'header.php';
 ?>
 
 <script>
     function getTextWidth() {
-
         const inputText = "Pesquisa de Projetos";
         const font = "1.5em Tan";
 

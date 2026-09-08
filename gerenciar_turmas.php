@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Ação: Remover Aluno da Turma
+    // Remover aluno da turma
     elseif ($acao === 'remover_aluno') {
         $id_aluno = intval($_POST['id_aluno'] ?? 0);
 
@@ -99,20 +99,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 6. Consulta Turmas da Instituição
+// Consulta turmas da instituição
 $stmt_turmas = $pdo->prepare('SELECT id, nome FROM turmas WHERE id_instituicao = ? ORDER BY nome ASC');
 $stmt_turmas->execute([$id_instituicao]);
 $turmas = $stmt_turmas->fetchAll();
 
-// 7. Consulta Alunos da Instituição ou disponíveis no sistema
-$stmt_alunos = $pdo->prepare('
-    SELECT u.id, u.nome, u.email, e.id_turma, t.nome AS nome_turma
+// Consulta alunos da instituição
+$stmt_alunos = $pdo->prepare(
+   'SELECT u.id, u.nome, u.email, e.id_turma, t.nome AS nome_turma
     FROM usuarios u
     LEFT JOIN extra_usuarios e ON e.id_usuario = u.id
     LEFT JOIN turmas t ON t.id = e.id_turma
-    WHERE u.tipo = 1 AND (e.id_instituicao = ? OR e.id_instituicao IS NULL)
-    ORDER BY u.nome ASC
-');
+    WHERE u.tipo = 1 AND e.id_instituicao = ?
+    ORDER BY u.nome ASC'
+);
 $stmt_alunos->execute([$id_instituicao]);
 $alunos = $stmt_alunos->fetchAll();
 
@@ -157,7 +157,7 @@ foreach ($alunos as $a) {
         <form action="" method="POST">
             <input type="hidden" name="acao" value="criar_turma">
             
-            <label for="nome_turma">Nova turma (máx 25 caracteres):</label><br>
+            <label for="nome_turma">Nova turma:</label><br>
             <input type="text" id="nome_turma" name="nome_turma" maxlength="25" required>
             
             <button type="submit">Criar turma</button>
@@ -202,14 +202,14 @@ foreach ($alunos as $a) {
                                     
                                     <label for="select_aluno_<?= $t['id'] ?>">Adicionar aluno:</label>
                                     <select id="select_aluno_<?= $t['id'] ?>" name="id_aluno" required>
-                                        <option value="">-- Selecione o Aluno --</option>
+                                        <option value="">-- Selecione o aluno --</option>
                                         <?php 
                                         foreach ($alunos as $a): 
                                             if ($a['id_turma'] != $t['id']): 
                                         ?>
                                             <option value="<?= $a['id'] ?>">
                                                 <?= htmlspecialchars($a['nome']) ?>
-                                                <?= $a['nome_turma'] ? '- Turma Atual: ' . htmlspecialchars($a['nome_turma']) : '- (Sem turma)' ?>
+                                                <?= $a['nome_turma'] ? '(Turma atual: ' . htmlspecialchars($a['nome_turma']) . ')' : '(Sem turma)' ?>
                                             </option>
                                         <?php 
                                             endif;
@@ -302,41 +302,9 @@ foreach ($alunos as $a) {
 
     <hr>
 
-    <h2>Adicionar aluno à turma</h2>
-    <?php if (count($turmas) > 0 && count($alunos) > 0): ?>
-        <form action="" method="POST">
-            <input type="hidden" name="acao" value="adicionar_aluno">
-
-            <label for="id_aluno">Selecione o Aluno:</label><br>
-            <select id="id_aluno" name="id_aluno" required>
-                <option value="">-- Selecione um Aluno --</option>
-                <?php foreach ($alunos as $a): ?>
-                    <option value="<?= $a['id'] ?>">
-                        <?= htmlspecialchars($a['nome']) ?> (<?= htmlspecialchars($a['email']) ?>) 
-                        <?= $a['nome_turma'] ? '- Turma Atual: ' . htmlspecialchars($a['nome_turma']) : '- (Sem turma)' ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <br><br>
-
-            <label for="id_turma_add">Selecione a Turma de Destino:</label><br>
-            <select id="id_turma_add" name="id_turma" required>
-                <option value="">-- Selecione uma Turma --</option>
-                <?php foreach ($turmas as $t): ?>
-                    <option value="<?= $t['id'] ?>"><?= htmlspecialchars($t['nome']) ?></option>
-                <?php endforeach; ?>
-            </select>
-            <br><br>
-
-            <button type="submit">Adicionar Aluno à Turma</button>
-        </form>
-    <?php else: ?>
-        <p>É necessário ter pelo menos uma turma criada e alunos cadastrados para realizar esta ação.</p>
-    <?php endif; ?>
-
     <hr>
 
-    <h2>Relação de Alunos</h2>
+    <h2>Lista de alunos</h2>
     <?php if (count($alunos) > 0): ?>
         <table border="1" cellpadding="5" cellspacing="0">
             <thead>

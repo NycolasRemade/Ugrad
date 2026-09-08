@@ -106,7 +106,7 @@ include 'header.php'
         <details>
             <summary>
                     <span>Turmas</span>
-                    <a href="gerenciar_turmas.php" class="botao-novo">Gerenciar turmas</a>
+                    <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
             </summary>
             <div>
             <?php foreach ($turmas as $t): ?>
@@ -191,7 +191,7 @@ include 'header.php'
         <details>
             <summary>
                     <span>Turmas</span>
-                    <a href="gerenciar_turmas.php" class="botao-novo">Gerenciar turmas</a>
+                    <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
             </summary>
             <div>
             <?php foreach ($turmas as $t): ?>
@@ -203,7 +203,7 @@ include 'header.php'
         <details>
             <summary>
                     <span>Professores</span>
-                    <button>+</button>
+                    <a class="btn-novo" href="gerenciar_professores.php">Gerenciar professores</a>
             </summary>
             <div>
             <?php foreach ($professores as $prof): ?>
@@ -269,6 +269,14 @@ include 'header.php'
 
     getTextWidth();
 </script>
+
+<style>
+    details{
+        padding: 8px;
+        margin: 16px;
+        font-size: 32px;
+    }
+</style>
 
 </body>
 </html>

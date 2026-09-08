@@ -261,13 +261,14 @@ include 'header.php'
         <br>
 
     <div>
+
         <h3>Convites de Projetos</h3>
 
         <?php if (empty($convites)): ?>
             <p>Nenhum convite pendente no momento.</p>
         <?php else: ?>
             <?php foreach ($convites as $convite): ?>
-                <div>
+                <div class='convite'>
                     <p>
                         <strong><?= htmlspecialchars(ucfirst(strtolower($convite['tipo_convidante']))) ?></strong><br>
                         Você foi convidado para participar do projeto <strong><?= htmlspecialchars($convite['nome_projeto']) ?></strong>

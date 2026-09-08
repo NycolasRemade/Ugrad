@@ -262,29 +262,36 @@ include 'header.php'
 
     <div>
 
-        <h3>Convites de Projetos</h3>
-
         <?php if (empty($convites)): ?>
             <p>Nenhum convite pendente no momento.</p>
         <?php else: ?>
             <?php foreach ($convites as $convite): ?>
                 <div class='convite'>
+                    <img src='Fotos/Polygon 8.png' alt='Convite'>
+
+                    <div class='nome_convite'><h3><?= htmlspecialchars($convite['nome_convidante']) ?></h3></div>
+
                     <p>
-                        <strong><?= htmlspecialchars(ucfirst(strtolower($convite['tipo_convidante']))) ?></strong><br>
+                        
                         Você foi convidado para participar do projeto <strong><?= htmlspecialchars($convite['nome_projeto']) ?></strong>
                     </p>
 
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="acao" value="aceitar_convite">
-                        <input type="hidden" name="id_convite" value="<?= $convite['id_convite'] ?>">
-                        <button type="submit" title="Aceitar">✓</button>
-                    </form>
+                    <div class='buttons'>
 
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="acao" value="recusar_convite">
-                        <input type="hidden" name="id_convite" value="<?= $convite['id_convite'] ?>">
-                        <button type="submit" title="Recusar">X</button>
-                    </form>
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="acao" value="aceitar_convite">
+                            <input type="hidden" name="id_convite" value="<?= $convite['id_convite'] ?>">
+                            <button type="submit" title="Aceitar">✓</button>
+                        </form>
+
+                        <form method="POST" style="display:inline;">
+                            <input type="hidden" name="acao" value="recusar_convite">
+                            <input type="hidden" name="id_convite" value="<?= $convite['id_convite'] ?>">
+                            <button type="submit" title="Recusar">X</button>
+                        </form>
+
+                    </div>
+
                 </div>
                 <br>
             <?php endforeach; ?>

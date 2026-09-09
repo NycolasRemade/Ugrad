@@ -105,8 +105,8 @@ include 'header.php'
 
         <details>
             <summary>
-                    <span>Turmas</span>
-                    <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
+                <span>Turmas</span>
+                <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
             </summary>
             <div>
             <?php foreach ($turmas as $t): ?>

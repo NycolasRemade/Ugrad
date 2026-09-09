@@ -4,4 +4,17 @@ $_SESSION = array();
 
 session_destroy();
 header('Location: ugrad.html');
-exit;
+exit;   
+
+
+
+
+
+
+
+
+
+
+
+
+

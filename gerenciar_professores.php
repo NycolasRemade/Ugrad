@@ -84,14 +84,13 @@ $stmt_profs = $pdo->prepare(
 );
 $stmt_profs->execute([$id_instituicao]);
 $professores = $stmt_profs->fetchAll(PDO::FETCH_ASSOC);
+
+//////////////////////////////////
+$title = 'Gerenciamento de Professores';
+$href = 'dashboard.php';
+include 'header.php'
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Gerenciar Professores - Ugrad</title>
-</head>
-<body>
+
 
     <h1>Gerenciamento de Professores</h1>
     <p>Instituição: <strong><?= htmlspecialchars($_SESSION['usuario_nome'] ?? '') ?></strong></p>
@@ -130,7 +129,7 @@ $professores = $stmt_profs->fetchAll(PDO::FETCH_ASSOC);
                             <form action="" method="POST" style="display:inline;">
                                 <input type="hidden" name="acao" value="rebaixar_para_aluno">
                                 <input type="hidden" name="id_professor" value="<?= $p['id'] ?>">
-                                <button type="submit" onclick="return confirm('Tem certeza que deseja transformar este professor em Aluno?');">
+                                <button type="submit" onclick="return confirm('Tem certeza que deseja transformar este professor em aluno?');">
                                     Alterar para aluno
                                 </button>
                             </form>

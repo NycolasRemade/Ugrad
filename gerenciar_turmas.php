@@ -122,14 +122,13 @@ foreach ($alunos as $a) {
         $alunos_por_turma[$a['id_turma']][] = $a;
     }
 }
+
+//////////////////////////////////
+$title = 'Gerenciamento de Turmas';
+$href = 'dashboard.php';
+include 'header.php'
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Gerenciamento de Turmas - Ugrad</title>
-</head>
-<body>
+
 
     <h1>Gerenciamento de Turmas</h1>
     <p><strong><?= htmlspecialchars($_SESSION['usuario_nome']) ?></strong>  (<?= $_SESSION['usuario_tipo'] == 4 ? 'Instituição' : 'Professor' ?>)</p>

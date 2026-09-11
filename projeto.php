@@ -222,7 +222,36 @@ include 'header.php'
                     echo '☆☆☆☆☆';
                 }
             ?></h2>
-            <button type="button">Filtros +</button>
+            <button type="button" onclick="toggleFiltros()">Filtros +</button>
+        </div>
+
+        <!-- PAINEL DE FILTROS -->
+        <div id="painel-filtros" style="display: none; margin: 15px 0; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 6px;">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                <div>
+                    <label for="filtro_tipo"><strong>Exibir:</strong></label>
+                    <select id="filtro_tipo" onchange="filtrarComentarios()">
+                        <option value="todos">Todos os tipos</option>
+                        <option value="professor">Apenas professores</option>
+                        <option value="empresario">Apenas investidores</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro_nota"><strong>Avaliação:</strong></label>
+                    <select id="filtro_nota" onchange="filtrarComentarios()">
+                        <option value="todas">Todas as notas</option>
+                        <option value="5">5 ★★★★★</option>
+                        <option value="4">4 ★★★★☆</option>
+                        <option value="3">3 ★★★☆☆</option>
+                        <option value="2">2 ★★☆☆☆</option>
+                        <option value="1">1 ★☆☆☆☆</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filtro_busca"><strong>Pesquisar palavra-chave:</strong></label>
+                    <input type="text" id="filtro_busca" onkeyup="filtrarComentarios()" placeholder="Digite para filtrar..." style="padding: 4px 8px;">
+                </div>
+            </div>
         </div>
 
         <br>
@@ -262,10 +291,13 @@ include 'header.php'
             </form>
         </div>
 
-        <main>
+        <main id="lista-comentarios">
             <?php if (!empty($comentarios)): ?>
                 <?php foreach ($comentarios as $c): ?>
-                    <div>
+                    <div class="card-comentario" 
+                         data-tipo="<?= htmlspecialchars(mb_strtolower($c['tipo_usuario'])) ?>" 
+                         data-nota="<?= (int)$c['nota'] ?>" 
+                         data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
                         <div>
                             <div class="projeto-membros">
                                 <img class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
@@ -335,6 +367,46 @@ include 'header.php'
                     estrela.textContent = '★';
                 } else {
                     estrela.textContent = '☆';
+                }
+            });
+        }
+
+        function toggleFiltros() {
+            const painel = document.getElementById('painel-filtros');
+            painel.style.display = (painel.style.display === 'none') ? 'block' : 'none';
+        }
+
+        function filtrarComentarios() {
+            const tipo = document.getElementById('filtro_tipo').value.toLowerCase();
+            const nota = document.getElementById('filtro_nota').value;
+            const busca = document.getElementById('filtro_busca').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.card-comentario');
+
+            cards.forEach(card => {
+                const cardTipo = card.getAttribute('data-tipo') || '';
+                const cardNota = card.getAttribute('data-nota') || '';
+                const cardTexto = card.getAttribute('data-texto') || '';
+
+                let atendeTipo = false;
+                if (tipo === 'todos') {
+                    atendeTipo = true;
+                } else if (tipo === 'professor' && cardTipo.includes('professor')) {
+                    atendeTipo = true;
+                } else if (tipo === 'empresario' && (cardTipo.includes('empresario') || cardTipo.includes('investidor'))) {
+                    atendeTipo = true;
+                }
+
+                let atendeNota = false;
+                if (nota === 'todas' || cardNota === nota) {
+                    atendeNota = true;
+                }
+
+                const atendeBusca = !busca || cardTexto.includes(busca);
+
+                if (atendeTipo && atendeNota && atendeBusca) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
                 }
             });
         }

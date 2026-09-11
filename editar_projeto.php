@@ -11,6 +11,7 @@ $id_projeto = $_GET['id'];
 $stmt = null;
 // dados do projeto
 if ($_SESSION['usuario_tipo'] === 1) {
+    // ALUNO
     $stmt = $pdo->prepare(
        'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
         FROM projetos p 
@@ -18,17 +19,22 @@ if ($_SESSION['usuario_tipo'] === 1) {
         JOIN proj_membros pm ON p.id = pm.id_projeto
         WHERE p.id = ? AND pm.id_convidado = ?'
     );
-} elseif ($_SESSION['usuario_tipo'] === 2) {
+    $stmt->execute([$id_projeto, $_SESSION['usuario_id']]);
+} elseif ($_SESSION['usuario_tipo'] === 2 || $_SESSION['usuario_tipo'] === 4) {
+    // PROFESSOR ou INSTITUICAO
     $stmt = $pdo->prepare(
        'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
         FROM projetos p 
         LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-        JOIN proj_membros pm ON p.id = pm.id_projeto
-        JOIN usuarios u ON fjdsklfsd
-        WHERE p.id = ? AND '
+        INNER JOIN proj_membros pm ON p.id = pm.id_projeto
+        LEFT JOIN extra_usuarios e ON e.id_usuario = pm.id_convidado
+        WHERE p.id = ? AND pm.id_convidado = pm.id_convidante AND e.id_instituicao = ?'
     );
+    $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
+} elseif ($_SESSION['usuario_tipo'] === 3) {
+    // EMPRESARIO
 }
-$stmt->execute([$id_projeto, $_SESSION['usuario_id']]);
+
 $projeto = $stmt->fetch();
 if (empty($projeto)) {
     header('Location: dashboard.php');

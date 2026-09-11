@@ -83,18 +83,18 @@ $stmt_profs = $pdo->prepare(
     ORDER BY u.nome ASC'
 );
 $stmt_profs->execute([$id_instituicao]);
-$professores = $stmt_profs->fetchAll(PDO::FETCH_ASSOC);
+$professores = $stmt_profs->fetchAll();
 
 //////////////////////////////////
 $title = 'Gerenciamento de Professores';
 $href = 'dashboard.php';
 include 'header.php'
 ?>
-
+    <div style="height: 200px"></div>
 
     <h1>Gerenciamento de Professores</h1>
     <p>Instituição: <strong><?= htmlspecialchars($_SESSION['usuario_nome'] ?? '') ?></strong></p>
-    <p><a href="dashboard.php">Voltar ao Painel</a></p>
+    <p><a href="dashboard.php" class="btn-novo">Voltar ao Painel</a></p>
 
     <hr>
 
@@ -111,7 +111,11 @@ include 'header.php'
     <h2>Professores cadastrados</h2>
 
     <?php if (count($professores) > 0): ?>
-        <table border="1" cellpadding="5" cellspacing="0">
+        <p>
+            <label for="campo-pesquisa"><strong>Pesquisar Professor:</strong></label>
+            <input type="text" id="campo-pesquisa" onkeyup="filtrarProfessores()" placeholder="Digite o nome ou e-mail...">
+        </p>
+        <table border="1" cellpadding="5" cellspacing="0" id="tabela-professores">
             <thead>
                 <tr>
                     <th>Nome</th>
@@ -129,7 +133,7 @@ include 'header.php'
                             <form action="" method="POST" style="display:inline;">
                                 <input type="hidden" name="acao" value="rebaixar_para_aluno">
                                 <input type="hidden" name="id_professor" value="<?= $p['id'] ?>">
-                                <button type="submit" onclick="return confirm('Tem certeza que deseja transformar este professor em aluno?');">
+                                <button type="submit" onclick="return confirm('Tem certeza que deseja transformar este professor em aluno?');" class="btn-novo">
                                     Alterar para aluno
                                 </button>
                             </form>
@@ -138,7 +142,7 @@ include 'header.php'
                             <form action="" method="POST" style="display:inline;">
                                 <input type="hidden" name="acao" value="excluir_conta">
                                 <input type="hidden" name="id_professor" value="<?= $p['id'] ?>">
-                                <button type="submit" onclick="return confirm('Tem certeza que deseja EXCLUIR permanentemente esta conta?');">
+                                <button type="submit" onclick="return confirm('Tem certeza que deseja EXCLUIR permanentemente esta conta?');" class="btn-novo">
                                     Excluir conta
                                 </button>
                             </form>
@@ -147,6 +151,21 @@ include 'header.php'
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <script>
+            function filtrarProfessores() {
+                const termo = document.getElementById('campo-pesquisa').value.toLowerCase();
+                const linhas = document.querySelectorAll('#tabela-professores tbody tr');
+
+                linhas.forEach(linha => {
+                    const textoLinha = linha.textContent.toLowerCase();
+                    if (textoLinha.includes(termo)) {
+                        linha.style.display = '';
+                    } else {
+                        linha.style.display = 'none';
+                    }
+                });
+            }
+        </script>
     <?php else: ?>
         <p>Nenhum professor encontrado para esta instituição.</p>
     <?php endif; ?>

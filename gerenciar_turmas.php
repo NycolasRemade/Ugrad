@@ -128,11 +128,11 @@ $title = 'Gerenciamento de Turmas';
 $href = 'dashboard.php';
 include 'header.php'
 ?>
-
+    <div style="height: 200px"></div>
 
     <h1>Gerenciamento de Turmas</h1>
     <p><strong><?= htmlspecialchars($_SESSION['usuario_nome']) ?></strong>  (<?= $_SESSION['usuario_tipo'] == 4 ? 'Instituição' : 'Professor' ?>)</p>
-    <p><a href="dashboard.php">Voltar ao Painel</a></p>
+    <p><a href="dashboard.php" class="btn-novo">Voltar ao Painel</a></p>
 
     <hr>
 
@@ -149,7 +149,7 @@ include 'header.php'
     <h2>Turmas cadastradas</h2>
 
     <p>
-        <button type="button" onclick="toggleFormCriarTurma()">+ Nova Turma</button>
+        <button type="button" onclick="toggleFormCriarTurma()" class="btn-novo">+ Nova Turma</button>
     </p>
 
     <div id="form_criar_turma" style="display: none;">
@@ -178,17 +178,17 @@ include 'header.php'
                     <tr>
                         <td>
                             <!-- Editar nome da turma -->
-                            <div id="div_nome_turma_<?= $t['id'] ?>" style="display: block;">
+                            <div id="div_nome_turma_<?= $t['id'] ?>" style="display: block;" class="buttons_criar">
                                 <?= htmlspecialchars($t['nome']) ?>
-                                <button type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)">Alterar nome</button>
-                                <button type="button" onclick="toggleAddAlunoTurma(<?= $t['id'] ?>)">+ Adicionar Aluno</button>
+                                <button type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)" class="btn-novo">Alterar nome</button>
+                                <button type="button" onclick="toggleAddAlunoTurma(<?= $t['id'] ?>)" class="btn-novo">+ Adicionar Aluno</button>
                             </div>
                             <div id="form_editar_turma_<?= $t['id'] ?>" style="display: none;">
                                 <form action="" method="POST">
                                     <input type="hidden" name="acao" value="editar_turma">
                                     <input type="hidden" name="id_turma" value="<?= $t['id'] ?>">
                                     <input oninput="inputChangeEditarTurma(<?= $t['id'] ?>)" type="text" name="novo_nome" value="<?= htmlspecialchars($t['nome']) ?>" maxlength="25" required>
-                                    <button id="botao_form_turma_<?= $t['id'] ?>" type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)">Cancelar</button>
+                                    <button id="botao_form_turma_<?= $t['id'] ?>" type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)" class="btn-novo">Cancelar</button>
                                 </form>
                             </div>
 
@@ -216,8 +216,8 @@ include 'header.php'
                                         ?>
                                     </select>
                                     
-                                    <button type="submit">Adicionar</button>
-                                    <button type="button" onclick="toggleAddAlunoTurma(<?= $t['id'] ?>)">Cancelar</button>
+                                    <button type="submit" class="btn-novo">Adicionar</button>
+                                    <button type="button" onclick="toggleAddAlunoTurma(<?= $t['id'] ?>)" class="btn-novo">Cancelar</button>
                                 </form>
                             </div>
 
@@ -243,7 +243,7 @@ include 'header.php'
                                                         <form action="" method="POST">
                                                             <input type="hidden" name="acao" value="remover_aluno">
                                                             <input type="hidden" name="id_aluno" value="<?= $al['id'] ?>">
-                                                            <button type="submit">Remover da Turma</button>
+                                                            <button type="submit" class="btn-novo">Remover da Turma</button>
                                                         </form>
                                                     </td>
                                                 </tr>
@@ -312,7 +312,7 @@ include 'header.php'
                     <th>Nome do Aluno</th>
                     <th>E-mail</th>
                     <th>Turma Atual</th>
-                    <th>Ações</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -327,7 +327,7 @@ include 'header.php'
                                 <form action="" method="POST">
                                     <input type="hidden" name="acao" value="remover_aluno">
                                     <input type="hidden" name="id_aluno" value="<?= $a['id'] ?>">
-                                    <button type="submit">Remover da Turma</button>
+                                    <button type="submit" class="btn-novo">Remover da Turma</button>
                                 </form>
                             <?php else: ?>
                                 -

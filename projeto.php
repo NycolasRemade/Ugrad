@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
             );
             $stmt_upd->execute([$comentario_texto, $nota, $_SESSION['usuario_id']]);
         }
-        header('Location: editar_projeto.php?id=' . $id_projeto);
+        header('Location: projeto.php?id=' . $id_projeto);
         exit;
     }
 }
@@ -119,11 +119,11 @@ try {
     $stmt->execute([$id_projeto]);
     $comentarios = $stmt->fetchAll();
 } catch (PDOException) {
-    $mensagem = "Não foi possível acessar os comentários do projeto = ";
+    $mensagem = 'Não foi possível acessar os comentários do projeto';
 }
 
 //////////////////////////////////
-$title = urldecode($_GET['nome'] ?? 'Projeto');
+$title = urldecode($projeto['nome'] ?? 'Projeto');
 $href = 'dashboard.php';
 include 'header.php'
 ?>

@@ -137,7 +137,7 @@ include 'header.php'
             for ($i = 0; $i < $tamanho; $i++):
                 $id_projeto = $projetos[$i]['id'];
             ?>
-                <a class="projeto-card box" href="editar_projeto.php?id=<?= $projetos[$i]['id'] ?>">
+                <a class="projeto-card box" href="projeto.php?id=<?= $projetos[$i]['id'] ?>">
                     <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
 
                     <div class="projeto-membros">
@@ -234,7 +234,7 @@ include 'header.php'
             for ($i = 0; $i < $tamanho; $i++):
                 $id_projeto = $projetos[$i]['id'];
             ?>
-                <a class="projeto-card box" href="editar_projeto.php?id=<?= $projetos[$i]['id'] ?>">
+                <a class="projeto-card box" href="projeto.php?id=<?= $projetos[$i]['id'] ?>">
                     <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
 
                     <div class="projeto-membros">

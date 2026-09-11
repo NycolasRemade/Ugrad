@@ -7,7 +7,11 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$id_projeto = (int)($_GET['id'] ?? 0);
+if (!isset($_GET['id'])) {
+    header('Location: dashboard.php');
+    exit;
+}
+$id_projeto = (int)$_GET['id'];
 $usuario_id = $_SESSION['usuario_id'];
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? 0;
 
@@ -57,23 +61,70 @@ if (empty($projeto)) {
     exit;
 }
 
-// SALVAR ALTERAÇÕES DO PROJETO (NOME, DESCRIÇÃO, HISTÓRIA, CATEGORIAS E MEMBROS)
+// CONVIDAR E REMOVER MEMBROS SEM RECARREGAR A PÁGINA
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
+    header('Content-Type: application/json');
+
+    // CONVIDAR MEMBRO
+    if (isset($_POST['convidar_membro_id'])) {
+        $id_convidar = (int)$_POST['convidar_membro_id'];
+        if ($id_convidar > 0) {
+            $stmt_m_exist = $pdo->prepare('SELECT id_convidado FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
+            $stmt_m_exist->execute([$id_projeto, $id_convidar]);
+            
+            if (!$stmt_m_exist->fetch()) {
+                $stmt_in_membro = $pdo->prepare('INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES (?, ?, ?, 3)');
+                $stmt_in_membro->execute([$usuario_id, $id_convidar, $id_projeto]);
+
+                $stmt_u = $pdo->prepare('SELECT id, nome, email FROM usuarios WHERE id = ?');
+                $stmt_u->execute([$id_convidar]);
+                $usr = $stmt_u->fetch();
+
+                echo json_encode([
+                    'success' => true, 
+                    'id' => $usr['id'], 
+                    'nome' => $usr['nome'] ?: $usr['email']
+                ]);
+                exit;
+            }
+        }
+        echo json_encode(['success' => false, 'message' => 'Membro já cadastrado ou inválido']);
+        exit;
+    }
+
+    // REMOVER OU CANCELAR CONVITE DE MEMBRO
+    if (isset($_POST['remover_membro_id'])) {
+        $id_remover = (int)$_POST['remover_membro_id'];
+        $stmt_del_membro = $pdo->prepare('DELETE FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
+        $stmt_del_membro->execute([$id_projeto, $id_remover]);
+
+        $stmt_u = $pdo->prepare('SELECT id, nome, email FROM usuarios WHERE id = ?');
+        $stmt_u->execute([$id_remover]);
+        $usr = $stmt_u->fetch();
+
+        echo json_encode([
+            'success' => true, 
+            'id' => $id_remover,
+            'nome' => $usr ? ($usr['nome'] ?: $usr['email']) : ''
+        ]);
+        exit;
+    }
+}
+
+// SALVAR ALTERAÇÕES DO PROJETO (NOME, DESCRIÇÃO, HISTÓRIA, CATEGORIAS)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
     $nome_projeto = trim($_POST['nome_projeto'] ?? '');
     $descricao = trim($_POST['descricao'] ?? '');
     $historia = trim($_POST['historia'] ?? '');
-    $membros_selecionados = isset($_POST['membros']) ? array_filter($_POST['membros']) : [];
     $categorias_selecionadas = isset($_POST['categorias']) ? array_filter($_POST['categorias']) : [];
 
     if (!empty($nome_projeto)) {
         try {
             $pdo->beginTransaction();
 
-            // 1. Atualizar nome do projeto
             $stmt_up_proj = $pdo->prepare('UPDATE projetos SET nome = ? WHERE id = ?');
             $stmt_up_proj->execute([$nome_projeto, $id_projeto]);
 
-            // 2. Atualizar ou inserir descrição e história na tabela proj_dados
             $stmt_check_dados = $pdo->prepare('SELECT id_projeto FROM proj_dados WHERE id_projeto = ?');
             $stmt_check_dados->execute([$id_projeto]);
 
@@ -85,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
                 $stmt_in_dados->execute([$descricao, $historia, $id_projeto]);
             }
 
-            // 3. Atualizar Categorias
             $stmt_del_cat = $pdo->prepare('DELETE FROM proj_categorias WHERE id_projeto = ?');
             $stmt_del_cat->execute([$id_projeto]);
 
@@ -96,35 +146,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
                 }
             }
 
-            // 4. Atualizar Membros (adicionar novos convites pendentes)
-            $stmt_m_atuais = $pdo->prepare('SELECT id_convidado FROM proj_membros WHERE id_projeto = ?');
-            $stmt_m_atuais->execute([$id_projeto]);
-            $membros_existentes = $stmt_m_atuais->fetchAll(PDO::FETCH_COLUMN);
-
-            $stmt_in_membro = $pdo->prepare('INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES (?, ?, ?, 3)');
-            foreach ($membros_selecionados as $id_convidado) {
-                if (!in_array($id_convidado, $membros_existentes)) {
-                    $stmt_in_membro->execute([$usuario_id, $id_convidado, $id_projeto]);
-                }
-            }
-
             $pdo->commit();
             header('Location: editar_projeto.php?id=' . $id_projeto . '#visao-geral');
             exit;
         } catch (Exception $e) {
             $pdo->rollBack();
-            $erro_salvar = 'Erro ao salvar projeto: ' . $e->getMessage();
+            $erro = 'Erro ao salvar projeto: ' . $e->getMessage();
         }
     }
-}
-
-// AÇÃO DE REMOVER MEMBRO OU CANCELAR CONVITE PENDENTE
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remover_membro_id'])) {
-    $id_remover = (int)$_POST['remover_membro_id'];
-    $stmt_del_membro = $pdo->prepare('DELETE FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
-    $stmt_del_membro->execute([$id_projeto, $id_remover]);
-    header('Location: editar_projeto.php?id=' . $id_projeto . '#visao-geral');
-    exit;
 }
 
 // AVALIAÇÕES E COMENTÁRIOS
@@ -156,16 +185,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
 
 // CONSULTA DE MEMBROS ATIVOS E PENDENTES
 $stmt_membros_ativos = $pdo->prepare(
-   'SELECT u.id, u.nome, u.email 
+   'SELECT u.id, u.nome, u.email, pm.status_membro
     FROM proj_membros pm 
     JOIN usuarios u ON pm.id_convidado = u.id 
-    WHERE pm.id_projeto = ? AND pm.status_membro = 1 OR pm.status_membro = 2'
+    WHERE pm.id_projeto = ? AND (pm.status_membro = 1 OR pm.status_membro = 2)'
 );
 $stmt_membros_ativos->execute([$id_projeto]);
 $membros_ativos = $stmt_membros_ativos->fetchAll();
 
 $stmt_membros_pendentes = $pdo->prepare(
-   'SELECT u.id, u.nome, u.email 
+   'SELECT u.id, u.nome, u.email
     FROM proj_membros pm 
     JOIN usuarios u ON pm.id_convidado = u.id 
     WHERE pm.id_projeto = ? AND pm.status_membro = 3'
@@ -183,14 +212,13 @@ $stmt_cat_proj = $pdo->prepare(
 $stmt_cat_proj->execute([$id_projeto]);
 $categorias_projeto = $stmt_cat_proj->fetchAll();
 
-// CORREÇÃO DO BUG: Uso de LEFT JOIN para carregar todos os usuários sem filtrar incorretamente por vínculo rígido de instituição
 $usuarios_query = $pdo->prepare(
-   "SELECT u.id, u.nome, u.email 
+   'SELECT u.id, u.nome, u.email 
     FROM usuarios u 
     LEFT JOIN extra_usuarios e ON u.id = e.id_usuario
-    WHERE u.id != ? AND (e.id_instituicao = ? OR ? = 0 OR e.id_instituicao IS NULL)"
+    WHERE u.id != ? AND u.tipo = 1 AND e.id_instituicao = ?'
 );
-$usuarios_query->execute([$usuario_id, $usuario_id_instituicao, $usuario_id_instituicao]);
+$usuarios_query->execute([$usuario_id, $usuario_id_instituicao]);
 $lista_usuarios = $usuarios_query->fetchAll();
 
 $categorias_query = $pdo->query('SELECT id, nome FROM categorias');
@@ -212,7 +240,6 @@ try {
     $comentarios = [];
 }
 
-//////////////////////////////////
 $title = 'Editar ' . htmlspecialchars($projeto['nome']);
 $href = 'dashboard.php';
 include 'header.php';
@@ -228,8 +255,8 @@ include 'header.php';
 
     <hr>
 
-    <?php if (!empty($erro_salvar)): ?>
-        <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro_salvar) ?></strong></p>
+    <?php if (!empty($erro)): ?>
+        <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
     <!-- FORMULÁRIO PRINCIPAL ENGLOBANDO AS ABAS EDITÁVEIS -->
@@ -257,31 +284,29 @@ include 'header.php';
 
             <!-- SEÇÃO DE MEMBROS ATIVOS -->
             <div>
-                <strong>Membros Ativos:</strong>
+                <strong>Membros:</strong>
                 <div class="multiple_inline">
-                    <div id="membros-ativos-lista">
-                        <?php foreach ($membros_ativos as $ma): ?>
-                            <div id="membro-ativo-<?= $ma['id'] ?>">
-                                <span><?= htmlspecialchars($ma['nome'] ?: $ma['email']) ?></span>
-                                <?php if ($ma['id'] != $usuario_id): ?>
-                                    <button type="submit" form="form-remover-<?= $ma['id'] ?>" class="btn-x">x</button>
-                                <?php endif; ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php foreach ($membros_ativos as $ma): ?>
+                        <div id="membro-ativo-<?= $ma['id'] ?>">
+                            <span><?= htmlspecialchars($ma['nome'] ?: $ma['email']) ?></span>
+                            <?php if ($ma['id'] != $usuario_id && $ma['status_membro'] != 1): ?>
+                                <button type="button" onclick="removerMembroAJAX(<?= $ma['id'] ?>)" class="btn-x">x</button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
             <br>
 
             <!-- SEÇÃO DE CONVITES PENDENTES E NOVO CONVITE -->
             <div>
-                <strong>Convites Pendentes:</strong>
+                <strong>Convites pendentes:</strong>
                 <div class="multiple_inline">
-                    <div id="membros-selecionados">
+                    <div id="membros-selecionados" class="multiple_inline">
                         <?php foreach ($membros_pendentes as $mp): ?>
                             <div id="membros-item-<?= $mp['id'] ?>">
                                 <span><?= htmlspecialchars($mp['nome'] ?: $mp['email']) ?></span>
-                                <button type="submit" form="form-remover-<?= $mp['id'] ?>" class="btn-x">x</button>
+                                <button type="button" onclick="removerMembroAJAX(<?= $mp['id'] ?>)" class="btn-x">x</button>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -300,7 +325,7 @@ include 'header.php';
                     </div>
 
                     <button type="button" class="plus" onclick="mostrarSeletor('membros')">
-                        <svg width="24" height="24" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="72" height="72" fill="#111111"/>
                             <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
                         </svg>
@@ -332,7 +357,7 @@ include 'header.php';
                     </div>
 
                     <button type="button" class="plus" onclick="mostrarSeletor('categorias')">
-                        <svg width="24" height="24" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect width="72" height="72" fill="#111111"/>
                             <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
                         </svg>
@@ -360,13 +385,6 @@ include 'header.php';
             <button type="submit" class="btn-novo">Salvar Alterações</button>
         </div>
     </form>
-
-    <!-- FORMULÁRIOS INDEPENDENTES PARA REMOÇÃO DE MEMBROS E CANCELAMENTO DE CONVITES -->
-    <?php foreach (array_merge($membros_ativos, $membros_pendentes) as $m_rem): ?>
-        <form id="form-remover-<?= $m_rem['id'] ?>" method="POST" action="" style="display:none;">
-            <input type="hidden" name="remover_membro_id" value="<?= $m_rem['id'] ?>">
-        </form>
-    <?php endforeach; ?>
 
     <!-- AVALIAÇÕES -->
     <div id="aba-avaliacoes" style="display: none;">
@@ -476,8 +494,8 @@ include 'header.php';
             }
         }
 
-        mudarAba('visao-geral');
         if (location.hash && location.hash !== '#') mudarAba(location.hash.slice(1));
+        else mudarAba('visao-geral');
 
         function toggleFormAvaliacao() {
             const formContainer = document.getElementById('form-avaliacao-container');
@@ -497,8 +515,46 @@ include 'header.php';
             selectorDiv.style.display = (selectorDiv.style.display === 'none') ? 'block' : 'none';
         }
 
-        function confirmarSelecao(tipo) {
-            const select = document.getElementById((tipo === 'membros') ? 'select membro' : 'select categoria');
+        async function confirmarSelecao(tipo) {
+            if (tipo === 'membros') {
+                const select = document.getElementById('select membro');
+                const value = select.value;
+                if (!value) return;
+
+                const formData = new FormData();
+                formData.append('ajax', '1');
+                formData.append('convidar_membro_id', value);
+
+                try {
+                    const response = await fetch(window.location.href, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const res = await response.json();
+
+                    if (res.success) {
+                        const container = document.getElementById('membros-selecionados');
+                        const itemDiv = document.createElement('div');
+                        itemDiv.id = 'membros-item-' + res.id;
+                        itemDiv.innerHTML = `
+                            <span>${res.nome}</span>
+                            <button type="button" onclick="removerMembroAJAX(${res.id})" class="btn-x">x</button>
+                        `;
+                        container.appendChild(itemDiv);
+
+                        const optToRem = select.querySelector(`option[value="${value}"]`);
+                        if (optToRem) optToRem.remove();
+
+                        select.selectedIndex = 0;
+                        document.getElementById('membros selector').style.display = 'none';
+                    }
+                } catch (err) {
+                    console.error('Erro ao convidar membro:', err);
+                }
+                return;
+            }
+
+            const select = document.getElementById('select categoria');
             const value = select.value;
             const text = select.options[select.selectedIndex].text;
 
@@ -522,6 +578,38 @@ include 'header.php';
             container.appendChild(itemDiv);
             select.selectedIndex = 0;
             document.getElementById(tipo + ' selector').style.display = 'none';
+        }
+
+        async function removerMembroAJAX(idMembro) {
+            const formData = new FormData();
+            formData.append('ajax', '1');
+            formData.append('remover_membro_id', idMembro);
+
+            try {
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData
+                });
+                const res = await response.json();
+
+                if (res.success) {
+                    const elPendente = document.getElementById('membros-item-' + idMembro);
+                    if (elPendente) elPendente.remove();
+
+                    const elAtivo = document.getElementById('membro-ativo-' + idMembro);
+                    if (elAtivo) elAtivo.remove();
+
+                    const select = document.getElementById('select membro');
+                    if (select && res.nome) {
+                        const newOpt = document.createElement('option');
+                        newOpt.value = idMembro;
+                        newOpt.textContent = res.nome;
+                        select.appendChild(newOpt);
+                    }
+                }
+            } catch (err) {
+                console.error('Erro ao remover membro:', err);
+            }
         }
 
         function removerItem(elementId) {

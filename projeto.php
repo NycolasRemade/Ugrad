@@ -9,6 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 $id_projeto = $_GET['id'];
 
 $stmt = null;
+$projeto = null;
 // dados do projeto
 if ($_SESSION['usuario_tipo'] === 1) {
     // ALUNO
@@ -20,6 +21,7 @@ if ($_SESSION['usuario_tipo'] === 1) {
         WHERE p.id = ? AND pm.id_convidado = ?'
     );
     $stmt->execute([$id_projeto, $_SESSION['usuario_id']]);
+    $projeto = $stmt->fetch();
 } elseif ($_SESSION['usuario_tipo'] === 2 || $_SESSION['usuario_tipo'] === 4) {
     // PROFESSOR ou INSTITUICAO
     $stmt = $pdo->prepare(
@@ -31,11 +33,21 @@ if ($_SESSION['usuario_tipo'] === 1) {
         WHERE p.id = ? AND pm.id_convidado = pm.id_convidante AND e.id_instituicao = ?'
     );
     $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
+    $projeto = $stmt->fetch();
 } elseif ($_SESSION['usuario_tipo'] === 3) {
     // EMPRESARIO
+} elseif ($_SESSION['usuario_tipo'] === 5) {
+    // ADMINISTRADOR
+    $stmt = $pdo->prepare(
+       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+        FROM projetos p 
+        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
+        WHERE p.id = ?'
+    );
+    $stmt->execute([$id_projeto]);
+    $projeto = $stmt->fetch();
 }
 
-$projeto = $stmt->fetch();
 if (empty($projeto)) {
     header('Location: dashboard.php');
     exit;
@@ -97,15 +109,15 @@ $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
 // comentários/avaliações
 try {
     $stmt = $pdo->prepare(
-   'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
-    FROM comentarios c
-    JOIN usuarios u ON c.id_usuario = u.id
-    JOIN tipos_usuario tu ON u.tipo = tu.id
-    WHERE c.id_projeto = ?
-    ORDER BY c.data_criacao DESC'
-);
-$stmt->execute([$id_projeto]);
-$comentarios = $stmt->fetchAll();
+       'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
+        FROM comentarios c
+        JOIN usuarios u ON c.id_usuario = u.id
+        JOIN tipos_usuario tu ON u.tipo = tu.id
+        WHERE c.id_projeto = ?
+        ORDER BY c.data_criacao DESC'
+    );
+    $stmt->execute([$id_projeto]);
+    $comentarios = $stmt->fetchAll();
 } catch (PDOException) {
     $mensagem = "Não foi possível acessar os comentários do projeto = ";
 }

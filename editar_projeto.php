@@ -286,14 +286,16 @@ include 'header.php';
             <div>
                 <strong>Membros:</strong>
                 <div class="multiple_inline">
-                    <?php foreach ($membros_ativos as $ma): ?>
-                        <div id="membro-ativo-<?= $ma['id'] ?>">
-                            <span><?= htmlspecialchars($ma['nome'] ?: $ma['email']) ?></span>
-                            <?php if ($ma['id'] != $usuario_id && $ma['status_membro'] != 1): ?>
-                                <button type="button" onclick="removerMembroAJAX(<?= $ma['id'] ?>)" class="btn-x">x</button>
-                            <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
+                    <div id="membros-ativos-lista" class="multiple_inline">
+                        <?php foreach ($membros_ativos as $ma): ?>
+                            <div id="membro-ativo-<?= $ma['id'] ?>">
+                                <span><?= htmlspecialchars($ma['nome'] ?: $ma['email']) ?></span>
+                                <?php if ($ma['id'] != $usuario_id && $ma['status_membro'] != 1): ?>
+                                    <button type="button" onclick="removerMembroAJAX(<?= $ma['id'] ?>)" class="btn-x">x</button>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
             <br>

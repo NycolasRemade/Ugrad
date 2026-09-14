@@ -61,7 +61,7 @@ if (empty($projeto)) {
     exit;
 }
 
-// UPLOAD AUTOMÁTICO DE IMAGEM
+// upload da imagem do projeto
 $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagem_projeto'])) {
 
@@ -109,11 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagem_projeto'])) {
     }
 
 
-// CONVIDAR E REMOVER MEMBROS SEM RECARREGAR A PÁGINA
+// convidar e remover membros sem recarregar a página
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
     header('Content-Type: application/json');
 
-    // CONVIDAR MEMBRO
+    // convidar membro
     if (isset($_POST['convidar_membro_id'])) {
         $id_convidar = (int)$_POST['convidar_membro_id'];
         if ($id_convidar > 0) {
@@ -140,30 +140,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
         exit;
     }
 
-    // REMOVER OU CANCELAR CONVITE DE MEMBRO
+    // remover membro ou cancelar convite
     if (isset($_POST['remover_membro_id'])) {
         $id_remover = (int)$_POST['remover_membro_id'];
         $stmt_del_membro = $pdo->prepare('DELETE FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
         $stmt_del_membro->execute([$id_projeto, $id_remover]);
 
-        $stmt_u = $pdo->prepare('SELECT id, nome, email FROM usuarios WHERE id = ?');
-        $stmt_u->execute([$id_remover]);
-        $usr = $stmt_u->fetch();
-
         echo json_encode([
             'success' => true, 
-            'id' => $id_remover,
-            'nome' => $usr ? ($usr['nome'] ?: $usr['email']) : ''
+            'id' => $id_remover
         ]);
         exit;
     }
 }
 
-// SALVAR ALTERAÇÕES DO PROJETO (NOME, DESCRIÇÃO, HISTÓRIA, CATEGORIAS)
+// salvar edição
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
     $nome_projeto = trim($_POST['nome_projeto'] ?? '');
     $descricao = trim($_POST['descricao'] ?? '');
-    $historia = trim($_POST['historia'] ?? '');
     $categorias_selecionadas = isset($_POST['categorias']) ? array_filter($_POST['categorias']) : [];
 
     if (!empty($nome_projeto)) {
@@ -196,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
     }
 }
 
-// AVALIAÇÕES E COMENTÁRIOS
+// avaliações e comentários
 $stmt_coment_usr = $pdo->prepare('SELECT id, comentario, nota FROM comentarios WHERE id_usuario = ? AND id_projeto = ?');
 $stmt_coment_usr->execute([$usuario_id, $id_projeto]);
 $comentario_usuario = $stmt_coment_usr->fetch();
@@ -223,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
     }
 }
 
-// CONSULTA DE MEMBROS ATIVOS E PENDENTES
+// consulta de membros ativos e pendentes
 $stmt_membros_ativos = $pdo->prepare(
    'SELECT u.id, u.nome, u.email, pm.status_membro
     FROM proj_membros pm 
@@ -242,7 +236,7 @@ $stmt_membros_pendentes = $pdo->prepare(
 $stmt_membros_pendentes->execute([$id_projeto]);
 $membros_pendentes = $stmt_membros_pendentes->fetchAll();
 
-// CONSULTA DE CATEGORIAS VINCULADAS
+// categorias do projeto
 $stmt_cat_proj = $pdo->prepare(
    'SELECT c.id, c.nome 
     FROM proj_categorias pc 
@@ -264,7 +258,7 @@ $lista_usuarios = $usuarios_query->fetchAll();
 $categorias_query = $pdo->query('SELECT id, nome FROM categorias');
 $lista_categorias = $categorias_query->fetchAll();
 
-// CONSULTA DE COMENTÁRIOS/AVALIAÇÕES
+// comentários/avaliações
 try {
     $stmt_coments = $pdo->prepare(
        'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
@@ -304,12 +298,11 @@ include 'header.php';
         <input type="file" id="imagem_projeto" name="imagem_projeto" accept="image/png, image/jpeg, image/webp" >
     </form>
 
-    <!-- FORMULÁRIO PRINCIPAL PARA AS ABAS EDITÁVEIS -->
-    <form method="POST" action="">
-        <input type="hidden" name="salvar_projeto" value="1">
+    <!-- VISÃO GERAL -->
+    <div id="aba-visao-geral">
+        <form method="POST" action="">
+            <input type="hidden" name="salvar_projeto" value="1">
 
-        <!-- VISÃO GERAL -->
-        <div id="aba-visao-geral">
             <div>
                 <label for="nome_projeto"><strong>Nome do projeto:</strong></label><br>
                 <input type="text" id="nome_projeto" name="nome_projeto" value="<?= htmlspecialchars($projeto['nome'] ?? '') ?>" required style="font-size: 1.5rem; font-weight: bold; width: 100%; max-width: 640px;">
@@ -349,6 +342,39 @@ include 'header.php';
                     </div>
                 </div>
             </div>
+            <script>
+                async function removerMembroAJAX(idMembro) {
+                    const formData = new FormData();
+                    formData.append('ajax', '1');
+                    formData.append('remover_membro_id', idMembro);
+
+                    try {
+                        const response = await fetch(window.location.href, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const res = await response.json();
+
+                        if (res.success) {
+                            const elPendente = document.getElementById('membros-item-' + idMembro);
+                            if (elPendente) elPendente.remove();
+
+                            const elAtivo = document.getElementById('membro-ativo-' + idMembro);
+                            if (elAtivo) elAtivo.remove();
+
+                            const select = document.getElementById('select membro');
+                            if (select && res.nome) {
+                                const newOpt = document.createElement('option');
+                                newOpt.value = idMembro;
+                                newOpt.textContent = res.nome;
+                                select.appendChild(newOpt);
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Erro ao remover membro:', err);
+                    }
+                }
+            </script>
             <br>
 
             <!-- SEÇÃO DE CONVITES PENDENTES E NOVO CONVITE -->
@@ -423,21 +449,21 @@ include 'header.php';
                 <label for="descricao"><strong>Descrição:</strong></label><br>
                 <textarea id="descricao" name="descricao" rows="4" style="width: 100%; max-width: 640px;"><?= htmlspecialchars($projeto['descricao'] ?? '') ?></textarea>
             </div>
-        </div>
 
-        <!-- HISTÓRIA -->
-        <div id="aba-historia" style="display: none;">
-            <h2>História</h2>
-            <div>
-                <textarea id="historia" name="historia" rows="8" style="width: 100%; max-width: 640px;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
+            <br>
+            <div class='buttons_criar'>
+                <button type="submit" class="btn-novo">Salvar Alterações</button>
             </div>
-        </div>
+        </form>
+    </div>
 
-        <br>
-        <div class='buttons_criar' id="acoes-salvar">
-            <button type="submit" class="btn-novo">Salvar Alterações</button>
+    <!-- HISTÓRIA (EXIBIÇÃO APENAS) -->
+    <div id="aba-historia" style="display: none;">
+        <h2>História</h2>
+        <div style="max-width: 640px;">
+            <p><?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Nenhuma história.')) ?></p>
         </div>
-    </form>
+    </div>
 
     <!-- AVALIAÇÕES -->
     <div id="aba-avaliacoes" style="display: none;">
@@ -566,14 +592,6 @@ include 'header.php';
             document.getElementById('btn_historia').className = 'deepmod';
             document.getElementById('btn_avaliacoes').className = 'deepmod';
 
-            const acoesSalvar = document.getElementById('acoes-salvar');
-
-            if (nomeAba === 'avaliacoes') {
-                if (acoesSalvar) acoesSalvar.style.display = 'none';
-            } else {
-                if (acoesSalvar) acoesSalvar.style.display = 'block';
-            }
-
             const bloco = document.getElementById('aba-' + nomeAba);
             const botao = document.getElementById('btn_' + nomeAba);
             
@@ -671,38 +689,6 @@ include 'header.php';
             container.appendChild(itemDiv);
             select.selectedIndex = 0;
             document.getElementById(tipo + ' selector').style.display = 'none';
-        }
-
-        async function removerMembroAJAX(idMembro) {
-            const formData = new FormData();
-            formData.append('ajax', '1');
-            formData.append('remover_membro_id', idMembro);
-
-            try {
-                const response = await fetch(window.location.href, {
-                    method: 'POST',
-                    body: formData
-                });
-                const res = await response.json();
-
-                if (res.success) {
-                    const elPendente = document.getElementById('membros-item-' + idMembro);
-                    if (elPendente) elPendente.remove();
-
-                    const elAtivo = document.getElementById('membro-ativo-' + idMembro);
-                    if (elAtivo) elAtivo.remove();
-
-                    const select = document.getElementById('select membro');
-                    if (select && res.nome) {
-                        const newOpt = document.createElement('option');
-                        newOpt.value = idMembro;
-                        newOpt.textContent = res.nome;
-                        select.appendChild(newOpt);
-                    }
-                }
-            } catch (err) {
-                console.error('Erro ao remover membro:', err);
-            }
         }
 
         function removerItem(elementId) {

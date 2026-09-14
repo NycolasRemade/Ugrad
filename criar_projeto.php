@@ -22,6 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_projeto'])) {
             $stmt_proj->execute([$nome_projeto]);
             $id_projeto = $pdo->lastInsertId();
 
+            $stmt_dados = $pdo->prepare('INSERT INTO proj_dados (id_projeto) VALUES (?)');
+            $stmt_dados->execute([$id_projeto]);
+
             $stmt_dono = $pdo->prepare('INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES (?, ?, ?, 1)');
             $stmt_dono->execute([$usuario_id, $usuario_id, $id_projeto]);
 

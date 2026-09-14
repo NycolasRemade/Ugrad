@@ -125,16 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
             $stmt_up_proj = $pdo->prepare('UPDATE projetos SET nome = ? WHERE id = ?');
             $stmt_up_proj->execute([$nome_projeto, $id_projeto]);
 
-            $stmt_check_dados = $pdo->prepare('SELECT id_projeto FROM proj_dados WHERE id_projeto = ?');
-            $stmt_check_dados->execute([$id_projeto]);
-
-            if ($stmt_check_dados->fetch()) {
-                $stmt_up_dados = $pdo->prepare('UPDATE proj_dados SET descricao = ?, historia = ? WHERE id_projeto = ?');
-                $stmt_up_dados->execute([$descricao, $historia, $id_projeto]);
-            } else {
-                $stmt_in_dados = $pdo->prepare('INSERT INTO proj_dados (id_projeto, descricao, historia) VALUES (?, ?, ?)');
-                $stmt_in_dados->execute([$descricao, $historia, $id_projeto]);
-            }
+            $stmt_up_dados = $pdo->prepare('UPDATE proj_dados SET descricao = ? WHERE id_projeto = ?');
+            $stmt_up_dados->execute([$descricao, $id_projeto]);
 
             $stmt_del_cat = $pdo->prepare('DELETE FROM proj_categorias WHERE id_projeto = ?');
             $stmt_del_cat->execute([$id_projeto]);

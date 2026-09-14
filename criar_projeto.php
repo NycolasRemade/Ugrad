@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_projeto'])) {
             }
 
             $pdo->commit();
-            header('Location: dashboard.php');
+            header('Location: editar_projeto.php?id=<?= $id_projeto ?>');
             exit;
         } catch (Exception $e) {
             $pdo->rollBack();
@@ -53,12 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_projeto'])) {
     }
 }
 
+// Faça isso aqui funcionar se não estiver funcionando por favor
+
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'];
+$usuario_id_turma = $_SESSION['id_turma'];
 $usuarios_query = $pdo->query(
    "SELECT u.id, u.nome, u.email 
     FROM usuarios u INNER JOIN extra_usuarios e
     ON u.id = e.id_usuario
-    WHERE u.tipo = 1 AND e.id_instituicao = $usuario_id_instituicao AND u.id != $usuario_id"
+    WHERE u.tipo = 1 AND e.id_instituicao = $usuario_id_instituicao AND u.id != $usuario_id AND e.id_turma = $usuario_id_turma"
 );
 $lista_usuarios = $usuarios_query->fetchAll();
 

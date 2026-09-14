@@ -61,6 +61,54 @@ if (empty($projeto)) {
     exit;
 }
 
+// UPLOAD AUTOMÁTICO DE IMAGEM
+$max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagem_projeto'])) {
+
+        $imagem = $_FILES['imagem_projeto'];
+        if (
+            $imagem['size'] > 5 * 1024 * 1024 || 
+            $imagem['error'] === UPLOAD_ERR_INI_SIZE || 
+            $imagem['error'] === UPLOAD_ERR_FORM_SIZE
+        ) {
+            $erro = 'A imagem excede o tamanho máximo permitido de 5MB.';
+        } elseif ($imagem['error'] !== UPLOAD_ERR_OK) {
+            $erro = 'Erro no upload.';
+        } else {
+            $imgInfo = getimagesize($imagem['tmp_name']);
+            switch ($imgInfo['mime']) {
+                case 'image/jpeg':
+                    $imagem_original = imagecreatefromjpeg($imagem['tmp_name']);
+                    break;
+                case 'image/png':
+                    $imagem_original = imagecreatefrompng($imagem['tmp_name']);
+                    imagepalettetotruecolor($imagem_original);
+                    imagealphablending($imagem_original, false);
+                    imagesavealpha($imagem_original, true);
+                    break;
+                case 'image/webp':
+                    $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
+                    break;
+                default:
+                    $erro = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
+            }
+            if ($imagem_original) {
+                ob_start();
+                imagewebp($imagem_original, null, 70);
+                imagedestroy($imagem_original);
+                $imagem_nova = ob_get_clean();
+
+                $stmt = $pdo->prepare('UPDATE projetos SET img = ? WHERE id = ?');
+                $stmt->bindParam(1, $imagem_nova, PDO::PARAM_LOB);
+                $stmt->bindParam(2, $id_projeto);
+                $stmt->execute();
+
+                $mensagem = 'Imagem de perfil atualizada!';
+            }
+        }
+    }
+
+
 // CONVIDAR E REMOVER MEMBROS SEM RECARREGAR A PÁGINA
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
     header('Content-Type: application/json');
@@ -251,7 +299,12 @@ include 'header.php';
         <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    <!-- FORMULÁRIO PRINCIPAL ENGLOBANDO AS ABAS EDITÁVEIS -->
+    <!-- FORMULÁRIO OCULTO PARA UPLOAD DA IMAGEM -->
+    <form id="form-upload-imagem" method="POST" enctype="multipart/form-data" style="display: none;">
+        <input type="file" id="imagem_projeto" name="imagem_projeto" accept="image/png, image/jpeg, image/webp" >
+    </form>
+
+    <!-- FORMULÁRIO PRINCIPAL PARA AS ABAS EDITÁVEIS -->
     <form method="POST" action="">
         <input type="hidden" name="salvar_projeto" value="1">
 
@@ -263,15 +316,21 @@ include 'header.php';
             </div>
             <br>
 
-            <div>
-                <?php if (!empty($projeto['img'])): ?>
-                    <img src="data:image/jpeg;base64,<?= base64_encode($projeto['img']) ?>" alt="Imagem do Projeto">
-                <?php else: ?>
-                    <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
-                        [ Imagem do Projeto ]
-                    </div>
-                <?php endif; ?>
+            <!-- ÁREA CLICÁVEL DA IMAGEM -->
+            <div id="area-clicavel-imagem" style="cursor: pointer; background-color:lightgray; background-position:center; background-repeat:none; background-size:cover; <?php if (!empty($projeto['img'])) echo 'background-image:url(\'data:image/webp;base64,' . base64_encode($projeto['img']) . '\');'; ?> display:flex; justify-content:center; align-items:center; width:640px; height:360px;">
+                [ Clique para selecionar uma imagem ]
             </div>
+            <script>
+                document.getElementById("area-clicavel-imagem").onclick = function() {
+                    document.getElementById("imagem_projeto").click();
+                };
+                const imgInput = document.getElementById("imagem_projeto");
+                imgInput.onchange = function() {
+                    if (imgInput.files.length > 0) {
+                        document.getElementById('form-upload-imagem').submit();
+                    }
+                };
+            </script>
             <br>
 
             <!-- SEÇÃO DE MEMBROS ATIVOS -->

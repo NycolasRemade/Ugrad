@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_projeto'])) {
 // Faça isso aqui funcionar se não estiver funcionando por favor
 
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'];
-$usuario_id_turma = $_SESSION['id_turma'];
+$usuario_id_turma = $_SESSION['usuario_id_turma'];
 $usuarios_query = $pdo->query(
    "SELECT u.id, u.nome, u.email 
     FROM usuarios u INNER JOIN extra_usuarios e

@@ -32,7 +32,7 @@ include 'header.php'
                'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto
                 FROM projetos p INNER JOIN proj_membros m 
                 ON m.id_projeto = p.id 
-                WHERE m.id_convidado = ?'
+                WHERE m.id_convidado = ? AND m.status_membro != 3'
             );
             $stmt_projetos->execute([$id_usuario]);
             $projetos = $stmt_projetos->fetchAll();

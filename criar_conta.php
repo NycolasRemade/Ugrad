@@ -28,14 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['usuario_nome'] = $nome;
 
             if ($tipo !== 3) {
-                $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao, id_turma) VALUES (?, ?)');
-                $stmt->execute([$_SESSION['usuario_id'], $_SESSION['usuario_id_instituicao']], $_SESSION['usuario_id_turma']);
+                $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao, id_turma) VALUES (?, ?, ?)');
+                $stmt->execute([$_SESSION['usuario_id'], $_SESSION['usuario_id_instituicao'], $_SESSION['usuario_id_turma']]);
             }
 
             header('Location: dashboard.php');
             exit;
         } catch (\PDOException $e) {
-            $erro = 'Algo deu errado, tente novamente mais tarde.';
+            $erro = "Algo deu errado, tente novamente mais tarde. : $e";
         }
     } else {
         $erro = 'Preencha todos campos corretamente.';

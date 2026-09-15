@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($nome) && $email && !empty($senha) && $tipo > 0 || $tipo <= 4) {
         try {
+            $pdo->beginTransaction();
 
             $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
             $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo]);
@@ -32,10 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$_SESSION['usuario_id'], $_SESSION['usuario_id_instituicao'], $_SESSION['usuario_id_turma']]);
             }
 
+            $pdo->commit();
             header('Location: dashboard.php');
             exit;
         } catch (\PDOException $e) {
-            $erro = "Algo deu errado, tente novamente mais tarde. : $e";
+            $pdo->rollBack();
+            $erro = 'Tente usar outro e-mail.';
         }
     } else {
         $erro = 'Preencha todos campos corretamente.';

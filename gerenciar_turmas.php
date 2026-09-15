@@ -23,14 +23,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!empty($nome_turma)) {
             if (mb_strlen($nome_turma) <= 25) {
-                $stmt = $pdo->prepare('INSERT INTO turmas (nome, id_instituicao) VALUES (?, ?)');
-                $stmt->execute([$nome_turma, $id_instituicao]);
-                $mensagem_sucesso = 'Turma criada com sucesso!';
+                try {
+                    $stmt = $pdo->prepare('INSERT INTO turmas (nome, id_instituicao) VALUES (?, ?)');
+                    $stmt->execute([$nome_turma, $id_instituicao]);
+                    $mensagem_sucesso = 'Turma criada com sucesso!';
+                } catch (\PDOException $e) {
+                    $mensagem_erro = 'Erro ao criar turma';
+                }
             } else {
-                $mensagem_erro = 'O nome da turma deve ter no máximo 25 caracteres.';
+                $mensagem_erro = 'O nome da turma deve ter no máximo 25 caracteres';
             }
         } else {
-            $mensagem_erro = 'Informe o nome da turma.';
+            $mensagem_erro = 'Informe o nome da turma';
         }
     }
 

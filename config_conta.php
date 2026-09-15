@@ -8,8 +8,8 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario_id = $_SESSION['usuario_id'];
 
-$mensagem = '';
-$erro = '';
+$mensagem_sucesso = '';
+$mensagem_erro = '';
 
 $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
@@ -49,12 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                 imagedestroy($imagem_original);
                 $imagem_nova = ob_get_clean();
 
-                $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
-                $stmt->bindParam(1, $imagem_nova, PDO::PARAM_LOB);
-                $stmt->bindParam(2, $usuario_id);
-                $stmt->execute();
+                try {
+                    $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = ? WHERE id = ?');
+                    $stmt->bindParam(1, $imagem_nova, PDO::PARAM_LOB);
+                    $stmt->bindParam(2, $usuario_id);
+                    $stmt->execute();
 
-                $mensagem = 'Imagem de perfil atualizada!';
+                    $mensagem_sucesso = 'Imagem de perfil atualizada!';
+                } catch (PDOException $e) {
+                    $mensagem_erro = 'Erro ao atualizar imagem de perfil';
+                }
             }
         }
     }
@@ -65,7 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         if (!empty($nome)) {
             $stmt = $pdo->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
             $stmt->execute([$nome, $usuario_id]);
-            $mensagem = 'Nome alterado com sucesso!';
+            $mensagem_sucesso = 'Nome alterado com sucesso!';
+        } else {
+            $mensagem_erro = 'Preencha o nome corretamente';
         }
     }
 
@@ -76,22 +82,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             try {
                 $stmt = $pdo->prepare('UPDATE usuarios SET email = ? WHERE id = ?');
                 $stmt->execute([$email, $usuario_id]);
-                $mensagem = 'E-mail alterado com sucesso!';
+                $mensagem_sucesso = 'E-mail alterado com sucesso!';
             } catch (PDOException $e) {
-                $erro = 'E-mail já está em uso ou é inválido.';
+                $erro = 'E-mail já está em uso ou é inválido';
             }
+        } else {
+            $mensagem_Erro = 'Preencha o e-mail corretamente';
         }
     }
 
     // senha
     if ($_POST['acao'] === 'alterar_senha') {
-        $senha = trim($_POST['senha']);
-        if (!empty($senha)) {
-            $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
-            $stmt->execute([$senha_hash, $usuario_id]);
-            $mensagem = 'Senha alterada com sucesso!';
-        }
+        $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
+        $stmt->execute([password_hash($senha, PASSWORD_DEFAULT), $usuario_id]);
+        $mensagem_sucesso = 'Senha alterada com sucesso!';
     }
 
     // descrição
@@ -99,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $descricao = trim($_POST['descricao']);
         $stmt = $pdo->prepare('UPDATE usuarios SET descricao = ? WHERE id = ?');
         $stmt->execute([$descricao, $usuario_id]);
-        $mensagem = 'Descrição alterada com sucesso!';
+        $mensagem_sucesso = 'Descrição alterada com sucesso!';
     }
 
     // aceitar convite de projeto
@@ -108,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         // Status 2 corresponde a MEMBRO
         $stmt = $pdo->prepare('UPDATE proj_membros SET status_membro = 2 WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
-        $mensagem = 'Convite aceito!';
+        $mensagem_sucesso = 'Convite aceito!';
     }
 
     // recusar convite de projeto
@@ -116,13 +120,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $id_convite = intval($_POST['id_convite']);
         $stmt = $pdo->prepare('DELETE FROM proj_membros WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
-        $mensagem = 'Convite recusado.';
+        $mensagem_sucesso = 'Convite recusado';
     }
 
     // sair da conta
     if ($_POST['acao'] === 'sair_conta') {
         session_destroy();
-        header("Location: login.php");
+        header('Location: login.php');
         exit;
     }
 
@@ -131,8 +135,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $stmt = $pdo->prepare('UPDATE usuarios SET ativada = FALSE WHERE id = ?');
         $stmt->execute([$usuario_id]);
         session_destroy();
-        $mensagem = 'Sua conta foi desativada.';
-        header("Location: login.php");
+        $mensagem_erro = 'Sua conta foi desativada.';
+        header('Location: login.php');
         exit;
     }
 }
@@ -169,12 +173,12 @@ include 'header.php'
 ?>
     <div class='config_container'>
 
-    <?php if ($mensagem): ?>
-        <p id='message'><strong><?= htmlspecialchars($mensagem) ?></strong></p>
+    <?php if ($mensagem_sucesso): ?>
+        <p id='message'><strong><?= htmlspecialchars($mensagem_sucesso) ?></strong></p>
     <?php endif; ?>
 
-    <?php if ($erro): ?>
-        <p id='erro'><strong><?= htmlspecialchars($erro) ?></strong></p>
+    <?php if ($mensagem_erro): ?>
+        <p id='erro'><strong><?= htmlspecialchars($mensagem_erro) ?></strong></p>
     <?php endif; ?>
 
     <div id='config_container'>

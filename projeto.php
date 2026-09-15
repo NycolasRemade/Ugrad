@@ -67,21 +67,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
     $feedback = 0;
 
     if (!empty($comentario_texto) && $id_projeto) {
-        if (empty($comentario_usuario)) {
-            $stmt_ins = $pdo->prepare(
-               'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
-                VALUES (?, ?, ?, ?, ?)'
-            );
-            $stmt_ins->execute([$_SESSION['usuario_id'], $id_projeto, $feedback, $comentario_texto, $nota]);
-        } else {
-            $stmt_upd = $pdo->prepare(
-               'UPDATE comentarios
-                SET comentario = ?, nota = ?
-                WHERE id_usuario = ?'
-            );
-            $stmt_upd->execute([$comentario_texto, $nota, $_SESSION['usuario_id']]);
+        try {
+            if (empty($comentario_usuario)) {
+                $stmt_ins = $pdo->prepare(
+                   'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
+                    VALUES (?, ?, ?, ?, ?)'
+                );
+                $stmt_ins->execute([$_SESSION['usuario_id'], $id_projeto, $feedback, $comentario_texto, $nota]);
+            } else {
+                $stmt_upd = $pdo->prepare(
+                   'UPDATE comentarios
+                    SET comentario = ?, nota = ?
+                    WHERE id_usuario = ?'
+                );
+                $stmt_upd->execute([$comentario_texto, $nota, $_SESSION['usuario_id']]);
+            }
+        } catch (PDOException) {
+            $mensagem_erro = 'Erro ao salvar comentário';
         }
-        header('Location: projeto.php?id=' . $id_projeto);
+        header("Location: projeto.php?id=$id_projeto");
         exit;
     }
 }
@@ -119,7 +123,7 @@ try {
     $stmt->execute([$id_projeto]);
     $comentarios = $stmt->fetchAll();
 } catch (PDOException) {
-    $mensagem = 'Não foi possível acessar os comentários do projeto';
+    $mensagem_erro = 'Não foi possível acessar os comentários do projeto';
 }
 
 //////////////////////////////////

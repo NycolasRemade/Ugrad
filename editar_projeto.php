@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagem_projeto'])) {
                 $stmt->bindParam(2, $id_projeto);
                 $stmt->execute();
 
-                $mensagem = 'Imagem de perfil atualizada!';
+                $mensagem_sucesso = 'Imagem de perfil atualizada!';
             }
         }
     }
@@ -115,42 +115,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
 
     // convidar membro
     if (isset($_POST['convidar_membro_id'])) {
-        $id_convidar = (int)$_POST['convidar_membro_id'];
-        if ($id_convidar > 0) {
-            $stmt_m_exist = $pdo->prepare('SELECT id_convidado FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
-            $stmt_m_exist->execute([$id_projeto, $id_convidar]);
-            
-            if (!$stmt_m_exist->fetch()) {
-                $stmt_in_membro = $pdo->prepare('INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES (?, ?, ?, 3)');
-                $stmt_in_membro->execute([$usuario_id, $id_convidar, $id_projeto]);
+        try {
+            $id_convidar = (int)$_POST['convidar_membro_id'];
+            if ($id_convidar > 0) {
+                $stmt_m_exist = $pdo->prepare('SELECT id_convidado FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
+                $stmt_m_exist->execute([$id_projeto, $id_convidar]);
+                
+                if (!$stmt_m_exist->fetch()) {
+                    $stmt_in_membro = $pdo->prepare('INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES (?, ?, ?, 3)');
+                    $stmt_in_membro->execute([$usuario_id, $id_convidar, $id_projeto]);
 
-                $stmt_u = $pdo->prepare('SELECT id, nome, email FROM usuarios WHERE id = ?');
-                $stmt_u->execute([$id_convidar]);
-                $usr = $stmt_u->fetch();
+                    $stmt_u = $pdo->prepare('SELECT id, nome, email FROM usuarios WHERE id = ?');
+                    $stmt_u->execute([$id_convidar]);
+                    $usr = $stmt_u->fetch();
 
-                echo json_encode([
-                    'success' => true, 
-                    'id' => $usr['id'], 
-                    'nome' => $usr['nome'] ?: $usr['email']
-                ]);
-                exit;
+                    echo json_encode([
+                        'success' => true, 
+                        'id' => $usr['id'], 
+                        'nome' => $usr['nome'] ?: $usr['email']
+                    ]);
+                    exit;
+                }
             }
+            echo json_encode(['success' => false, 'message' => 'Membro já cadastrado ou inválido']);
+            exit;
+        } catch (\PDOException $e) {
+            echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar']);
+            exit;
         }
-        echo json_encode(['success' => false, 'message' => 'Membro já cadastrado ou inválido']);
-        exit;
     }
 
     // remover membro ou cancelar convite
     if (isset($_POST['remover_membro_id'])) {
-        $id_remover = (int)$_POST['remover_membro_id'];
-        $stmt_del_membro = $pdo->prepare('DELETE FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
-        $stmt_del_membro->execute([$id_projeto, $id_remover]);
+        try {
+            $id_remover = (int)$_POST['remover_membro_id'];
+            $stmt_del_membro = $pdo->prepare('DELETE FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
+            $stmt_del_membro->execute([$id_projeto, $id_remover]);
 
-        echo json_encode([
-            'success' => true, 
-            'id' => $id_remover
-        ]);
-        exit;
+            echo json_encode(['success' => true, 'id' => $id_remover]);
+            exit;
+        } catch (\PDOException $e) {
+            echo json_encode(['success' => false, 'message' => 'Erro ao remover membro']);
+            exit;
+        }
     }
 }
 
@@ -181,11 +188,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
             }
 
             $pdo->commit();
-            header('Location: editar_projeto.php?id=' . $id_projeto . '#visao-geral');
+            header("Location: editar_projeto.php?id=$id_projeto");
             exit;
         } catch (Exception $e) {
             $pdo->rollBack();
-            $erro = 'Erro ao salvar projeto: ' . $e->getMessage();
+            $erro = 'Erro ao salvar projeto';
         }
     }
 }
@@ -200,20 +207,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
     $nota = isset($_POST['nota']) ? (int)$_POST['nota'] : null;
 
     if (!empty($comentario_texto) && $id_projeto) {
-        if (empty($comentario_usuario)) {
-            $stmt_ins = $pdo->prepare(
-               'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
-                VALUES (?, ?, 0, ?, ?)'
-            );
-            $stmt_ins->execute([$usuario_id, $id_projeto, $comentario_texto, $nota]);
-        } else {
-            $stmt_upd = $pdo->prepare(
-               'UPDATE comentarios SET comentario = ?, nota = ? WHERE id_usuario = ? AND id_projeto = ?'
-            );
-            $stmt_upd->execute([$comentario_texto, $nota, $usuario_id, $id_projeto]);
+        try {
+            if (empty($comentario_usuario)) {
+                $stmt_ins = $pdo->prepare(
+                   'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
+                    VALUES (?, ?, 0, ?, ?)'
+                );
+                $stmt_ins->execute([$usuario_id, $id_projeto, $comentario_texto, $nota]);
+            } else {
+                $stmt_upd = $pdo->prepare(
+                   'UPDATE comentarios 
+                    SET comentario = ?, nota = ? 
+                    WHERE id_usuario = ? AND id_projeto = ?'
+                );
+                $stmt_upd->execute([$comentario_texto, $nota, $usuario_id, $id_projeto]);
+            }
+            header('Location: editar_projeto.php?id=' . $id_projeto . '#avaliacoes');
+            exit;
+        } catch (\PDOException $e) {
+            $erro = 'Erro ao salvar comentário';
         }
-        header('Location: editar_projeto.php?id=' . $id_projeto . '#avaliacoes');
-        exit;
     }
 }
 

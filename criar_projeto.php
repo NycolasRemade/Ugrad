@@ -45,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_projeto'])) {
             }
 
             $pdo->commit();
-            header('Location: editar_projeto.php?id=<?= $id_projeto ?>');
+            header("Location: editar_projeto.php?id=$id_projeto");
             exit;
         } catch (Exception $e) {
             $pdo->rollBack();
-            $erro = 'Erro ao criar projeto: ' . $e->getMessage();
+            $erro = 'Erro ao criar projeto.';
         }
     } else {
         $erro = 'Preencha o nome do projeto.';

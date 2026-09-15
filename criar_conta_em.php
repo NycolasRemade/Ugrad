@@ -25,15 +25,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo]);
 
             $_SESSION['usuario_id'] = $pdo->lastInsertId();
+            $_SESSION['usuario_nome'] = $nome;
             
             header('Location: dashboard.php');
             exit;
             
         } catch (\PDOException $e) {
-            $erro = 'Algo deu errado, tente novamente mais tarde.';
+            $erro = 'Tente usar outro e-mail.';
         }
     } else {
-        $erro = "Preencha todos campos corretamente. $nome $email $senha $tipo" ;
+        $erro = 'Preencha todos campos corretamente.' ;
     }
 }
 

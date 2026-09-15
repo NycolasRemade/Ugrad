@@ -58,7 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->beginTransaction();
                 try {
                     // Remove da tabela extra_usuarios
-                    $stmt_e = $pdo->prepare('DELETE FROM extra_usuarios WHERE id_usuario = ?; DELETE FROM usuarios WHERE id = ? AND tipo = 2');
+                    $stmt_e = $pdo->prepare(
+                       'DELETE FROM extra_usuarios WHERE id_usuario = ?;
+                        DELETE FROM usuarios WHERE id = ? AND tipo = 2;'
+                    );
                     $stmt_e->execute([$id_professor, $id_professor]);
 
                     $pdo->commit();

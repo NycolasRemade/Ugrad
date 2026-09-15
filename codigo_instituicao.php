@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare(
                'SELECT c.id_instituicao, c.tipo_usuario, t.id
                 FROM codigo_instituicao c INNER JOIN turmas t
-                WHERE codigo = ? AND c.extra_usuario = t.nome
+                WHERE c.codigo = ? AND c.extra_usuario = t.nome
                 AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)'
             );
             $stmt->execute([$codigo_instituicao]);
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: criar_conta.php');
                 exit;
             } else {
-                $erro = 'Código inválido, nenhuma instituição foi encontrada com este código.';
+                $erro = "Código inválido, nenhuma instituição foi encontrada com este código.";
             }
         } catch (\PDOException $e) {
             $erro = 'Ocorreu um erro ao processar sua solicitação. Tente novamente.';

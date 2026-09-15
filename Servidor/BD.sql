@@ -46,7 +46,7 @@ CREATE TABLE extra_usuarios(
 
 CREATE TABLE codigo_instituicao(
   id_instituicao int NOT NULL,
-  codigo varchar(25) NOT NULL,
+  codigo varchar(30) NOT NULL,
   tipo_usuario int NOT NULL,
   extra_usuario varchar(10),
   FOREIGN KEY(id_instituicao) REFERENCES usuarios(id),
@@ -71,7 +71,7 @@ INSERT INTO proj_estado (nome) VALUES
 
 CREATE TABLE projetos(
   id int PRIMARY KEY AUTO_INCREMENT,
-  nome varchar(25) NOT NULL,
+  nome varchar(30) NOT NULL,
   estado int NOT NULL,
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (estado) REFERENCES proj_estado(id),

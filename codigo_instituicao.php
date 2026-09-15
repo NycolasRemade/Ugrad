@@ -13,11 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($codigo_instituicao) {
 
         try {
-            // Checa se o código da instituição existe e não expirou (limite no 'INTERVAL 1 WEEK')
+            // Checa se o código da instituição existe e não expirou (limite no 'INTERVAL 1 WEEK'), e configura a turma do aluno 
+            // (para professores não importa eles terem turma, pode ser que nem um grupo de professores que só finge ser turma no BD)
             $stmt = $pdo->prepare(
-               'SELECT id_instituicao, tipo_usuario 
-                FROM codigo_instituicao 
-                WHERE codigo = ? 
+               'SELECT c.id_instituicao, c.tipo_usuario, t.id
+                FROM codigo_instituicao c INNER JOIN turmas t
+                WHERE codigo = ? AND c.extra_usuario = t.nome
                 AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)'
             );
             $stmt->execute([$codigo_instituicao]);
@@ -28,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // da criação da conta, onde o usuário é criado no banco de dados
                 $_SESSION['usuario_id_instituicao'] = $codigo['id_instituicao'];
                 $_SESSION['usuario_tipo']           = $codigo['tipo_usuario'];
+                $_SESSION['usuario_id_turma']       = $codigo['id'];
+
                 header('Location: criar_conta.php');
                 exit;
             } else {

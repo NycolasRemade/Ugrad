@@ -48,6 +48,7 @@ CREATE TABLE codigo_instituicao(
   id_instituicao int NOT NULL,
   codigo varchar(25) NOT NULL,
   tipo_usuario int NOT NULL,
+  extra_usuario varchar(10),
   FOREIGN KEY(id_instituicao) REFERENCES usuarios(id),
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP
 );
@@ -179,7 +180,11 @@ INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
 
   -- teste para pesquisa de usuários
 INSERT INTO turmas (nome, id_instituicao) VALUES
-  ('turma de teste', 2);
+  ('turma de teste', 2),
+  ('3tia',2),
+  ('3tia',1),
+  ('3tib',1);
+
 INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
   (1, 1, 2),
   (2, 1, 2),
@@ -187,8 +192,10 @@ INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
   (4, NULL, 2);
 
 
-INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario) VALUES
-  (1, 'abcdefgh', 1);
+INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, extra_usuario) VALUES
+  (1, 'abcdefgh', 1, '3tia'),
+  (1, 'abcdefgh', 1, '3tib'),
+  (2, 'abcdefghijklmnopqrstuvwxyz', 1, '3tia');
 
 INSERT INTO categorias (nome) VALUES
   ('categoria1'),

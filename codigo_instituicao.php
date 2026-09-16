@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare(
                'SELECT c.id_instituicao, c.tipo_usuario, t.id
                 FROM codigo_instituicao c INNER JOIN turmas t
-                WHERE c.codigo = ? AND c.extra_usuario = t.nome
+                WHERE c.codigo = ? AND c.id_turma = t.id
                 AND CURRENT_DATE() < DATE_ADD(data_criacao, INTERVAL 1 WEEK)'
             );
             $stmt->execute([$codigo_instituicao]);

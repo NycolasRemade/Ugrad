@@ -48,7 +48,7 @@ CREATE TABLE codigo_instituicao(
   id_instituicao int NOT NULL,
   codigo varchar(30) NOT NULL,
   tipo_usuario int NOT NULL,
-  extra_usuario varchar(10),
+  id_turma int,
   FOREIGN KEY(id_instituicao) REFERENCES usuarios(id),
   data_criacao timestamp DEFAULT CURRENT_TIMESTAMP
 );
@@ -193,9 +193,9 @@ INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
 
 
 INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, extra_usuario) VALUES
-  (1, 'abcdefgh', 1, '3tia'),
-  (1, 'abcdefghijk', 1, '3tib'),
-  (2, 'abcdefghijklmnopqrstuvwxyz', 1, '3tia');
+  (1, 'abcdefgh', 1, 1),
+  (1, 'abcdefghijk', 1, 2),
+  (2, 'abcdefghijklmnopqrstuvwxyz', 1, 1);
 
 INSERT INTO categorias (nome) VALUES
   ('categoria1'),

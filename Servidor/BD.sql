@@ -46,7 +46,7 @@ CREATE TABLE extra_usuarios(
 
 CREATE TABLE codigo_instituicao(
   id_instituicao int NOT NULL,
-  codigo varchar(30) NOT NULL,
+  codigo varchar(30) UNIQUE NOT NULL,
   tipo_usuario int NOT NULL,
   id_turma int,
   FOREIGN KEY(id_instituicao) REFERENCES usuarios(id),
@@ -192,7 +192,7 @@ INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
   (4, NULL, 2);
 
 
-INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, extra_usuario) VALUES
+INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, id_turma) VALUES
   (1, 'abcdefgh', 1, 1),
   (1, 'abcdefghijk', 1, 2),
   (2, 'abcdefghijklmnopqrstuvwxyz', 1, 1);

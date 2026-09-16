@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'Servidor/config.php';
+
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -8,6 +9,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $id_usuario = $_SESSION['usuario_id'];
 $tipo_usuario = $_SESSION['usuario_tipo'];
+
 // Apenas instituições (tipo 4) podem acessar esta página
 if ($tipo_usuario != 4) {
     header('Location: dashboard.php');
@@ -28,12 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            'SELECT u.id 
             FROM usuarios u 
             INNER JOIN extra_usuarios e ON e.id_usuario = u.id 
-            WHERE u.id = ? AND u.tipo = 2 AND e.id_instituicao = ?');
+            WHERE u.id = ? AND u.tipo = 2 AND e.id_instituicao = ?'
+        );
         $stmt_check->execute([$id_professor, $id_instituicao]);
 
         if ($stmt_check->fetch()) {
             
-            // Rebaixar para Aluno (Caso seja um aluno fazendo baguncinha)
+            // Rebaixar para Aluno
             if ($acao === 'rebaixar_para_aluno') {
                 $pdo->beginTransaction();
                 try {
@@ -57,12 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             elseif ($acao === 'excluir_conta') {
                 $pdo->beginTransaction();
                 try {
-                    // Remove da tabela extra_usuarios
-                    $stmt_e = $pdo->prepare(
-                       'DELETE FROM extra_usuarios WHERE id_usuario = ?;
-                        DELETE FROM usuarios WHERE id = ? AND tipo = 2;'
-                    );
-                    $stmt_e->execute([$id_professor, $id_professor]);
+                    // Separação em duas instruções preparadas sequenciais
+                    $stmt_e = $pdo->prepare('DELETE FROM extra_usuarios WHERE id_usuario = ?');
+                    $stmt_e->execute([$id_professor]);
+
+                    $stmt_u = $pdo->prepare('DELETE FROM usuarios WHERE id = ? AND tipo = 2');
+                    $stmt_u->execute([$id_professor]);
 
                     $pdo->commit();
                     $mensagem_sucesso = 'Conta do professor excluída com sucesso!';
@@ -91,7 +94,7 @@ $professores = $stmt_profs->fetchAll();
 //////////////////////////////////
 $title = 'Gerenciamento de Professores';
 $href = 'dashboard.php';
-include 'header.php'
+include 'header.php';
 ?>
     <div style="height: 200px"></div>
 
@@ -123,7 +126,7 @@ include 'header.php'
                 <tr>
                     <th>Nome</th>
                     <th>E-mail</th>
-                    <th></th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -161,11 +164,7 @@ include 'header.php'
 
                 linhas.forEach(linha => {
                     const textoLinha = linha.textContent.toLowerCase();
-                    if (textoLinha.includes(termo)) {
-                        linha.style.display = '';
-                    } else {
-                        linha.style.display = 'none';
-                    }
+                    linha.style.display = textoLinha.includes(termo) ? '' : 'none';
                 });
             }
         </script>

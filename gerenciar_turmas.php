@@ -14,6 +14,12 @@ if ($tipo_usuario != 2 && $tipo_usuario != 4) {
     exit;
 }
 
+// Função para gerar código alfanumérico curto aleatório
+function gerarCodigoCurto($tamanho = 7) {
+    $caracteres = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+    return substr(str_shuffle(str_repeat($caracteres, $tamanho)), 0, $tamanho);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
 
@@ -61,6 +67,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // Gerar ou revogar código da institução
+    elseif ($acao === 'gerar_codigo' || $acao === 'revogar_codigo') {
+        $id_turma = intval($_POST['id_turma'] ?? 0);
+
+        if ($id_turma > 0) {
+            // Verifica se a turma pertence à instituição do usuário logado
+            $stmt_v = $pdo->prepare('SELECT id FROM turmas WHERE id = ? AND id_instituicao = ?');
+            $stmt_v->execute([$id_turma, $id_instituicao]);
+
+            if ($stmt_v->fetch()) {
+   
+                do {
+                    $novo_codigo = gerarCodigoCurto(7);
+                    $stmt_c = $pdo->prepare('SELECT codigo FROM codigo_instituicao WHERE codigo = ?');
+                    $stmt_c->execute([$novo_codigo]);
+                } while ($stmt_c->fetch());
+
+                // Remove registros prévios do tipo aluno (tipo_usuario = 1) para esta turma
+                $stmt_del = $pdo->prepare('DELETE FROM codigo_instituicao WHERE id_turma = ? AND id_instituicao = ? AND tipo_usuario = 1');
+                $stmt_del->execute([$id_turma, $id_instituicao]);
+
+                // Insere o novo código associando a instituição, o tipo ALUNO (1) e a turma
+                $stmt_ins = $pdo->prepare('INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, id_turma) VALUES (?, ?, 1, ?)');
+                $stmt_ins->execute([$id_instituicao, $novo_codigo, $id_turma]);
+
+                if ($acao === 'gerar_codigo') {
+                    $mensagem_sucesso = 'Código de acesso do aluno gerado com sucesso!';
+                } else {
+                    $mensagem_sucesso = 'Código anterior revogado e novo código gerado com sucesso!';
+                }
+            } else {
+                $mensagem_erro = 'Turma inválida ou sem permissão.';
+            }
+        } else {
+            $mensagem_erro = 'Turma inválida.';
+        }
+    }
+
     // Adicionar aluno à turma
     elseif ($acao === 'adicionar_aluno') {
         $id_aluno = intval($_POST['id_aluno'] ?? 0);
@@ -103,9 +147,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Consulta turmas da instituição
-$stmt_turmas = $pdo->prepare('SELECT id, nome FROM turmas WHERE id_instituicao = ? ORDER BY nome ASC');
-$stmt_turmas->execute([$id_instituicao]);
+// Consulta turmas da instituição incluindo o código cadastrado na tabela codigo_instituicao
+$stmt_turmas = $pdo->prepare('
+    SELECT t.id, t.nome, c.codigo 
+    FROM turmas t 
+    LEFT JOIN codigo_instituicao c ON c.id_turma = t.id AND c.tipo_usuario = 1 AND c.id_instituicao = ?
+    WHERE t.id_instituicao = ? 
+    ORDER BY t.nome ASC
+');
+$stmt_turmas->execute([$id_instituicao, $id_instituicao]);
 $turmas = $stmt_turmas->fetchAll();
 
 // Consulta alunos da instituição
@@ -130,7 +180,7 @@ foreach ($alunos as $a) {
 //////////////////////////////////
 $title = 'Gerenciamento de Turmas';
 $href = 'dashboard.php';
-include 'header.php'
+include 'header.php';
 ?>
     <div style="height: 200px"></div>
 
@@ -173,6 +223,7 @@ include 'header.php'
             <thead>
                 <tr>
                     <th>Turmas e alunos</th>
+                    <th>Códigos das turmas</th>
                 </tr>
             </thead>
             <tbody>
@@ -181,12 +232,14 @@ include 'header.php'
                 ?>
                     <tr>
                         <td>
-                            <!-- Editar nome da turma -->
-                            <div id="div_nome_turma_<?= $t['id'] ?>" style="display: block;" class="buttons_criar">
-                                <?= htmlspecialchars($t['nome']) ?>
+                            <!-- Editar nome da turma e Gerenciar Código de Aluno -->
+                            <div id="div_nome_turma_<?= $t['id'] ?>" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;" class="buttons_criar">
+                                <strong><?= htmlspecialchars($t['nome']) ?></strong>
+
                                 <button type="button" onclick="toggleEditarTurma(<?= $t['id'] ?>)" class="btn-novo">Alterar nome</button>
                                 <button type="button" onclick="toggleAddAlunoTurma(<?= $t['id'] ?>)" class="btn-novo">+ Adicionar Aluno</button>
                             </div>
+
                             <div id="form_editar_turma_<?= $t['id'] ?>" style="display: none;">
                                 <form action="" method="POST">
                                     <input type="hidden" name="acao" value="editar_turma">
@@ -225,9 +278,11 @@ include 'header.php'
                                 </form>
                             </div>
 
+                            <br>
+
                             <!-- Lista de alunos na turma -->
                              <details>
-                                <summary>Alunos na turma (<?= count($alunos_da_turma) ?>)</summary>
+                                <summary>Alunos (<?= count($alunos_da_turma) ?>)</summary>
                                 <br>
                                 <?php if (count($alunos_da_turma) > 0): ?>
                                     <table border="1" cellpadding="3" cellspacing="0">
@@ -258,7 +313,24 @@ include 'header.php'
                                     <p><em>Nenhum aluno nesta turma ainda.</em></p>
                                 <?php endif; ?>
                             </details>
-
+                        </td>
+                        <td>
+                            <!-- Exibição e Ações do Código de Aluno -->
+                                <?php if (!empty($t['codigo'])): ?>
+                                    <span>Código Aluno: <code><?= htmlspecialchars($t['codigo']) ?></code></span>
+                                    <form action="" method="POST" style="display:inline;">
+                                        <input type="hidden" name="acao" value="revogar_codigo">
+                                        <input type="hidden" name="id_turma" value="<?= $t['id'] ?>">
+                                        <button type="submit" class="btn-novo" onclick="return confirm('Deseja revogar o código atual e gerar um novo?');">Revogar & Gerar Novo Código</button>
+                                    </form>
+                                <?php else: ?>
+                                    <span><em>Sem código gerado</em></span>
+                                    <form action="" method="POST" style="display:inline;">
+                                        <input type="hidden" name="acao" value="gerar_codigo">
+                                        <input type="hidden" name="id_turma" value="<?= $t['id'] ?>">
+                                        <button type="submit" class="btn-novo">Gerar Código Aluno</button>
+                                    </form>
+                                <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

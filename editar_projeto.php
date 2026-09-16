@@ -291,7 +291,7 @@ $title = 'Editar ' . htmlspecialchars($projeto['nome']);
 $href = 'dashboard.php';
 include 'header.php';
 ?>
-<main style="margin-left: 32px">
+<main class='centrao'>
     <div style="height: 200px"></div>
 
     <nav id='mudaraba'>

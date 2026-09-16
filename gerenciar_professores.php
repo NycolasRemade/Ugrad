@@ -20,11 +20,40 @@ $id_instituicao = $id_usuario;
 $mensagem_sucesso = '';
 $mensagem_erro = '';
 
+// Função auxiliar para gerar código alfanumérico único
+function gerarCodigoCurto($tamanho = 6) {
+    $caracteres = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+    return substr(str_shuffle(str_repeat($caracteres, $tamanho)), 0, $tamanho);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
     $id_professor = intval($_POST['id_professor'] ?? 0);
 
-    if ($id_professor > 0) {
+    // Ação: Gerar novo código de acesso para Professor (sem turma vinculada)
+    if ($acao === 'gerar_codigo_professor') {
+        try {
+            // Garante a unicidade do código no banco de dados
+            do {
+                $novo_codigo = gerarCodigoCurto(6);
+                $stmt_c = $pdo->prepare('SELECT codigo FROM codigo_instituicao WHERE codigo = ?');
+                $stmt_c->execute([$novo_codigo]);
+            } while ($stmt_c->fetch());
+
+            // Insere o código para tipo_usuario = 2 (PROFESSOR) e id_turma = NULL
+            $stmt_ins = $pdo->prepare(
+                'INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, id_turma) 
+                 VALUES (?, ?, 2, NULL)'
+            );
+            $stmt_ins->execute([$id_instituicao, $novo_codigo]);
+
+            $mensagem_sucesso = "Código para professor gerado com sucesso: <code>" . htmlspecialchars($novo_codigo) . "</code>";
+        } catch (Exception $e) {
+            $mensagem_erro = 'Erro ao gerar o código para professor.';
+        }
+    }
+
+    elseif ($id_professor > 0) {
         // Valida se o professor realmente pertence a esta instituição
         $stmt_check = $pdo->prepare(
            'SELECT u.id 
@@ -60,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             elseif ($acao === 'excluir_conta') {
                 $pdo->beginTransaction();
                 try {
-                    // Separação em duas instruções preparadas sequenciais
                     $stmt_e = $pdo->prepare('DELETE FROM extra_usuarios WHERE id_usuario = ?');
                     $stmt_e->execute([$id_professor]);
 
@@ -91,6 +119,16 @@ $stmt_profs = $pdo->prepare(
 $stmt_profs->execute([$id_instituicao]);
 $professores = $stmt_profs->fetchAll();
 
+// Consulta códigos ativos criados para professores desta instituição
+$stmt_codigos = $pdo->prepare(
+    'SELECT codigo, data_criacao 
+     FROM codigo_instituicao 
+     WHERE id_instituicao = ? AND tipo_usuario = 2 AND id_turma IS NULL 
+     ORDER BY data_criacao DESC'
+);
+$stmt_codigos->execute([$id_instituicao]);
+$codigos_professores = $stmt_codigos->fetchAll();
+
 //////////////////////////////////
 $title = 'Gerenciamento de Professores';
 $href = 'dashboard.php';
@@ -105,7 +143,7 @@ include 'header.php';
     <hr>
 
     <?php if (!empty($mensagem_sucesso)): ?>
-        <p><strong>SUCESSO:</strong> <?= htmlspecialchars($mensagem_sucesso) ?></p>
+        <p><strong>SUCESSO:</strong> <?= $mensagem_sucesso ?></p>
         <hr>
     <?php endif; ?>
 
@@ -115,6 +153,38 @@ include 'header.php';
     <?php endif; ?>
 
     <h2>Professores cadastrados</h2>
+
+    <!-- Botão para gerar código de professor e listagem dos códigos ativos -->
+    <div style="margin-bottom: 20px;">
+        Código: <?= 1; ?>
+        <form action="" method="POST" style="display: inline-block;">
+            <input type="hidden" name="acao" value="gerar_codigo_professor">
+            <button type="submit" class="btn-novo">+ Gerar Código para Professor</button>
+        </form>
+    </div>
+
+    <?php if (count($codigos_professores) > 0): ?>
+        <details style="margin-bottom: 20px;">
+            <summary><strong>Códigos de Cadastro de Professor Ativos (<?= count($codigos_professores) ?>)</strong></summary>
+            <br>
+            <table border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Data de Criacao</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($codigos_professores as $cp): ?>
+                        <tr>
+                            <td><code><?= htmlspecialchars($cp['codigo']) ?></code></td>
+                            <td><?= date('d/m/Y H:i', strtotime($cp['data_criacao'])) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </details>
+    <?php endif; ?>
 
     <?php if (count($professores) > 0): ?>
         <p>

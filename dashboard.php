@@ -252,31 +252,8 @@ include 'header.php'
     </main>
 
 <script>
-    function getTextWidth() {
-
-        const inputText = "Olá, <?= htmlspecialchars($dados['nome']); ?>!";
-        const font = "36px IBM";
-
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        context.font = font;
-        const width = context.measureText(inputText).width;
-        const formattedWidth = Math.ceil(width) + 50;
-
-        document.getElementById('nome_png').style.width = formattedWidth + "px";
-        console.log(formattedWidth);
-    }
-
     getTextWidth();
 </script>
-
-<style>
-    details{
-        padding: 8px;
-        margin: 16px;
-        font-size: 32px;
-    }
-</style>
 
 </body>
 </html>

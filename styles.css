@@ -630,6 +630,12 @@ footer p{
   background-size: cover;
 }
 
+details{
+        padding: 8px;
+        margin: 16px;
+        font-size: 32px;
+    }
+
 /*-------------------------------------------------*/
 /*   Estilo para criação de projetos
 /*-------------------------------------------------*/

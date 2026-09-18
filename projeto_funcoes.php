@@ -27,7 +27,9 @@
 
         function toggleFormAvaliacao() {
             const formContainer = document.getElementById('form-avaliacao-container');
-            formContainer.style.display = (formContainer.style.display === 'none') ? 'block' : 'none';
+            const resultado = formContainer.style.display = (formContainer.style.display === 'none') ? 'block' : 'none';
+            const botaoToggleAvaliacao = document.getElementById('botao-toggle-avaliacao');
+            botaoToggleAvaliacao.style.display = (resultado === 'none') ? 'block' : 'none';
         }
 
         function definirNota(valor) {

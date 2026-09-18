@@ -18,11 +18,11 @@ $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? 0;
 $stmt = null;
 $projeto = null;
 
-// Consulta dados do projeto de acordo com o tipo de usuário
+// Consulta dados do projeto incluindo o campo estado
 if ($_SESSION['usuario_tipo'] === 1) {
     // ALUNO
     $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+       'SELECT p.id, p.nome, p.img, p.estado, pd.descricao, pd.historia 
         FROM projetos p 
         LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
         JOIN proj_membros pm ON p.id = pm.id_projeto
@@ -33,7 +33,7 @@ if ($_SESSION['usuario_tipo'] === 1) {
 } elseif ($_SESSION['usuario_tipo'] === 2 || $_SESSION['usuario_tipo'] === 4) {
     // PROFESSOR ou INSTITUIÇÃO
     $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+       'SELECT p.id, p.nome, p.img, p.estado, pd.descricao, pd.historia 
         FROM projetos p 
         LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
         INNER JOIN proj_membros pm ON p.id = pm.id_projeto
@@ -47,7 +47,7 @@ if ($_SESSION['usuario_tipo'] === 1) {
 } elseif ($_SESSION['usuario_tipo'] === 5) {
     // ADMINISTRADOR
     $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+       'SELECT p.id, p.nome, p.img, p.estado, pd.descricao, pd.historia 
         FROM projetos p 
         LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
         WHERE p.id = ?'
@@ -65,6 +65,21 @@ if (empty($projeto)) {
 $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // alterar estado/visibilidade do projeto (Público / Restrito a Professores)
+    if (isset($_POST['alterar_estado_projeto'])) {
+        $novo_estado = (int)$_POST['novo_estado'];
+        if (in_array($novo_estado, [1, 3])) { // 3 = PUBLICO_PUBLICO, 1 = PRIVADO_PRIVADO
+            try {
+                $stmt_est = $pdo->prepare('UPDATE projetos SET estado = ? WHERE id = ?');
+                $stmt_est->execute([$novo_estado, $id_projeto]);
+                header("Location: editar_projeto.php?id=$id_projeto");
+                exit;
+            } catch (Exception $e) {
+                $erro = 'Erro ao alterar a visibilidade do projeto.';
+            }
+        }
+    }
 
     // convidar e remover membros sem recarregar a página
     if (isset($_POST['ajax'])) {
@@ -203,6 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }
 
+    // salvar edição da história do projeto
     if (isset($_POST['salvar_historia'])) {
         $historia = trim($_POST['historia_projeto'] ?? '');
 
@@ -493,7 +509,7 @@ include 'header.php';
         </form>
     </div>
 
-    <!-- HISTÓRIA  DO PROJETO-->
+    <!-- HISTÓRIA DO PROJETO -->
     <div id="aba-historia" style="display: none; min-width: 640px;">
 
         <h2>História</h2>
@@ -563,10 +579,8 @@ include 'header.php';
         <br>
 
         <div>
-            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
+            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo" id="botao-toggle-avaliacao"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
         </div>
-
-        <br>
 
         <div id="form-avaliacao-container" style="display: none;">
             <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo btn-secundario">Cancelar x</button>
@@ -595,6 +609,8 @@ include 'header.php';
                 </div>
             </form>
         </div>
+
+        <br>
 
         <main id="lista-comentarios">
             <?php if (!empty($comentarios)): ?>
@@ -626,6 +642,27 @@ include 'header.php';
             <?php endif; ?>
         </main>
     </div>
+
+    <!-- BARRA DE AÇÕES INFERIOR VISÍVEL EM TODAS AS SEÇÕES -->
+    <hr style="margin-top: 30px; max-width: 640px; width: 100%;">
+    <div style="display: flex; gap: 10px; margin: 15px 0; align-items: center; justify-content: space-between; max-width: 640px; width: 100%;">
+        <div>
+            <strong>Visibilidade atual:</strong> 
+            <span><?= ($projeto['estado'] == 3) ? 'Público' : 'Restrito para Professores' ?></span>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <form method="POST" action="" style="display: inline;">
+                <input type="hidden" name="alterar_estado_projeto" value="1">
+                <input type="hidden" name="novo_estado" value="3">
+                <button type="submit" class="btn-novo" style="background-color: #007bff; color: white;">Publicar projeto</button>
+            </form>
+            <form method="POST" action="" style="display: inline;">
+                <input type="hidden" name="alterar_estado_projeto" value="1">
+                <input type="hidden" name="novo_estado" value="1">
+                <button type="submit" class="btn-novo" style="background-color: #dc3545; color: white;">Restringir visualização para professores</button>
+            </form>
+        </div>
+    </div>
 </main>
 
 <?php 
@@ -635,6 +672,17 @@ include 'header.php';
 include 'projeto_funcoes.php';
 
 ?>
+
+<script>
+    // parser da história do projeto
+    function laxante(src) {
+        const tokens = [];
+        for (let i = 0, len = src.length; i < len; ++i) {
+            if (src[i] === '\\') i++;
+        }
+        return tokens;
+    }
+</script>
 
 </body>
 </html>

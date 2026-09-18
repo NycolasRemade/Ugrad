@@ -160,6 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
 
                 $mensagem_sucesso = 'Imagem de perfil atualizada!';
+                header("Location: editar_projeto.php?id=$id_projeto");
+                exit;
             }
         }
     }
@@ -198,11 +200,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $erro = 'Erro ao salvar projeto';
             }
         }
-    } elseif (isset($_POST['salvar_historia'])) {
-        $historia = trim($_POST['historia_projeto']);
+
+    }
+
+    if (isset($_POST['salvar_historia'])) {
+        $historia = trim($_POST['historia_projeto'] ?? '');
 
         $stmt = $pdo->prepare('UPDATE proj_dados SET historia = ? WHERE id_projeto = ?');
         $stmt->execute([$historia, $id_projeto]);
+
+        $mensagem_sucesso = 'História do projeto atualizada!';
+        header("Location: editar_projeto.php?id=$id_projeto");
+        exit;
     }
 }
 
@@ -231,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
                 );
                 $stmt_upd->execute([$comentario_texto, $nota, $usuario_id, $id_projeto]);
             }
-            header('Location: editar_projeto.php?id=' . $id_projeto . '#avaliacoes');
+            header("Location: editar_projeto.php?id=$id_projeto#avaliacoes");
             exit;
         } catch (\PDOException $e) {
             $erro = 'Erro ao salvar comentário';
@@ -473,7 +482,8 @@ include 'header.php';
 
             <div>
                 <label for="descricao"><strong>Descrição:</strong></label><br>
-                <textarea id="descricao" name="descricao" rows="4" style="width: 100%; max-width: 640px;"><?= htmlspecialchars($projeto['descricao'] ?? '') ?></textarea>
+                <textarea id="descricao" name="descricao" rows="4" 
+                style="width: 100%; max-width: 640px;"><?= htmlspecialchars($projeto['descricao'] ?? '') ?></textarea>
             </div>
 
             <br>
@@ -488,10 +498,10 @@ include 'header.php';
 
         <h2>História</h2>
         <form method="POST" action="">
-            <input type="hidden" name="salvar_visao_geral" value="1">
+            <input type="hidden" name="salvar_historia" value="1">
 
             <textarea name="historia_projeto" id="historia_projeto" 
-            style="max-width: 640px;"><?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Nenhuma história.')) ?></textarea>
+            style="max-width: 640px;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
 
             <br>
 

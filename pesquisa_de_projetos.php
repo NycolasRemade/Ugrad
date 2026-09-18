@@ -7,20 +7,38 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$projetos_qtd = $pdo->query(
-    'SELECT count(id) from projetos
-    WHERE estado = 3'
-)->execute()->fetchColumn();
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['info_projeto'])) {
+    header('Content-Type: application/json');
 
-$projetos_id = array();
+    $id = (int)$_GET['info_projeto'];
 
+    $stmt = $pdo->prepare(
+       'SELECT p.nome, p.data_criacao, pd.descricao, p.img
+        FROM projetos p LEFT JOIN proj_dados pd
+        ON p.id = pd.id_projeto
+        WHERE p.id = ? AND p.estado = 3'
+    );
+    $stmt->execute([$id]);
+    $proj = $stmt->fetch();
 
-for ($i=1; $i <= 20; $i++) {
-    $p = rand(1, $projetos_qtd);
-    $projetos_id[$i] = $p;
+    if ($proj) {
+        echo json_encode(array_merge([
+            'success' => true,
+            'id' => $id,
+            'nome' => $proj['nome'],
+            'data_criacao' => $proj['data_criacao'],
+            'descricao' => $proj['descricao'],
+            'img' => base64_encode($proj['img'])
+        ]));
+        exit;
+    }
+    echo json_encode(['success' => false, 'message' => 'Projeto inexistente']);
+    exit;
 }
 
-
+$stmt_proj = $pdo->query('SELECT id from projetos WHERE estado = 3');
+$stmt_proj->execute();
+$projetos_id = $stmt_proj->fetchAll();
 
 $usuario_id = $_SESSION['usuario_id'];
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? null;
@@ -45,11 +63,16 @@ include 'header.php'
         <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    <?php foreach ($projetos_id as $p) {
-        echo $p;
-        echo var_dump($projetos_qtd);
-    }
-    ?>
+    <?php foreach ($projetos_id as $p): ?>
+        <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: 128px;">
+            <script type="module">
+                const response = await fetch('pesquisa_de_projetos.php?info_projeto=<?= $p['id'] ?>');
+                const data = await response.json();
+                const divProjeto = document.getElementById('info-projeto-<?= $p['id'] ?>');
+                divProjeto.innerText = JSON.stringify(data);
+            </script>
+        </div>
+    <?php endforeach; ?>
 
 </div>
 

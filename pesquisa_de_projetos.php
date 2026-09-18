@@ -10,13 +10,13 @@ if (!isset($_SESSION['usuario_id'])) {
 $projetos_qtd = $pdo->query(
     'SELECT count(id) from projetos
     WHERE estado = 3'
-)->fetch();
+)->execute()->fetchColumn();
 
 $projetos_id = array();
 
 
-for ($i=1; $i <= 20; $i++) { 
-    $p = rand(1,$projetos_qtd['COUNT(*)']);
+for ($i=1; $i <= 20; $i++) {
+    $p = rand(1, $projetos_qtd);
     $projetos_id[$i] = $p;
 }
 

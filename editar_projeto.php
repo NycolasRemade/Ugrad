@@ -643,14 +643,14 @@ include 'header.php';
         </main>
     </div>
 
-    <!-- BARRA DE AÇÕES INFERIOR VISÍVEL EM TODAS AS SEÇÕES -->
+    <!-- BARRA DE AÇÕES INFERIOR -->
     <hr style="margin-top: 30px; max-width: 640px; width: 100%;">
-    <div style="display: flex; gap: 10px; margin: 15px 0; align-items: center; justify-content: space-between; max-width: 640px; width: 100%;">
+    <div>
         <div>
             <strong>Visibilidade atual:</strong> 
             <span><?= ($projeto['estado'] == 3) ? 'Público' : 'Restrito para Professores' ?></span>
         </div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; margin: 15px 0; align-items: center; justify-content: space-between; max-width: 640px; width: 100%;">
             <form method="POST" action="" style="display: inline;">
                 <input type="hidden" name="alterar_estado_projeto" value="1">
                 <input type="hidden" name="novo_estado" value="3">

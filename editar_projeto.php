@@ -63,7 +63,63 @@ if (empty($projeto)) {
 
 // upload da imagem do projeto
 $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagem_projeto'])) {
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // convidar e remover membros sem recarregar a página
+    if (isset($_POST['ajax'])) {
+        header('Content-Type: application/json');
+
+        // convidar membro
+        if (isset($_POST['convidar_membro_id'])) {
+            try {
+                $id_convidar = (int)$_POST['convidar_membro_id'];
+                if ($id_convidar > 0) {
+                    $stmt_m_exist = $pdo->prepare('SELECT id_convidado FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
+                    $stmt_m_exist->execute([$id_projeto, $id_convidar]);
+                    
+                    if (!$stmt_m_exist->fetch()) {
+                        $stmt_in_membro = $pdo->prepare('INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES (?, ?, ?, 3)');
+                        $stmt_in_membro->execute([$usuario_id, $id_convidar, $id_projeto]);
+
+                        $stmt_u = $pdo->prepare('SELECT id, nome, email FROM usuarios WHERE id = ?');
+                        $stmt_u->execute([$id_convidar]);
+                        $usr = $stmt_u->fetch();
+
+                        echo json_encode([
+                            'success' => true, 
+                            'id' => $usr['id'], 
+                            'nome' => $usr['nome'] ?: $usr['email']
+                        ]);
+                        exit;
+                    }
+                }
+                echo json_encode(['success' => false, 'message' => 'Membro já cadastrado ou inválido']);
+                exit;
+            } catch (\PDOException $e) {
+                echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar']);
+                exit;
+            }
+        }
+
+        // remover membro ou cancelar convite
+        if (isset($_POST['remover_membro_id'])) {
+            try {
+                $id_remover = (int)$_POST['remover_membro_id'];
+                $stmt_del_membro = $pdo->prepare('DELETE FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
+                $stmt_del_membro->execute([$id_projeto, $id_remover]);
+
+                echo json_encode(['success' => true, 'id' => $id_remover]);
+                exit;
+            } catch (\PDOException $e) {
+                echo json_encode(['success' => false, 'message' => 'Erro ao remover membro']);
+                exit;
+            }
+        }
+    }
+
+    // salvar imagem do projeto
+    if (isset($_FILES['imagem_projeto'])) {
 
         $imagem = $_FILES['imagem_projeto'];
         if (
@@ -108,92 +164,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imagem_projeto'])) {
         }
     }
 
+    // salvar edição da visão geral
+    if (isset($_POST['salvar_visao_geral'])) {
+        $nome_projeto = trim($_POST['nome_projeto'] ?? '');
+        $descricao = trim($_POST['descricao'] ?? '');
+        $categorias_selecionadas = isset($_POST['categorias']) ? array_filter($_POST['categorias']) : [];
 
-// convidar e remover membros sem recarregar a página
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
-    header('Content-Type: application/json');
+        if (!empty($nome_projeto)) {
+            try {
+                $pdo->beginTransaction();
 
-    // convidar membro
-    if (isset($_POST['convidar_membro_id'])) {
-        try {
-            $id_convidar = (int)$_POST['convidar_membro_id'];
-            if ($id_convidar > 0) {
-                $stmt_m_exist = $pdo->prepare('SELECT id_convidado FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
-                $stmt_m_exist->execute([$id_projeto, $id_convidar]);
-                
-                if (!$stmt_m_exist->fetch()) {
-                    $stmt_in_membro = $pdo->prepare('INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES (?, ?, ?, 3)');
-                    $stmt_in_membro->execute([$usuario_id, $id_convidar, $id_projeto]);
+                $stmt_up_proj = $pdo->prepare('UPDATE projetos SET nome = ? WHERE id = ?');
+                $stmt_up_proj->execute([$nome_projeto, $id_projeto]);
 
-                    $stmt_u = $pdo->prepare('SELECT id, nome, email FROM usuarios WHERE id = ?');
-                    $stmt_u->execute([$id_convidar]);
-                    $usr = $stmt_u->fetch();
+                $stmt_up_dados = $pdo->prepare('UPDATE proj_dados SET descricao = ? WHERE id_projeto = ?');
+                $stmt_up_dados->execute([$descricao, $id_projeto]);
 
-                    echo json_encode([
-                        'success' => true, 
-                        'id' => $usr['id'], 
-                        'nome' => $usr['nome'] ?: $usr['email']
-                    ]);
-                    exit;
+                $stmt_del_cat = $pdo->prepare('DELETE FROM proj_categorias WHERE id_projeto = ?');
+                $stmt_del_cat->execute([$id_projeto]);
+
+                if (!empty($categorias_selecionadas)) {
+                    $stmt_in_cat = $pdo->prepare('INSERT INTO proj_categorias (id_projeto, id_categoria) VALUES (?, ?)');
+                    foreach ($categorias_selecionadas as $id_cat) {
+                        $stmt_in_cat->execute([$id_projeto, $id_cat]);
+                    }
                 }
+
+                $pdo->commit();
+                header("Location: editar_projeto.php?id=$id_projeto");
+                exit;
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                $erro = 'Erro ao salvar projeto';
             }
-            echo json_encode(['success' => false, 'message' => 'Membro já cadastrado ou inválido']);
-            exit;
-        } catch (\PDOException $e) {
-            echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar']);
-            exit;
         }
-    }
+    } elseif (isset($_POST['salvar_historia'])) {
+        $historia = trim($_POST['historia_projeto']);
 
-    // remover membro ou cancelar convite
-    if (isset($_POST['remover_membro_id'])) {
-        try {
-            $id_remover = (int)$_POST['remover_membro_id'];
-            $stmt_del_membro = $pdo->prepare('DELETE FROM proj_membros WHERE id_projeto = ? AND id_convidado = ?');
-            $stmt_del_membro->execute([$id_projeto, $id_remover]);
-
-            echo json_encode(['success' => true, 'id' => $id_remover]);
-            exit;
-        } catch (\PDOException $e) {
-            echo json_encode(['success' => false, 'message' => 'Erro ao remover membro']);
-            exit;
-        }
-    }
-}
-
-// salvar edição
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['salvar_projeto'])) {
-    $nome_projeto = trim($_POST['nome_projeto'] ?? '');
-    $descricao = trim($_POST['descricao'] ?? '');
-    $categorias_selecionadas = isset($_POST['categorias']) ? array_filter($_POST['categorias']) : [];
-
-    if (!empty($nome_projeto)) {
-        try {
-            $pdo->beginTransaction();
-
-            $stmt_up_proj = $pdo->prepare('UPDATE projetos SET nome = ? WHERE id = ?');
-            $stmt_up_proj->execute([$nome_projeto, $id_projeto]);
-
-            $stmt_up_dados = $pdo->prepare('UPDATE proj_dados SET descricao = ? WHERE id_projeto = ?');
-            $stmt_up_dados->execute([$descricao, $id_projeto]);
-
-            $stmt_del_cat = $pdo->prepare('DELETE FROM proj_categorias WHERE id_projeto = ?');
-            $stmt_del_cat->execute([$id_projeto]);
-
-            if (!empty($categorias_selecionadas)) {
-                $stmt_in_cat = $pdo->prepare('INSERT INTO proj_categorias (id_projeto, id_categoria) VALUES (?, ?)');
-                foreach ($categorias_selecionadas as $id_cat) {
-                    $stmt_in_cat->execute([$id_projeto, $id_cat]);
-                }
-            }
-
-            $pdo->commit();
-            header("Location: editar_projeto.php?id=$id_projeto");
-            exit;
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $erro = 'Erro ao salvar projeto';
-        }
+        $stmt = $pdo->prepare('UPDATE proj_dados SET historia = ? WHERE id_projeto = ?');
+        $stmt->execute([$historia, $id_projeto]);
     }
 }
 
@@ -316,9 +325,9 @@ include 'header.php';
     </form>
 
     <!-- VISÃO GERAL -->
-    <div id="aba-visao-geral">
+    <div id="aba-visao-geral" style="min-width: 640px;">
         <form method="POST" action="">
-            <input type="hidden" name="salvar_projeto" value="1">
+            <input type="hidden" name="salvar_visao_geral" value="1">
 
             <div>
                 <label for="nome_projeto"><strong>Nome do projeto:</strong></label><br>
@@ -326,7 +335,7 @@ include 'header.php';
             </div>
             <br>
 
-            <!-- ÁREA CLICÁVEL DA IMAGEM -->
+            <!-- UPLOAD DA IMAGEM DO PROJETO -->
             <div id="area-clicavel-imagem" style="cursor: pointer; background-color:lightgray; background-position:center; background-repeat:none; background-size:cover; <?php if (!empty($projeto['img'])) echo 'background-image:url(\'data:image/webp;base64,' . base64_encode($projeto['img']) . '\');'; ?> display:flex; justify-content:center; align-items:center; width:640px; height:360px;">
                 [ Clique para selecionar uma imagem ]
             </div>
@@ -343,7 +352,7 @@ include 'header.php';
             </script>
             <br>
 
-            <!-- SEÇÃO DE MEMBROS ATIVOS -->
+            <!-- MEMBROS -->
             <div>
                 <strong>Membros:</strong>
                 <div class="multiple_inline">
@@ -394,7 +403,7 @@ include 'header.php';
             </script>
             <br>
 
-            <!-- SEÇÃO DE CONVITES PENDENTES E NOVO CONVITE -->
+            <!-- CONVITES PENDENTES E NOVO CONVITE -->
             <div>
                 <strong>Convites pendentes:</strong>
                 <div class="multiple_inline">
@@ -474,16 +483,26 @@ include 'header.php';
         </form>
     </div>
 
-    <!-- HISTÓRIA (EXIBIÇÃO APENAS) -->
-    <div id="aba-historia" style="display: none;">
+    <!-- HISTÓRIA  DO PROJETO-->
+    <div id="aba-historia" style="display: none; min-width: 640px;">
+
         <h2>História</h2>
-        <div style="max-width: 640px;">
-            <p><?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Nenhuma história.')) ?></p>
-        </div>
+        <form method="POST" action="">
+            <input type="hidden" name="salvar_visao_geral" value="1">
+
+            <textarea name="historia_projeto" id="historia_projeto" 
+            style="max-width: 640px;"><?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Nenhuma história.')) ?></textarea>
+
+            <br>
+
+            <div class='buttons_criar'>
+                <button type="submit" class="btn-novo">Salvar Alterações</button>
+            </div>
+        </form>
     </div>
 
     <!-- AVALIAÇÕES -->
-    <div id="aba-avaliacoes" style="display: none;">
+    <div id="aba-avaliacoes" style="display: none; min-width: 640px;">
         <div>
             <h2>Avaliações <?php 
                 $total_comentarios = count($comentarios);
@@ -499,7 +518,7 @@ include 'header.php';
                 } else {
                     echo '☆☆☆☆☆';
                 }
-            ?></h2>    <button type="button" onclick="toggleFiltros()">Filtros +</button>
+            ?></h2>    <button type="button" onclick="toggleFiltros()" class="btn-novo">Filtros +</button>
         </div>
 
         <!-- PAINEL DE FILTROS -->
@@ -534,13 +553,13 @@ include 'header.php';
         <br>
 
         <div>
-            <button type="button" onclick="toggleFormAvaliacao()"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
+            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
         </div>
 
         <br>
 
         <div id="form-avaliacao-container" style="display: none;">
-            <button type="button" onclick="toggleFormAvaliacao()">Cancelar x</button>
+            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo btn-secundario">Cancelar x</button>
             <br><br>
             <form action="" method="POST">
                 <input type="hidden" name="id_comentario" value="<?= (empty($comentario_usuario)) ? '0' : $comentario_usuario['id'] ?>">
@@ -562,7 +581,7 @@ include 'header.php';
                         for ($i = $nota + 1; $i <= 5; $i++): ?><span onclick="definirNota(<?= $i ?>)">☆</span><?php endfor; ?>
                     </span>
                 <?php endif; ?>
-                    <button type="submit">→</button>
+                    <button type="submit" class="btn-novo">→</button>
                 </div>
             </form>
         </div>

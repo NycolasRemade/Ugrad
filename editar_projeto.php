@@ -286,10 +286,6 @@ try {
 } catch (PDOException $e) {
     $comentarios = [];
 }
-////////////////////////////////// Inclusividades
-
-include 'projeto_funcoes.php';
-
 
 //////////////////////////////////
 
@@ -602,6 +598,14 @@ include 'header.php';
         </main>
     </div>
 </main>
+
+<?php 
+
+////////////////////////////////// Inclusividades
+
+include 'projeto_funcoes.php';
+
+?>
 
 </body>
 </html>

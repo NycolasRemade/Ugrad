@@ -8,19 +8,17 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 $projetos_qtd = $pdo->query(
-    'SELECT COUNT(*) from projetos
+    'SELECT count(id) from projetos
     WHERE estado = 3'
 )->fetch();
 
 $projetos_id = array();
 
 
-for ($i=0; $i <= 20; $i++) { 
-    $p = rand(1,$projetos_qtd);
+for ($i=1; $i <= 20; $i++) { 
+    $p = rand(1,$projetos_qtd['COUNT(*)']);
     $projetos_id[$i] = $p;
 }
-
-
 
 
 
@@ -47,7 +45,11 @@ include 'header.php'
         <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    
+    <?php foreach ($projetos_id as $p) {
+        echo $p;
+        echo var_dump($projetos_qtd);
+    }
+    ?>
 
 </div>
 

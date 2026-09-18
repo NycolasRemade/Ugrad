@@ -248,6 +248,11 @@ img{
   margin-left: 790px;
 }
 
+#navbar .conta{
+  position: absolute;
+  
+}
+
 .centrao{
   width: 100%;
   display: flex;

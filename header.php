@@ -1,3 +1,16 @@
+<?php
+$stmt_imagem = $pdo->prepare(
+    'SELECT imagem_perfil
+    FROM usuarios
+    WHERE id = ?'
+);
+
+$stmt_imagem->execute([$usuario_id]);
+$imagem = $stmt_imagem->fetch();
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,6 +32,13 @@
         <?php if(isset($pdp)): ?>
         <a href="pesquisa_de_projetos.php">
             <h2 class="meringue">Pesquisa de Projetos</h2>
+        </a>
+        <?php endif;?>
+
+        <?php if(!isset($conta)): ?>
+        <a href="config_conta.php" class="conta">
+            <h3>Conta</h3>
+            <div style="background-image: url('data:image/webp;base64,<?= base64_encode($usuario['imagem_perfil']) ?>')" alt="Foto de Perfil"></div>
         </a>
         <?php endif;?>
 

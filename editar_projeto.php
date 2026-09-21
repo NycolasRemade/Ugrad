@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 default:
                     $erro = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
             }
-            if ($imagem_original) {
+            if (isset($imagem_original) && $imagem_original) {
                 ob_start();
                 imagewebp($imagem_original, null, 70);
                 imagedestroy($imagem_original);

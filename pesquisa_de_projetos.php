@@ -36,18 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['info_projeto'])) {
     exit;
 }
 
-$sql_select = 'SELECT id FROM projetos WHERE estado = 3';
-$params = [];
-
 $busca = trim($_GET['pesquisa'] ?? '');
 if ($busca !== '') {
-    $sql_select .= ' AND nome LIKE ?';
-    $params[] = '%' . $busca . '%';
+    $stmt_proj = $pdo->prepare('SELECT id FROM projetos WHERE estado = 3 AND nome LIKE ?');
+    $stmt_proj->execute(['%' . $busca . '%']);
+    $projetos_id = $stmt_proj->fetchAll();
 }
-
-$stmt_proj = $pdo->prepare($sql_select);
-$stmt_proj->execute($params);
-$projetos_id = $stmt_proj->fetchAll();
 
 
 $usuario_id = $_SESSION['usuario_id'];

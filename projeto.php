@@ -95,7 +95,7 @@ $stmt = $pdo->prepare(
    'SELECT u.nome 
     FROM proj_membros pm 
     JOIN usuarios u ON pm.id_convidado = u.id 
-    WHERE pm.id_projeto = ?'
+    WHERE pm.id_projeto = ? AND (pm.status_membro = 1 OR pm.status_membro = 2)'
 );
 $stmt->execute([$id_projeto]);
 $membros = $stmt->fetchAll(PDO::FETCH_COLUMN);

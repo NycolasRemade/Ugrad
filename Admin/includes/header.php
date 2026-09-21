@@ -15,7 +15,11 @@ $pageTitle = $pageTitle ?? 'Admin';
 <div class="app-shell">
 
   <header class="topbar">
-    <a class="logo" href="index.php">Ugrad</a>
+    <?php if ($pageTitle === 'Dashboard' || $pageTitle = 'Painel de controle - Pesquisa'): ?>
+      <a class="logo" href="../index.php">Ugrad</a>
+    <?php else: ?>
+      <a class="logo" href="index.php">Ugrad</a>
+    <?php endif; ?>
     <nav class="topnav">
       <a href="pesquisa.php" class="topnav-pill">Pesquisar de Projeto</a>
     </nav>

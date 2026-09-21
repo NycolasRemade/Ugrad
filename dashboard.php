@@ -27,6 +27,12 @@ include 'header.php'
             <h2>Olá, <?= htmlspecialchars($dados['nome']) ?>!</h2>
         </div></a>
 
+        <?php if ($dados['tipo'] === 5): ?>
+            <br>
+            <a class="btn-novo" href="Admin/pesquisa.php">Painel de administrador</a>
+            <br>
+        <?php endif; ?>
+
         <?php if ($dados['tipo'] === 1 || $dados['tipo'] === 5): // ALUNO ou ADMINISTRADOR
             $stmt_projetos = $pdo->prepare(
                'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto

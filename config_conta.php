@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                 default:
                     $erro = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
             }
-            if ($imagem_original) {
+            if (isset($imagem_original) && $imagem_original) {
                 ob_start();
                 imagewebp($imagem_original, null, 70);
                 imagedestroy($imagem_original);
@@ -93,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // senha
     if ($_POST['acao'] === 'alterar_senha') {
+        $senha = trim($_POST['senha']);
         $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
         $stmt->execute([password_hash($senha, PASSWORD_DEFAULT), $usuario_id]);
         $mensagem_sucesso = 'Senha alterada com sucesso!';

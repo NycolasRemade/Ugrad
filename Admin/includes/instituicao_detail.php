@@ -25,7 +25,7 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
       <div class="field-value"><?= htmlspecialchars($instituicao['email']) ?></div>
 
       <div><span class="field-label">Data de criação</span></div>
-      <div><span class="field-label">Código da instituição</span></div>
+      <div><span class="field-label">Código para professores</span></div>
       <div class="field-value"><?= htmlspecialchars(formatar_data($instituicao['data_criacao'])) ?></div>
       <div class="field-value"><?= htmlspecialchars($instituicao['codigo'] ?: '—') ?></div>
     </div>
@@ -63,7 +63,7 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
 
   <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="actions-row ajax-action-form">
     <input type="hidden" name="acao" value="gerar_codigo">
-    <button type="submit" class="btn btn-dark">Gerar código</button>
+    <button type="submit" class="btn btn-dark">Gerar novo código</button>
   </form>
 
   <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="actions-row ajax-action-form" data-confirm="Enviar link de redefinição de senha?">

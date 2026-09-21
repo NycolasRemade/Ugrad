@@ -207,5 +207,7 @@ require __DIR__ . '/includes/header.php';
   <?php endif; ?>
 })();
 </script>
-
-<?php require __DIR__ . '/includes/footer.php'; ?>
+</main>
+</div>
+</body>
+</html>

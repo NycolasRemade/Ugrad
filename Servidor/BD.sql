@@ -180,9 +180,8 @@ INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
   -- teste para pesquisa de usuários
 INSERT INTO turmas (nome, id_instituicao) VALUES
   ('turma de teste', 2),
-  ('3tia',2),
-  ('3tia',1),
-  ('3tib',1);
+  ('3tia', 2),
+  ('3tib', 2);
 
 INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
   (1, 1, 2),

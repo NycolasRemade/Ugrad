@@ -252,6 +252,7 @@ include 'header.php'
     </main>
 
 <script>
+
     function getTextWidth() {
 
         const inputText = "Olá, <?= htmlspecialchars($dados['nome']); ?>!";
@@ -265,18 +266,10 @@ include 'header.php'
 
         document.getElementById('nome_png').style.width = formattedWidth + "px";
         console.log(formattedWidth);
-    }
+        }
 
     getTextWidth();
 </script>
-
-<style>
-    details{
-        padding: 8px;
-        margin: 16px;
-        font-size: 32px;
-    }
-</style>
 
 </body>
 </html>

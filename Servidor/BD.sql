@@ -83,7 +83,6 @@ CREATE TABLE proj_dados(
   FOREIGN KEY (id_projeto) REFERENCES projetos(id),
   descricao text,
   historia text,
-  bitstring blob -- Para a definição do estilo das caixas de texto da seção de história
 );
 
 CREATE TABLE proj_categorias(

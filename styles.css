@@ -248,6 +248,11 @@ img{
   margin-left: 790px;
 }
 
+#navbar .conta{
+  position: absolute;
+  
+}
+
 .centrao{
   width: 100%;
   display: flex;
@@ -629,6 +634,12 @@ footer p{
   background-repeat: none;
   background-size: cover;
 }
+
+details{
+        padding: 8px;
+        margin: 16px;
+        font-size: 32px;
+    }
 
 /*-------------------------------------------------*/
 /*   Estilo para criação de projetos

@@ -329,9 +329,12 @@ include 'header.php';
 ?>
 
 
+
 <main class='centrao'>
     <div style="height: 200px"></div>
 
+
+<div id='main_paper'>
     <nav id='mudaraba'>
         <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
         <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
@@ -643,6 +646,8 @@ include 'header.php';
         </main>
     </div>
 
+</div>
+
     <!-- BARRA DE AÇÕES INFERIOR -->
     <hr style="margin-top: 30px; max-width: 640px; width: 100%;">
     <div>
@@ -664,6 +669,8 @@ include 'header.php';
         </div>
     </div>
 </main>
+
+
 
 <?php 
 

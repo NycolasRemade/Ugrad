@@ -42,8 +42,6 @@ if ($_SESSION['usuario_tipo'] === 1) {
     );
     $stmt->execute([$id_projeto, $usuario_id_instituicao]);
     $projeto = $stmt->fetch();
-} elseif ($_SESSION['usuario_tipo'] === 3) {
-    // EMPRESARIO
 } elseif ($_SESSION['usuario_tipo'] === 5) {
     // ADMINISTRADOR
     $stmt = $pdo->prepare(
@@ -293,13 +291,17 @@ $stmt_cat_proj = $pdo->prepare(
 $stmt_cat_proj->execute([$id_projeto]);
 $categorias_projeto = $stmt_cat_proj->fetchAll();
 
+$stmt = $pdo->prepare('SELECT id_turma FROM extra_usuarios WHERE id_usuario = ?');
+$stmt->execute([$usuario_id]);
+$usuario_turma = $stmt->fetchColumn();
+
 $usuarios_query = $pdo->prepare(
    'SELECT u.id, u.nome, u.email 
     FROM usuarios u 
     LEFT JOIN extra_usuarios e ON u.id = e.id_usuario
-    WHERE u.id != ? AND u.tipo = 1 AND e.id_instituicao = ?'
+    WHERE u.id != ? AND u.tipo = 1 AND e.id_turma = ? AND e.id_instituicao = ?'
 );
-$usuarios_query->execute([$usuario_id, $usuario_id_instituicao]);
+$usuarios_query->execute([$usuario_id, $usuario_turma, $usuario_id_instituicao]);
 $lista_usuarios = $usuarios_query->fetchAll();
 
 $categorias_query = $pdo->query('SELECT id, nome FROM categorias');

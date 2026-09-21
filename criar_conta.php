@@ -48,7 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 //////////////////////////////////
 $title = 'Cadastro';
+$conta = false;
 include 'header.php'
+
 ?>
 
 <body onLoad="window.scroll(0, 0)" style="overflow-y: hidden;">

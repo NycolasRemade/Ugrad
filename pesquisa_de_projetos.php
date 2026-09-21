@@ -1,4 +1,16 @@
 <?php
+session_start();
+require_once 'Servidor/config.php';
+if (isset($_SESSION['usuario_id'])) {
+    header('Location: dashboard.php');
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['pesquisa'])){
+    
+}
+
+
 //////////////////////////////////
 $title = 'Pesquisa de Projetos';
 $href = 'dashboard.php';
@@ -13,9 +25,11 @@ include 'header.php'
     <img src="Fotos/Polygon 3.png" alt="title">
 </div>
 
-<div id='main_paper'>
+    <div id='main_paper'>
 
-</div>
+        <
+
+    </div>
 
 </div>
 

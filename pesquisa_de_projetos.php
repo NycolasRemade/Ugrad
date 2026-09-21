@@ -36,10 +36,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['info_projeto'])) {
     exit;
 }
 
-$stmt_proj = $pdo->query('SELECT COUNT(*) from projetos WHERE estado = 3');
-$projetos_qtd = (int)$stmt_proj->fetchColumn();
+$sql_select = 'SELECT id FROM projetos WHERE estado = 3';
+$params = [];
 
-$stmt_proj = $pdo->query('SELECT id from projetos WHERE estado = 3');
+$busca = trim($_GET['pesquisa'] ?? '');
+if ($busca !== '') {
+    $sql_select .= ' AND nome LIKE ?';
+    $params[] = '%' . $busca . '%';
+}
+
+$stmt_proj = $pdo->prepare($sql_select);
+$stmt_proj->execute($params);
 $projetos_id = $stmt_proj->fetchAll();
 
 
@@ -66,9 +73,12 @@ include 'header.php'
         fetch('pesquisa_de_projetos.php?info_projeto=' + id)
         .then((response) => response.json())
         .then((data) => {
-            const divProjeto = document.createElement("div");
-            divProjeto.innerText = JSON.stringify(data);
-            divFeedProjetos.appendChild(divProjeto);
+            const divProjeto = document.getElementById("info-projeto-" + id);
+            divProjeto.innerHTML = 
+                'Nome: ' + data.nome + 
+                '<br>Criado em: ' + data.data_criacao + 
+                '<br>Descrição: ' + data.descricao + 
+                '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');">';
         })
         .catch((error) => console.error(error));
     }
@@ -76,35 +86,35 @@ include 'header.php'
 
 <div id='main_paper'>
 
+    <form method="GET" action="" style="margin-bottom: 20px; display: flex; gap: 10px;">
+        <input 
+            type="text" 
+            name="pesquisa" 
+            placeholder="Pesquisar projetos por nome..." 
+            value="<?= htmlspecialchars($busca) ?>" 
+            style="padding: 8px 12px; width: 100%; max-width: 400px; font-size: 14px;"
+        >
+        <button type="submit" style="padding: 8px 16px; cursor: pointer;">Buscar</button>
+        <?php if ($busca !== ''): ?>
+            <a href="pesquisa_de_projetos.php" style="padding: 8px 16px; text-decoration: none; background: #ddd; color: #333; display: inline-flex; align-items: center;">Limpar</a>
+        <?php endif; ?>
+    </form>
+
     <?php if (!empty($erro)): ?>
         <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    <main id="feed-projetos">
-        <?php for ($i = 0; $i < $projetos_id; $i++): ?>
-            <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: 128px;">
-                <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
-            </div>
-        <?php endfor; ?>
+    <main id="feed-projetos" style="display:flex; flex-wrap: wrap;">
+        <?php if (empty($projetos_id)): ?>
+            <p style="padding: 10px;">Nenhum projeto encontrado para "<strong><?= htmlspecialchars($busca) ?></strong>".</p>
+        <?php else: ?>
+            <?php foreach ($projetos_id as $p): ?>
+                <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
+                    <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </main>
-
-    <script>
-        function gerarIntervaloAleatorio(min, max) {
-            const lista = [];
-            for (let i = min; i <= max; i++) lista.push(i);
-            for (let i = lista.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [lista[i], lista[j]] = [lista[j], lista[i]];
-            }
-            return lista;
-        }
-        const idsProjetos = gerarIntervaloAleatorio(1, <?= $projetos_qtd ?>);
-
-        let offset = 1;
-        function carregar50projetos() {
-            //
-        }
-    </script>
 
     </div>
 

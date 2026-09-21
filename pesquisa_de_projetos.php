@@ -22,23 +22,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['info_projeto'])) {
     $proj = $stmt->fetch();
 
     if ($proj) {
-        echo json_encode(array_merge([
+        echo json_encode([
             'success' => true,
             'id' => $id,
             'nome' => $proj['nome'],
             'data_criacao' => $proj['data_criacao'],
             'descricao' => $proj['descricao'],
             'img' => base64_encode($proj['img'])
-        ]));
+        ]);
         exit;
     }
     echo json_encode(['success' => false, 'message' => 'Projeto inexistente']);
     exit;
 }
 
-$stmt_proj = $pdo->query('SELECT id from projetos WHERE estado = 3');
-$stmt_proj->execute();
-$projetos_id = $stmt_proj->fetchAll();
+$stmt_proj = $pdo->query('SELECT COUNT(*) from projetos WHERE estado = 3');
+$projetos_qtd = (int)$stmt_proj->fetchColumn();
+
+
 
 $usuario_id = $_SESSION['usuario_id'];
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? null;
@@ -57,22 +58,33 @@ include 'header.php'
     <img src="Fotos/Polygon 3.png" alt="title">
 </div>
 
+<script>
+    const divFeedProjetos = document.getElementById("feed-projetos");
+    function carregarInfoProjeto(id) {
+        fetch('pesquisa_de_projetos.php?info_projeto=' + id)
+        .then((response) => response.json())
+        .then((data) => {
+            const divProjeto = document.createElement("div");
+            divProjeto.innerText = JSON.stringify(data);
+            divFeedProjetos.appendChild(divProjeto);
+        })
+        .catch((error) => console.error(error));
+    }
+</script>
+
 <div id='main_paper'>
 
     <?php if (!empty($erro)): ?>
         <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    <?php foreach ($projetos_id as $p): ?>
-        <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: 128px;">
-            <script type="module">
-                const response = await fetch('pesquisa_de_projetos.php?info_projeto=<?= $p['id'] ?>');
-                const data = await response.json();
-                const divProjeto = document.getElementById('info-projeto-<?= $p['id'] ?>');
-                divProjeto.innerText = JSON.stringify(data);
-            </script>
-        </div>
-    <?php endforeach; ?>
+    <main id="feed-projetos">
+        <?php foreach ($i = 0; $i < $projetos_qtd; $i++): ?>
+            <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: 128px;">
+                <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
+            </div>
+        <?php endforeach; ?>
+    </main>
 
     </div>
 

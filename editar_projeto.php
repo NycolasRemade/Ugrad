@@ -675,12 +675,15 @@ include 'projeto_funcoes.php';
 
 <script>
     // parser da história do projeto
-    function laxante(src) {
+    function lexer(src) {
         const tokens = [];
         for (let i = 0, len = src.length; i < len; ++i) {
             if (src[i] === '\\') i++;
         }
         return tokens;
+    }
+    function parser(tokens) {
+        //
     }
 </script>
 

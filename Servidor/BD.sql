@@ -82,7 +82,7 @@ CREATE TABLE proj_dados(
   id_projeto int PRIMARY KEY NOT NULL,
   FOREIGN KEY (id_projeto) REFERENCES projetos(id),
   descricao text,
-  historia text,
+  historia text
 );
 
 CREATE TABLE proj_categorias(

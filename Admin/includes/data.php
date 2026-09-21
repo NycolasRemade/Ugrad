@@ -21,7 +21,7 @@
  */
 
 session_start();
-require __DIR__ . '/config.php'; // disponibiliza $pdo
+require '../config.php'; // disponibiliza $pdo
 
 /* ---------------------------------------------------------------------
  * Helpers genéricos

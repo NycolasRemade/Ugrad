@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/includes/data.php';
 $pageTitle = 'Dashboard';
-require __DIR__ . '/includes/header.php';
+require 'includes/header.php';
 ?>
 
 <div class="dash-menu">

@@ -25,9 +25,9 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
       <div class="field-value"><?= htmlspecialchars($instituicao['email']) ?></div>
 
       <div><span class="field-label">Data de criação</span></div>
-      <div></div>
+      <div><span class="field-label">Código da instituição</span></div>
       <div class="field-value"><?= htmlspecialchars(formatar_data($instituicao['data_criacao'])) ?></div>
-      <div></div>
+      <div class="field-value"><?= htmlspecialchars($instituicao['codigo'] ?: '—') ?></div>
     </div>
   </div>
 

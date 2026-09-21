@@ -87,7 +87,10 @@ function db_instituicoes(string $q = ''): array {
 
 function find_instituicao(int $id): ?array {
     global $pdo;
-    $stmt = $pdo->prepare('SELECT u.id, u.nome, u.email, u.descricao, u.ativada, u.data_criacao, u.imagem_perfil
+    $stmt = $pdo->prepare('SELECT u.id, u.nome, u.email, u.descricao, u.ativada, u.data_criacao, u.imagem_perfil,
+                                  (SELECT GROUP_CONCAT(codigo ORDER BY data_criacao DESC SEPARATOR \', \') 
+                                   FROM codigo_instituicao 
+                                   WHERE id_instituicao = u.id) AS codigo
                             FROM usuarios u
                             JOIN tipos_usuario t ON t.id = u.tipo
                             WHERE t.nome = \'INSTITUICAO\' AND u.id = ?');

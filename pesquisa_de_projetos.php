@@ -39,6 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['info_projeto'])) {
 $stmt_proj = $pdo->query('SELECT COUNT(*) from projetos WHERE estado = 3');
 $projetos_qtd = (int)$stmt_proj->fetchColumn();
 
+$stmt_proj = $pdo->query('SELECT id from projetos WHERE estado = 3');
+$projetos_id = $stmt_proj->fetchAll();
 
 
 $usuario_id = $_SESSION['usuario_id'];
@@ -79,12 +81,30 @@ include 'header.php'
     <?php endif; ?>
 
     <main id="feed-projetos">
-        <?php foreach ($i = 0; $i < $projetos_qtd; $i++): ?>
+        <?php for ($i = 0; $i < $projetos_id; $i++): ?>
             <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: 128px;">
                 <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
             </div>
-        <?php endforeach; ?>
+        <?php endfor; ?>
     </main>
+
+    <script>
+        function gerarIntervaloAleatorio(min, max) {
+            const lista = [];
+            for (let i = min; i <= max; i++) lista.push(i);
+            for (let i = lista.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [lista[i], lista[j]] = [lista[j], lista[i]];
+            }
+            return lista;
+        }
+        const idsProjetos = gerarIntervaloAleatorio(1, <?= $projetos_qtd ?>);
+
+        let offset = 1;
+        function carregar50projetos() {
+            //
+        }
+    </script>
 
     </div>
 

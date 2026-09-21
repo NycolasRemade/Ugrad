@@ -1,0 +1,13 @@
+Fonte Tan Meringue — já instalada ✔
+=====================================
+
+Os arquivos da fonte (licenciada da TanType) já estão nesta pasta:
+
+  TanMeringue.woff2   <- usado primeiro (mais leve, navegadores atuais)
+  TanMeringue.otf     <- fallback (navegadores mais antigos)
+  TanMeringue.ttf     <- fallback (navegadores mais antigos)
+
+O css/style.css já referencia esses arquivos via @font-face, então a
+Tan Meringue já está sendo usada no site inteiro (texto e logo). Não
+precisa fazer mais nada — só manter esses 3 arquivos aqui dentro da
+pasta fonts/.

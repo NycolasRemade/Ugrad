@@ -11,7 +11,7 @@ if (!isset($conta) || $conta){
     $stmt_imagem->execute([$_SESSION['usuario_id']]);
     $imagem = $stmt_imagem->fetch();
 }
-
+//
 ?>
 
 <!DOCTYPE html>

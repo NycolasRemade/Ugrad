@@ -12,7 +12,7 @@ $stmt = $pdo->prepare('SELECT nome, email, tipo FROM usuarios WHERE id = ?');
 $stmt->execute([$id_usuario]);
 $dados = $stmt->fetch();
 
-
+//
 //////////////////////////////////
 $title = 'Painel - Ugrad';
 $href = 'Ugrad.html';

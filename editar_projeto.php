@@ -322,7 +322,7 @@ try {
 } catch (PDOException $e) {
     $comentarios = [];
 }
-
+//
 //////////////////////////////////
 
 $title = 'Editar ' . htmlspecialchars($projeto['nome']);

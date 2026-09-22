@@ -43,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = 'Verifique o código e tente novamente.';
     }
 }
+
+//
 ?>
 <!DOCTYPE html>
 <html lang="en">

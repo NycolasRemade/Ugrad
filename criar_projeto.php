@@ -70,7 +70,7 @@ $lista_usuarios = $usuarios_query->fetchAll();
 $categorias_query = $pdo->query('SELECT id, nome FROM categorias');
 $lista_categorias = $categorias_query->fetchAll();
 
-
+//
 //////////////////////////////////
 $title = 'Novo Projeto';
 $href = 'dashboard.php';

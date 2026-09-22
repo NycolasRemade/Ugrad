@@ -125,7 +125,7 @@ try {
 } catch (PDOException) {
     $mensagem_erro = 'Não foi possível acessar os comentários do projeto';
 }
-
+//
 //////////////////////////////////
 $title = urldecode($projeto['nome'] ?? 'Projeto');
 $href = 'dashboard.php';

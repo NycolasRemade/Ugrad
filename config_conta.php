@@ -166,7 +166,7 @@ $stmt_convites = $pdo->prepare(
 $stmt_convites->execute([$usuario_id]);
 $convites = $stmt_convites->fetchAll();
 
-
+//
 //////////////////////////////////
 $title = 'Perfil e Configurações';
 $href = 'dashboard.php';

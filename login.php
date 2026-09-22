@@ -42,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = 'Insira um e-mail válido e a senha correta.';
     }
 }
+
+//
 ?>
 <!DOCTYPE html>
 <html lang="en">

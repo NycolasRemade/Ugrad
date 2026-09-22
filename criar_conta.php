@@ -17,7 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email1', FILTER_VALIDATE_EMAIL);
     $senha = $_POST['senha'] ?? '';
     $tipo = $_SESSION['usuario_tipo'] ?? 3;
-    $imagem = "sfnsnfjanankdak";
+    
+    //Imagem padrão de perfil
+    $imagem = true;
 
     if (!empty($nome) && $email && !empty($senha) && $tipo > 0 || $tipo <= 4) {
         try {

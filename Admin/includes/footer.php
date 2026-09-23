@@ -1,4 +1,4 @@
-<?php // fecha o layout aberto em header.php ?>
+<?php // fecha o layout aberto em oi.php ?>
   </main>
 </div>
 </body>

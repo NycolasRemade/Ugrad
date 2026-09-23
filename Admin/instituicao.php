@@ -18,7 +18,7 @@ if (!$instituicao) {
         exit;
     }
     $pageTitle = 'Instituição não encontrada';
-    require __DIR__ . '/includes/header.php';
+    require __DIR__ . '/includes/oi.php';
     echo '<p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
     require __DIR__ . '/includes/footer.php';
     exit;
@@ -80,6 +80,6 @@ if ($isPartial) {
 }
 
 $pageTitle = 'Painel de controle - Detalhes da instituição';
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/oi.php';
 require __DIR__ . '/includes/instituicao_detail.php';
 require __DIR__ . '/includes/footer.php';

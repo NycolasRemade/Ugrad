@@ -11,7 +11,7 @@ $instituicoes = db_instituicoes($q);
 $turmas = db_turmas($q);
 $usuarios = db_usuarios($q);
 
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/oi.php';
 ?>
 
 <div class="search-layout">

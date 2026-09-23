@@ -20,7 +20,12 @@ if (!$usuario) {
     $pageTitle = 'Usuário não encontrado';
     require __DIR__ . '/includes/oi.php';
     echo '<p>Usuário não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
-    require __DIR__ . '/includes/footer.php';
+?>
+</main>
+</div>
+</body>
+</html>
+<?php
     exit;
 }
 
@@ -79,4 +84,8 @@ if ($isPartial) {
 $pageTitle = 'Painel de controle - Detalhes do usuário';
 require __DIR__ . '/includes/oi.php';
 require __DIR__ . '/includes/usuario_detail.php';
-require __DIR__ . '/includes/footer.php';
+?>
+</main>
+</div>
+</body>
+</html>

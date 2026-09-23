@@ -19,7 +19,7 @@ if (!isset($conta) || $conta){
 <head>
     <meta charset="UTF-8">
     <title><?=$title?></title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="<?= $baseUrl ?? '' ?>styles.css">
 </head>
 
 <?php if(isset($href)): ?>

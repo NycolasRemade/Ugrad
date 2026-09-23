@@ -1,88 +1,109 @@
 <?php
-require __DIR__ . '/includes/data.php';
-$pageTitle = 'Painel de controle - Pesquisa';
+
+require 'includes/data.php';
+
+// Variáveis necessárias para o header.php
+$title = 'Painel de controle - Pesquisa'; // Utilizado na tag <title> pelo header.php
+$href = '../index.php';                  // Caminho para o link principal no navbar
 
 $q = trim($_GET['q'] ?? '');
 $openTab = $_GET['tab'] ?? 'usuarios'; // instituicoes | turmas | usuarios
-$selectedType = $_GET['tipo'] ?? null;   // 'usuario' | 'instituicao' — pré-seleciona no load (opcional, ?tipo=usuario&id=3)
+$selectedType = $_GET['tipo'] ?? null;   // 'usuario' | 'instituicao'
 $selectedId = (int)($_GET['id'] ?? 0);
 
 $instituicoes = db_instituicoes($q);
 $turmas = db_turmas($q);
 $usuarios = db_usuarios($q);
 
-require __DIR__ . '/includes/oi.php';
+$title = 'Painel de controle - Pesquisa';
+$href = '../index.php';
+$baseUrl = '../';
+require '../header.php';
 ?>
 
-<div class="search-layout">
+<!-- Contentor principal utilizando .dashboard-container e .multiple_inline do styles.css -->
+<div class="dashboard-container multiple_inline" style="gap: 30px; align-items: flex-start;">
 
-  <div class="search-col">
-    <form class="search-bar" method="get">
-      <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Pesquisar usuários, turmas ou instituições...">
-      <button type="submit">+</button>
+  <!-- Coluna da esquerda: Pesquisa e Listagens -->
+  <div style="flex: 1; min-width: 0;">
+    
+    <!-- Formulário de pesquisa utilizando o estilo de cabeçalho .secao-header e botão .btn-novo -->
+    <form method="get" class="secao-header" style="gap: 10px; border-bottom: none; margin-bottom: 25px;">
+      <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Pesquisar usuários, turmas ou instituições..." style="flex: 1; border: none; height: 48px; font-size: 16px; background-color: #ffffff; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25); padding-left: 15px; font-family: IBM;">
+      <button type="submit" class="btn-novo" style="height: 48px; padding: 0 20px;">+</button>
     </form>
 
-    <div class="accordion-section<?= $openTab === 'instituicoes' ? ' open' : '' ?>" data-section="instituicoes">
-      <button type="button" class="accordion-header">Instituições <span class="chev">⌄</span></button>
-      <div class="accordion-body">
-        <div class="pill-row">
-          <?php if (empty($instituicoes)): ?>
-            <p class="dim">Nenhuma instituição encontrada.</p>
-          <?php endif; ?>
-          <?php foreach ($instituicoes as $inst): ?>
-            <div class="pill" data-row-id="<?= $inst['id'] ?>">
-              <a href="instituicao.php?id=<?= $inst['id'] ?>" class="detail-trigger" data-type="instituicao" data-id="<?= $inst['id'] ?>">
-                <?= htmlspecialchars($inst['nome']) ?>
-              </a>
-            </div>
-          <?php endforeach; ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-section<?= $openTab === 'turmas' ? ' open' : '' ?>" data-section="turmas">
-      <button type="button" class="accordion-header">Turmas <span class="chev">⌄</span></button>
-      <div class="accordion-body">
-        <div class="pill-row">
-          <?php if (empty($turmas)): ?>
-            <p class="dim">Nenhuma turma encontrada.</p>
-          <?php endif; ?>
-          <?php foreach ($turmas as $t): ?>
-            <div class="pill"><?= htmlspecialchars($t['nome']) ?> <span class="dim">· <?= htmlspecialchars($t['instituicao_nome']) ?></span></div>
-          <?php endforeach; ?>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-section<?= $openTab === 'usuarios' ? ' open' : '' ?>" data-section="usuarios">
-      <button type="button" class="accordion-header">Usuários <span class="chev">⌄</span></button>
-      <div class="accordion-body">
-        <?php if (empty($usuarios)): ?>
-          <p class="dim">Nenhum usuário encontrado.</p>
+    <!-- Secção Instituições em bloco .box -->
+    <details class="box" <?= $openTab === 'instituicoes' ? 'open' : '' ?> style="font-size: 16px; margin-bottom: 20px; padding: 20px;">
+      <summary style="font-family: 'BMI'; font-size: 22px; cursor: pointer; user-select: none; margin-bottom: 10px;">Instituições</summary>
+      <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px;">
+        <?php if (empty($instituicoes)): ?>
+          <p style="color: #666; font-size: 14px;">Nenhuma instituição encontrada.</p>
         <?php endif; ?>
-        <?php foreach ($usuarios as $u): ?>
-          <div class="user-row" data-row-id="<?= $u['id'] ?>">
-            <span class="radio"></span>
-            <a class="user-name detail-trigger" href="usuario.php?id=<?= $u['id'] ?>" data-type="usuario" data-id="<?= $u['id'] ?>">
-              <?= htmlspecialchars($u['nome']) ?>
-              <?php if (!$u['ativada']): ?><span class="dim">(desativada)</span><?php endif; ?>
+        <?php foreach ($instituicoes as $inst): ?>
+          <div class="small pill" data-row-id="<?= $inst['id'] ?>">
+            <a href="instituicao.php?id=<?= $inst['id'] ?>" class="detail-trigger" data-type="instituicao" data-id="<?= $inst['id'] ?>">
+              <?= htmlspecialchars($inst['nome']) ?>
             </a>
-            <span class="dim"><?= htmlspecialchars($u['turma_nome'] ?? '—') ?></span>
-            <span class="dim"><?= htmlspecialchars(tipo_label($u['tipo_nome'])) ?></span>
           </div>
         <?php endforeach; ?>
       </div>
-    </div>
+    </details>
+
+    <!-- Secção Turmas em bloco .box -->
+    <details class="box" <?= $openTab === 'turmas' ? 'open' : '' ?> style="font-size: 16px; margin-bottom: 20px; padding: 20px;">
+      <summary style="font-family: 'BMI'; font-size: 22px; cursor: pointer; user-select: none; margin-bottom: 10px;">Turmas</summary>
+      <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+        <?php if (empty($turmas)): ?>
+          <p style="color: #666; font-size: 14px;">Nenhuma turma encontrada.</p>
+        <?php endif; ?>
+        <?php foreach ($turmas as $t): ?>
+          <div class="small" style="width: auto; text-align: left; padding: 12px 15px;">
+            <span style="font-family: 'BMI';"><?= htmlspecialchars($t['nome']) ?></span>
+            <span style="color: #666; font-size: 13px;"> · <?= htmlspecialchars($t['instituicao_nome']) ?></span>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </details>
+
+    <!-- Secção Usuários em bloco .box -->
+    <details class="box" <?= $openTab === 'usuarios' ? 'open' : '' ?> style="font-size: 16px; margin-bottom: 20px; padding: 20px;">
+      <summary style="font-family: 'BMI'; font-size: 22px; cursor: pointer; user-select: none; margin-bottom: 10px;">Usuários</summary>
+      <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+        <?php if (empty($usuarios)): ?>
+          <p style="color: #666; font-size: 14px;">Nenhum usuário encontrado.</p>
+        <?php endif; ?>
+        <?php foreach ($usuarios as $u): ?>
+          <div class="user-row small" data-row-id="<?= $u['id'] ?>" style="width: auto; text-align: left; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
+            <a class="user-name detail-trigger" href="usuario.php?id=<?= $u['id'] ?>" data-type="usuario" data-id="<?= $u['id'] ?>" style="font-family: 'BMI'; flex: 1;">
+              <?= htmlspecialchars($u['nome']) ?>
+              <?php if (!$u['ativada']): ?><span style="color: #888; font-size: 13px;"> (desativada)</span><?php endif; ?>
+            </a>
+            <span style="color: #666; font-size: 13px; margin-right: 15px;"><?= htmlspecialchars($u['turma_nome'] ?? '—') ?></span>
+            <span style="color: #666; font-size: 13px; font-family: 'BMI';"><?= htmlspecialchars(tipo_label($u['tipo_nome'])) ?></span>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </details>
+
   </div>
 
-  <div class="detail-col">
-    <div id="actionBanner" class="action-banner" hidden>
+  <!-- Coluna da direita: Painel de detalhes e mensagens de ação -->
+  <div style="flex: 1.2; min-width: 0;">
+    
+    <!-- Banner de notificação de ações -->
+    <div id="actionBanner" hidden style="padding: 12px 15px; margin-bottom: 20px; font-family: 'BMI'; font-size: 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.15);">
       <span id="actionBannerText"></span>
-      <button type="button" id="actionBannerClose" aria-label="Fechar">×</button>
+      <button type="button" id="actionBannerClose" class="btn-x" style="padding: 0 5px; line-height: 1;" aria-label="Fechar">×</button>
     </div>
-    <div id="detailPanel" class="detail-panel">
-      <p class="detail-placeholder">Selecione um usuário ou instituição na lista ao lado para ver os detalhes aqui.</p>
+
+    <!-- Painel de Detalhes -->
+    <div id="detailPanel" class="box" style="padding: 30px; min-height: 400px;">
+      <p class="detail-placeholder" style="font-family: 'BMI'; color: #666; text-align: center; margin-top: 100px; font-size: 18px;">
+        Selecione um usuário ou instituição na lista ao lado para ver os detalhes aqui.
+      </p>
     </div>
+
   </div>
 
 </div>
@@ -92,36 +113,40 @@ require __DIR__ . '/includes/oi.php';
   var panel = document.getElementById('detailPanel');
   var banner = document.getElementById('actionBanner');
   var bannerText = document.getElementById('actionBannerText');
-  var current = { type: null, id: null }; // o que está aberto no painel agora
-
-  document.querySelectorAll('.accordion-header').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      btn.closest('.accordion-section').classList.toggle('open');
-    });
-  });
+  var current = { type: null, id: null };
 
   function showBanner(message, isError) {
-    bannerText.textContent = message && message.trim() !== '' ? message : 'Ação concluída.';
-    banner.classList.toggle('error', !!isError);
+    bannerText.textContent = message;
+    if (isError) {
+      banner.style.backgroundColor = '#ffcbcb';
+      banner.style.color = '#C50000';
+      banner.style.borderLeft = '5px solid #C50000';
+    } else {
+      banner.style.backgroundColor = '#d4edda';
+      banner.style.color = '#155724';
+      banner.style.borderLeft = '5px solid #28a745';
+    }
     banner.hidden = false;
   }
 
-  // Delegado no document (igual ao clique nos itens da lista), pra não
-  // depender de o botão já existir no exato momento em que o script roda.
-  document.addEventListener('click', function (e) {
-    if (e.target.closest('#actionBannerClose')) {
-      banner.hidden = true;
-    }
+  document.getElementById('actionBannerClose').addEventListener('click', function () {
+    banner.hidden = true;
   });
 
   function selectRow(id) {
     document.querySelectorAll('.user-row').forEach(function (row) {
-      row.classList.toggle('selected', row.dataset.rowId === String(id));
+      if (row.dataset.rowId === String(id)) {
+        row.style.outline = '2px solid #000';
+        row.style.backgroundColor = '#EEEEEE';
+      } else {
+        row.style.outline = 'none';
+        row.style.backgroundColor = '#ffffff';
+      }
     });
   }
 
   function loadDetail(type, id) {
-    panel.innerHTML = '<p class="detail-placeholder">Carregando...</p>';
+    panel.innerHTML = '<p class="detail-placeholder" style="font-family: \'BMI\'; color: #666; text-align: center; margin-top: 100px; font-size: 18px;">Carregando...</p>';
     current = { type: type, id: String(id) };
     if (type === 'usuario') selectRow(id);
 
@@ -133,11 +158,10 @@ require __DIR__ . '/includes/oi.php';
         panel.innerHTML = html;
       })
       .catch(function () {
-        panel.innerHTML = '<p class="detail-placeholder">Não foi possível carregar os detalhes. Tente novamente.</p>';
+        panel.innerHTML = '<p class="detail-placeholder" style="font-family: \'BMI\'; color: #C50000; text-align: center; margin-top: 100px; font-size: 18px;">Não foi possível carregar os detalhes. Tente novamente.</p>';
       });
   }
 
-  /** Remove da lista de busca a linha (usuário) ou pill (instituição) do item excluído. */
   function removeFromList(type, id) {
     var selector = type === 'usuario'
       ? '.user-row[data-row-id="' + id + '"]'
@@ -146,9 +170,6 @@ require __DIR__ . '/includes/oi.php';
     if (el) el.remove();
   }
 
-  // Abre o painel de detalhes ao clicar num usuário/instituição da lista.
-  // Delegado no document: cobre também links injetados depois via AJAX
-  // (ex.: professores listados dentro dos detalhes de uma instituição).
   document.addEventListener('click', function (e) {
     var trigger = e.target.closest('.detail-trigger');
     if (trigger) {
@@ -157,8 +178,6 @@ require __DIR__ . '/includes/oi.php';
     }
   });
 
-  // Ações dos botões (desativar/reativar/excluir/gerar código/senha) via AJAX:
-  // sem recarregar a página, e a conta excluída some da lista na hora.
   document.addEventListener('submit', function (e) {
     var form = e.target.closest('.ajax-action-form');
     if (!form) return;
@@ -180,25 +199,19 @@ require __DIR__ . '/includes/oi.php';
         showBanner(data.message, !data.success);
 
         if (data.success && data.removed) {
-          // Conta/instituição excluída (botão "Excluir conta"/"Exclusão").
           removeFromList(type, data.id);
-          panel.innerHTML = '<p class="detail-placeholder">Selecione um usuário ou instituição na lista ao lado para ver os detalhes aqui.</p>';
+          panel.innerHTML = '<p class="detail-placeholder" style="font-family: \'BMI\'; color: #666; text-align: center; margin-top: 100px; font-size: 18px;">Selecione um usuário ou instituição na lista ao lado para ver os detalhes aqui.</p>';
           current = { type: null, id: null };
           return;
         }
 
         if (data.success && data.usuario_removido) {
-          // Botão "Apagar" numa reportagem que resultou na exclusão do
-          // próprio usuário reportado (o perfil que está aberto agora).
           if (current.type && current.id) removeFromList(current.type, current.id);
-          panel.innerHTML = '<p class="detail-placeholder">Selecione um usuário ou instituição na lista ao lado para ver os detalhes aqui.</p>';
+          panel.innerHTML = '<p class="detail-placeholder" style="font-family: \'BMI\'; color: #666; text-align: center; margin-top: 100px; font-size: 18px;">Selecione um usuário ou instituição na lista ao lado para ver os detalhes aqui.</p>';
           current = { type: null, id: null };
           return;
         }
 
-        // Qualquer outra ação (desativar/reativar/gerar código/senha/
-        // apagar ou ignorar uma reportagem): recarrega o painel pra
-        // refletir o novo estado vindo do banco.
         if (current.type && current.id) loadDetail(current.type, current.id);
       })
       .catch(function () {
@@ -212,5 +225,5 @@ require __DIR__ . '/includes/oi.php';
   <?php endif; ?>
 })();
 </script>
-
-<?php require __DIR__ . '/includes/footer.php'; ?>
+</body>
+</html>

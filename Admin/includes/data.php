@@ -1,26 +1,13 @@
 <?php
 /**
  * data.php
- * Camada de dados — agora consulta o banco "ugrad" de verdade via PDO
- * (schema fornecido: usuarios, tipos_usuario, turmas, extra_usuarios,
- * projetos, proj_membros, reportagens, etc). Nenhum dado fictício aqui;
- * tudo que aparece na tela vem do banco.
- *
- * Observações sobre limitações do schema (não inventamos colunas):
- * - Não existe coluna de "último login" em `usuarios` — o campo foi
- *   removido das telas. Se quiser rastrear isso, precisa de uma coluna
- *   nova (ex.: `ultimo_login TIMESTAMP NULL`).
- * - `reportagens` não tem texto/motivo nem status (ativo/resolvido) —
- *   as avaliações mostram quem reportou, quando, e o que foi reportado
- *   (projeto ou perfil do usuário), sem o texto/etiqueta que existia
- *   no mock. Se quiser esses campos, precisa adicionar colunas como
- *   `motivo TEXT` e `status` em `reportagens`.
- * - "Professor da turma" é inferido via `extra_usuarios` (usuário do
- *   tipo PROFESSOR com o mesmo id_turma), pois não há coluna de
- *   professor em `turmas`.
+ * Camada de dados — consulta o banco "ugrad" via PDO.
  */
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require __DIR__ . '/config.php'; // disponibiliza $pdo
 
 /* ---------------------------------------------------------------------
@@ -136,8 +123,7 @@ function db_turmas(string $q = ''): array {
 }
 
 /* ---------------------------------------------------------------------
- * Usuários (todos os tipos: aluno, professor, empresário, instituição,
- * administrador)
+ * Usuários
  * ------------------------------------------------------------------- */
 
 const USUARIO_SELECT = '
@@ -161,8 +147,6 @@ const USUARIO_SELECT = '
 
 function db_usuarios(string $q = ''): array {
     global $pdo;
-    // Instituições já aparecem na seção "Instituições" da busca — não
-    // duplica elas aqui na lista de usuários.
     $sql = USUARIO_SELECT . ' WHERE tu.nome != \'INSTITUICAO\'';
     $params = [];
     if ($q !== '') {
@@ -185,7 +169,7 @@ function find_usuario(int $id): ?array {
 }
 
 /* ---------------------------------------------------------------------
- * Projetos do usuário (dono ou membro aceito)
+ * Projetos do usuário
  * ------------------------------------------------------------------- */
 
 function projetos_do_usuario(int $usuarioId): array {
@@ -201,9 +185,7 @@ function projetos_do_usuario(int $usuarioId): array {
 }
 
 /* ---------------------------------------------------------------------
- * "Avaliações" do usuário = reportagens feitas contra ele ou contra
- * projetos dele (ver observações no topo do arquivo sobre os campos
- * que o schema atual não possui).
+ * Avaliações / Reportagens
  * ------------------------------------------------------------------- */
 
 function avaliacoes_do_usuario(int $usuarioId): array {
@@ -238,10 +220,6 @@ function avaliacoes_do_usuario(int $usuarioId): array {
     return $stmt->fetchAll();
 }
 
-/* ---------------------------------------------------------------------
- * Lookups usados nas telas de detalhe
- * ------------------------------------------------------------------- */
-
 function nome_turma(?int $turmaId): string {
     global $pdo;
     if (!$turmaId) return '—';
@@ -259,7 +237,7 @@ function nome_instituicao(?int $instituicaoId): string {
 }
 
 /* ---------------------------------------------------------------------
- * Ações de escrita usadas pelos botões das telas de detalhe
+ * Ações de escrita
  * ------------------------------------------------------------------- */
 
 function usuario_toggle_ativacao(int $id, bool $ativar): bool {
@@ -268,18 +246,11 @@ function usuario_toggle_ativacao(int $id, bool $ativar): bool {
     return $stmt->execute([$ativar ? 1 : 0, $id]);
 }
 
-/**
- * Exclui o usuário "de verdade", removendo antes tudo que aponta pra
- * ele via foreign key (o schema não usa ON DELETE CASCADE, então um
- * DELETE simples falha quase sempre). Tudo roda numa transação: se
- * qualquer passo falhar, nada é apagado.
- */
 function usuario_excluir(int $id): bool {
     global $pdo;
     try {
         $pdo->beginTransaction();
 
-        // Se for uma instituição: desvincula turmas/usuários dela antes de apagar.
         $stmt = $pdo->prepare('SELECT id FROM turmas WHERE id_instituicao = ?');
         $stmt->execute([$id]);
         $turmaIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -293,22 +264,17 @@ function usuario_excluir(int $id): bool {
         $pdo->prepare('DELETE FROM codigo_instituicao WHERE id_instituicao = ?')->execute([$id]);
         $pdo->prepare('DELETE FROM turmas WHERE id_instituicao = ?')->execute([$id]);
 
-        // Participações em projetos, comentários e reportagens feitas por este usuário.
         $pdo->prepare('DELETE FROM proj_membros WHERE id_convidante = ? OR id_convidado = ?')->execute([$id, $id]);
         $pdo->prepare('DELETE FROM comentarios WHERE id_usuario = ?')->execute([$id]);
         $pdo->prepare('DELETE FROM reportagens WHERE id_usuario = ?')->execute([$id]);
 
-        // Reportagens feitas CONTRA este usuário (id_reportado não tem FK, mas fica órfã se não limpar).
         $tipoUsuarioId = tipo_id('USUARIO');
         if ($tipoUsuarioId) {
             $pdo->prepare('DELETE FROM reportagens WHERE tipo_rep = ? AND id_reportado = ?')
                 ->execute([$tipoUsuarioId, $id]);
         }
 
-        // Vínculo de turma/instituição do próprio usuário.
         $pdo->prepare('DELETE FROM extra_usuarios WHERE id_usuario = ?')->execute([$id]);
-
-        // Por fim, o usuário.
         $pdo->prepare('DELETE FROM usuarios WHERE id = ?')->execute([$id]);
 
         $pdo->commit();
@@ -334,10 +300,7 @@ function instituicao_gerar_codigo(int $instituicaoId, string $tipoUsuarioNome = 
 }
 
 /* ---------------------------------------------------------------------
- * Moderação de reportagens (botões "Apagar" / "Ignorar" nos cards de
- * Avaliações). "Ignorar" só descarta a reportagem. "Apagar" remove o
- * conteúdo reportado de fato (o projeto, o comentário, ou o usuário,
- * dependendo do tipo) e, junto, a própria reportagem.
+ * Moderação de reportagens
  * ------------------------------------------------------------------- */
 
 function tipo_rep_id(string $nome): ?int {
@@ -362,7 +325,6 @@ function reportagem_find(int $id): ?array {
     return $row ?: null;
 }
 
-/** Descarta a reportagem sem mexer no conteúdo reportado. */
 function reportagem_ignorar(int $id): bool {
     global $pdo;
     try {
@@ -373,7 +335,6 @@ function reportagem_ignorar(int $id): bool {
     }
 }
 
-/** Exclui um projeto e tudo que depende dele (cascata em código, já que o schema não tem ON DELETE CASCADE). */
 function projeto_excluir(int $id): bool {
     global $pdo;
     try {
@@ -410,12 +371,6 @@ function comentario_excluir(int $id): bool {
     }
 }
 
-/**
- * Botão "Apagar": exclui o item que foi reportado (projeto, comentário
- * ou o próprio usuário, conforme o tipo da reportagem) e, se der certo,
- * a reportagem também. Devolve o que aconteceu pra tela decidir se
- * precisa tirar alguma coisa da lista/painel.
- */
 function reportagem_apagar(int $id): array {
     $rep = reportagem_find($id);
     if (!$rep) {
@@ -444,17 +399,12 @@ function reportagem_apagar(int $id): array {
     }
 
     if ($ok) {
-        reportagem_ignorar($id); // some com a reportagem em si também
+        reportagem_ignorar($id);
     }
 
     return ['success' => $ok, 'message' => $message, 'usuario_removido' => $usuarioRemovido];
 }
 
-/* ---------------------------------------------------------------------
- * Flash message (mensagens de confirmação entre páginas)
- * ------------------------------------------------------------------- */
-
-/** Total de reportagens pendentes no sistema (usado no selo do avatar no topo). */
 function total_reportagens(): int {
     global $pdo;
     return (int)$pdo->query('SELECT COUNT(*) FROM reportagens')->fetchColumn();

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'Servidor/config.php';
+require_once 'imagem_padrao_perfil.php';
 if (isset($_SESSION['usuario_id'])) {
     header('Location: dashboard.php');
     exit;
@@ -18,15 +19,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $senha = $_POST['senha'] ?? '';
     $tipo = $_SESSION['usuario_tipo'] ?? 3;
     
-    //Imagem padrão de perfil
-    $imagem = true;
 
     if (!empty($nome) && $email && !empty($senha) && $tipo > 0 || $tipo <= 4) {
         try {
             $pdo->beginTransaction();
 
-            $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
-            $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo]);
+            $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha, tipo, imagem_perfil) VALUES (?, ?, ?, ?, ?)');
+            $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo, $imagem_nova]);
 
             $_SESSION['usuario_id'] = $pdo->lastInsertId();
             $_SESSION['usuario_nome'] = $nome;

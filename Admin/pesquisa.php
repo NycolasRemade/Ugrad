@@ -101,12 +101,17 @@ require __DIR__ . '/includes/header.php';
   });
 
   function showBanner(message, isError) {
-    bannerText.textContent = message;
+    bannerText.textContent = message && message.trim() !== '' ? message : 'Ação concluída.';
     banner.classList.toggle('error', !!isError);
     banner.hidden = false;
   }
-  document.getElementById('actionBannerClose').addEventListener('click', function () {
-    banner.hidden = true;
+
+  // Delegado no document (igual ao clique nos itens da lista), pra não
+  // depender de o botão já existir no exato momento em que o script roda.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#actionBannerClose')) {
+      banner.hidden = true;
+    }
   });
 
   function selectRow(id) {
@@ -207,7 +212,5 @@ require __DIR__ . '/includes/header.php';
   <?php endif; ?>
 })();
 </script>
-</main>
-</div>
-</body>
-</html>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>

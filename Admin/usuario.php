@@ -79,10 +79,4 @@ if ($isPartial) {
 $pageTitle = 'Painel de controle - Detalhes do usuário';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/usuario_detail.php';
-
-?>
-</main>
-</div>
-</body>
-</html>
-
+require __DIR__ . '/includes/footer.php';

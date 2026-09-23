@@ -29,11 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     switch ($_POST['acao']) {
         case 'gerar_codigo':
-            $codigo = instituicao_gerar_codigo($id);
+            $codigo = instituicao_gerar_codigo($id, 'ALUNO');
             $result['success'] = (bool)$codigo;
             $result['message'] = $codigo
                 ? 'Novo código de acesso gerado: ' . $codigo
-                : 'Não foi possível gerar o código.';
+                : 'Não foi possível gerar o código (tipo "ALUNO" não encontrado em tipos_usuario).';
             break;
         case 'senha':
             $result['message'] = 'Link de alteração de senha seria enviado (envio de e-mail não implementado).';
@@ -82,9 +82,4 @@ if ($isPartial) {
 $pageTitle = 'Painel de controle - Detalhes da instituição';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/instituicao_detail.php';
-?>
-</main>
-</div>
-</body>
-</html>
-
+require __DIR__ . '/includes/footer.php';

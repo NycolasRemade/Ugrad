@@ -258,6 +258,14 @@ h1.page-title {
   font-size: var(--fs-md);
 }
 
+/* O atributo `hidden` sozinho perde pra `display: flex` acima (mesma
+   especificidade, mas a regra da classe entra depois da regra padrão
+   do navegador) — isso garante que "hidden" realmente esconda o
+   balão de novo depois que ele já apareceu uma vez. */
+.action-banner[hidden] {
+  display: none;
+}
+
 .action-banner.error {
   background: #fdecec;
   border-color: var(--red);

@@ -22,23 +22,6 @@ header('Pragma: no-cache');
 <body>
 <div class="app-shell">
 
-  <header class="topbar">
-    <a class="logo" href="index.php">Ugrad</a>
-    <nav class="topnav">
-      <a href="pesquisa.php" class="topnav-pill">Pesquisar de Projeto</a>
-    </nav>
-    <a class="account" href="#">
-      <span>Conta</span>
-      <span class="avatar-wrap">
-        <span class="avatar-dot" aria-hidden="true"></span>
-        <?php $pendentes = function_exists('total_reportagens') ? total_reportagens() : 0; ?>
-        <?php if ($pendentes > 0): ?>
-          <span class="avatar-badge"><?= $pendentes > 9 ? '9+' : $pendentes ?></span>
-        <?php endif; ?>
-      </span>
-    </a>
-  </header>
-
   <main class="content">
     <?php if ($msg = flash_get()): ?>
       <div class="flash"><?= htmlspecialchars($msg) ?></div>

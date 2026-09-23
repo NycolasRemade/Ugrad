@@ -21,7 +21,7 @@
  */
 
 session_start();
-require_once '../Servidor/config.php';
+require __DIR__ . '/config.php'; // disponibiliza $pdo
 
 /* ---------------------------------------------------------------------
  * Helpers genéricos
@@ -87,15 +87,10 @@ function db_instituicoes(string $q = ''): array {
 
 function find_instituicao(int $id): ?array {
     global $pdo;
-    $stmt = $pdo->prepare(
-        'SELECT u.id, u.nome, u.email, u.descricao, u.ativada, u.data_criacao, u.imagem_perfil,
-            (SELECT GROUP_CONCAT(codigo ORDER BY data_criacao DESC SEPARATOR \', \') 
-            FROM codigo_instituicao 
-            WHERE id_instituicao = u.id) AS codigo
-        FROM usuarios u
-        JOIN tipos_usuario t ON t.id = u.tipo
-        WHERE t.nome = \'INSTITUICAO\' AND u.id = ?'
-    );
+    $stmt = $pdo->prepare('SELECT u.id, u.nome, u.email, u.descricao, u.ativada, u.data_criacao, u.imagem_perfil
+                            FROM usuarios u
+                            JOIN tipos_usuario t ON t.id = u.tipo
+                            WHERE t.nome = \'INSTITUICAO\' AND u.id = ?');
     $stmt->execute([$id]);
     $row = $stmt->fetch();
     return $row ?: null;
@@ -103,14 +98,12 @@ function find_instituicao(int $id): ?array {
 
 function professores_da_instituicao(int $instituicaoId): array {
     global $pdo;
-    $stmt = $pdo->prepare(
-        'SELECT u.id, u.nome, u.email
-        FROM usuarios u
-        JOIN tipos_usuario t ON t.id = u.tipo
-        JOIN extra_usuarios ex ON ex.id_usuario = u.id
-        WHERE t.nome = \'PROFESSOR\' AND ex.id_instituicao = ?
-        ORDER BY u.nome'
-    );
+    $stmt = $pdo->prepare('SELECT u.id, u.nome, u.email
+                            FROM usuarios u
+                            JOIN tipos_usuario t ON t.id = u.tipo
+                            JOIN extra_usuarios ex ON ex.id_usuario = u.id
+                            WHERE t.nome = \'PROFESSOR\' AND ex.id_instituicao = ?
+                            ORDER BY u.nome');
     $stmt->execute([$instituicaoId]);
     return $stmt->fetchAll();
 }
@@ -147,18 +140,18 @@ function db_turmas(string $q = ''): array {
  * administrador)
  * ------------------------------------------------------------------- */
 
-const USUARIO_SELECT = 'SELECT 
-        u.id, u.nome, u.email, u.descricao, u.ativada, u.data_criacao, u.imagem_perfil,
-        tu.nome AS tipo_nome,
-        ex.id_turma, ex.id_instituicao,
-        turma.nome AS turma_nome,
-        inst.nome AS instituicao_nome,
-        (SELECT p.nome
-            FROM usuarios p
-            JOIN tipos_usuario tp ON tp.id = p.tipo
-            JOIN extra_usuarios pe ON pe.id_usuario = p.id
-            WHERE tp.nome = \'PROFESSOR\' AND pe.id_turma = ex.id_turma
-            LIMIT 1) AS professor_nome
+const USUARIO_SELECT = '
+    SELECT u.id, u.nome, u.email, u.descricao, u.ativada, u.data_criacao, u.imagem_perfil,
+           tu.nome AS tipo_nome,
+           ex.id_turma, ex.id_instituicao,
+           turma.nome AS turma_nome,
+           inst.nome AS instituicao_nome,
+           (SELECT p.nome
+              FROM usuarios p
+              JOIN tipos_usuario tp ON tp.id = p.tipo
+              JOIN extra_usuarios pe ON pe.id_usuario = p.id
+             WHERE tp.nome = \'PROFESSOR\' AND pe.id_turma = ex.id_turma
+             LIMIT 1) AS professor_nome
     FROM usuarios u
     JOIN tipos_usuario tu ON tu.id = u.tipo
     LEFT JOIN extra_usuarios ex ON ex.id_usuario = u.id
@@ -197,14 +190,12 @@ function find_usuario(int $id): ?array {
 
 function projetos_do_usuario(int $usuarioId): array {
     global $pdo;
-    $stmt = $pdo->prepare(
-        'SELECT DISTINCT proj.id, proj.nome
-        FROM projetos proj
-        JOIN proj_membros pm ON pm.id_projeto = proj.id
-        JOIN proj_membros_status st ON st.id = pm.status_membro
-        WHERE pm.id_convidado = ? AND st.nome IN (\'DONO\', \'MEMBRO\')
-        ORDER BY proj.nome'
-    );
+    $stmt = $pdo->prepare('SELECT DISTINCT proj.id, proj.nome
+                            FROM projetos proj
+                            JOIN proj_membros pm ON pm.id_projeto = proj.id
+                            JOIN proj_membros_status st ON st.id = pm.status_membro
+                            WHERE pm.id_convidado = ? AND st.nome IN (\'DONO\', \'MEMBRO\')
+                            ORDER BY proj.nome');
     $stmt->execute([$usuarioId]);
     return $stmt->fetchAll();
 }
@@ -221,7 +212,7 @@ function avaliacoes_do_usuario(int $usuarioId): array {
     $projetoIds = array_column(projetos_do_usuario($usuarioId), 'id');
 
     $sql = 'SELECT r.id, r.data_reportagem, ru.nome AS reportado_por, tr.nome AS tipo_rep_nome,
-                proj.nome AS projeto_nome
+                   proj.nome AS projeto_nome
             FROM reportagens r
             JOIN usuarios ru ON ru.id = r.id_usuario
             JOIN tipo_rep tr ON tr.id = r.tipo_rep
@@ -331,16 +322,14 @@ function usuario_excluir(int $id): bool {
     }
 }
 
-function instituicao_gerar_codigo(int $instituicaoId): ?string {
+function instituicao_gerar_codigo(int $instituicaoId, string $tipoUsuarioNome = 'ALUNO'): ?string {
     global $pdo;
+    $tipoId = tipo_id($tipoUsuarioNome);
+    if (!$tipoId) return null;
 
     $codigo = strtoupper(substr(bin2hex(random_bytes(4)), 0, 8));
-
-    $stmt = $pdo->prepare('DELETE FROM codigo_instituicao WHERE id_instituicao = ?');
-    $stmt->execute([$instituicaoId]);
-    
-    $stmt = $pdo->prepare('INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario) VALUES (?, ?, 2)');
-    $stmt->execute([$instituicaoId, $codigo]);
+    $stmt = $pdo->prepare('INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario) VALUES (?, ?, ?)');
+    $stmt->execute([$instituicaoId, $codigo, $tipoId]);
     return $codigo;
 }
 
@@ -364,12 +353,10 @@ function tipo_rep_id(string $nome): ?int {
 
 function reportagem_find(int $id): ?array {
     global $pdo;
-    $stmt = $pdo->prepare(
-        'SELECT r.id, r.id_usuario, r.id_reportado, tr.nome AS tipo_rep_nome
-        FROM reportagens r
-        JOIN tipo_rep tr ON tr.id = r.tipo_rep
-        WHERE r.id = ?'
-    );
+    $stmt = $pdo->prepare('SELECT r.id, r.id_usuario, r.id_reportado, tr.nome AS tipo_rep_nome
+                            FROM reportagens r
+                            JOIN tipo_rep tr ON tr.id = r.tipo_rep
+                            WHERE r.id = ?');
     $stmt->execute([$id]);
     $row = $stmt->fetch();
     return $row ?: null;

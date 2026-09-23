@@ -71,7 +71,8 @@ include 'header.php'
         .then((data) => {
             const divProjeto = document.getElementById("info-projeto-" + id);
             divProjeto.innerHTML = 
-                "<a class='projeto-card box' href='projeto.php?id= " + id +"'Nome: " + data.nome + 
+                "<a class='projeto-card box' href='projeto.php?id= " + id +">"
+                'Nome: " + data.nome + 
                 '<br>Criado em: ' + data.data_criacao + 
                 '<br>Descrição: ' + data.descricao + 
                 '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');"></a>';

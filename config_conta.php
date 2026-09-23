@@ -185,11 +185,7 @@ include 'header.php'
     <div id='config_container'>
 
         <div class='img_container'>
-            <?php if (!empty($usuario['imagem_perfil'])): ?>
                 <div id="kirkle"><div class="config" style="background-image: url('data:image/webp;base64,<?= base64_encode($usuario['imagem_perfil']) ?>')" alt="Foto de Perfil"></div></div>
-            <?php else: ?>
-                <div id="kirkle"><a class='meringue'>U</a></div>
-            <?php endif; ?>
 
             <form method="POST" enctype="multipart/form-data" id="form-imagem-perfil">
                 <input type="hidden" name="acao" value="alterar_imagem">

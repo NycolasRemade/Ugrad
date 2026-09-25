@@ -1,5 +1,11 @@
 <?php
-require __DIR__ . '/includes/data.php';
+if (!isset($_SESSION)) 
+    session_start();
+if ($_SESSION['usuario_tipo'] != 5) {
+    echo 'sem permissão';
+    exit;
+}
+require 'includes/data.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $usuario = find_usuario($id);
@@ -14,12 +20,11 @@ if (!$usuario) {
         exit;
     }
     if ($isPartial) {
-        echo '<p class="dim" style="padding:16px;font-size:13px;">Usuário não encontrado.</p>';
+        echo '<div class="small"><p style="color:#C50000;">Usuário não encontrado.</p></div>';
         exit;
     }
     $pageTitle = 'Usuário não encontrado';
-    require __DIR__ . '/includes/oi.php';
-    echo '<p>Usuário não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    echo '<div class="dashboard-container"><p>Usuário não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p></div>';
 ?>
 </main>
 </div>
@@ -82,7 +87,6 @@ if ($isPartial) {
 }
 
 $pageTitle = 'Painel de controle - Detalhes do usuário';
-require __DIR__ . '/includes/oi.php';
 require __DIR__ . '/includes/usuario_detail.php';
 ?>
 </main>

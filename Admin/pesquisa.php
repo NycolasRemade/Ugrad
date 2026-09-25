@@ -1,10 +1,16 @@
 <?php
+session_start();
+require_once '../Servidor/config.php';
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: login.php');
+    exit;
+}
+if ($_SESSION['usuario_tipo'] !== 5) {
+    header('Location: ../dashboard.php');
+    exit;
+}
 
 require 'includes/data.php';
-
-// Variáveis necessárias para o header.php
-$title = 'Painel de controle - Pesquisa'; // Utilizado na tag <title> pelo header.php
-$href = '../index.php';                  // Caminho para o link principal no navbar
 
 $q = trim($_GET['q'] ?? '');
 $openTab = $_GET['tab'] ?? 'usuarios'; // instituicoes | turmas | usuarios
@@ -29,12 +35,12 @@ require '../header.php';
     
     <!-- Formulário de pesquisa utilizando o estilo de cabeçalho .secao-header e botão .btn-novo -->
     <form method="get" class="secao-header" style="gap: 10px; border-bottom: none; margin-bottom: 25px;">
-      <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Pesquisar usuários, turmas ou instituições..." style="flex: 1; border: none; height: 48px; font-size: 16px; background-color: #ffffff; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25); padding-left: 15px; font-family: IBM;">
+      <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Pesquisar usuários, turmas ou instituições..." style="flex: 1; border: none; height: 48px; font-size: 16px; background-color: #ffffff; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25); padding-left: 15px;">
       <button type="submit" class="btn-novo" style="height: 48px; padding: 0 20px;">+</button>
     </form>
 
     <!-- Secção Instituições em bloco .box -->
-    <details class="box" <?= $openTab === 'instituicoes' ? 'open' : '' ?> style="font-size: 16px; margin-bottom: 20px; padding: 20px;">
+    <details class="box" <?= $openTab === 'instituicoes' ? 'open' : '' ?> style="margin-bottom: 20px; padding: 20px;">
       <summary style="font-family: 'BMI'; font-size: 22px; cursor: pointer; user-select: none; margin-bottom: 10px;">Instituições</summary>
       <div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px;">
         <?php if (empty($instituicoes)): ?>
@@ -42,16 +48,18 @@ require '../header.php';
         <?php endif; ?>
         <?php foreach ($instituicoes as $inst): ?>
           <div class="small pill" data-row-id="<?= $inst['id'] ?>">
-            <a href="instituicao.php?id=<?= $inst['id'] ?>" class="detail-trigger" data-type="instituicao" data-id="<?= $inst['id'] ?>">
-              <?= htmlspecialchars($inst['nome']) ?>
-            </a>
+            <p>
+              <a href="instituicao.php?id=<?= $inst['id'] ?>" class="detail-trigger" data-type="instituicao" data-id="<?= $inst['id'] ?>">
+                <?= htmlspecialchars($inst['nome']) ?>
+              </a>
+            </p>
           </div>
         <?php endforeach; ?>
       </div>
     </details>
 
     <!-- Secção Turmas em bloco .box -->
-    <details class="box" <?= $openTab === 'turmas' ? 'open' : '' ?> style="font-size: 16px; margin-bottom: 20px; padding: 20px;">
+    <details class="box" <?= $openTab === 'turmas' ? 'open' : '' ?> style="margin-bottom: 20px; padding: 20px;">
       <summary style="font-family: 'BMI'; font-size: 22px; cursor: pointer; user-select: none; margin-bottom: 10px;">Turmas</summary>
       <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
         <?php if (empty($turmas)): ?>
@@ -59,28 +67,32 @@ require '../header.php';
         <?php endif; ?>
         <?php foreach ($turmas as $t): ?>
           <div class="small" style="width: auto; text-align: left; padding: 12px 15px;">
-            <span style="font-family: 'BMI';"><?= htmlspecialchars($t['nome']) ?></span>
-            <span style="color: #666; font-size: 13px;"> · <?= htmlspecialchars($t['instituicao_nome']) ?></span>
+            <p>
+              <span><?= htmlspecialchars($t['nome']) ?></span>
+              <span style="color: #666; font-size: 13px;"> · <?= htmlspecialchars($t['instituicao_nome']) ?></span>
+            </p>
           </div>
         <?php endforeach; ?>
       </div>
     </details>
 
     <!-- Secção Usuários em bloco .box -->
-    <details class="box" <?= $openTab === 'usuarios' ? 'open' : '' ?> style="font-size: 16px; margin-bottom: 20px; padding: 20px;">
+    <details class="box" <?= $openTab === 'usuarios' ? 'open' : '' ?> style="margin-bottom: 20px; padding: 20px;">
       <summary style="font-family: 'BMI'; font-size: 22px; cursor: pointer; user-select: none; margin-bottom: 10px;">Usuários</summary>
       <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
         <?php if (empty($usuarios)): ?>
           <p style="color: #666; font-size: 14px;">Nenhum usuário encontrado.</p>
         <?php endif; ?>
         <?php foreach ($usuarios as $u): ?>
-          <div class="user-row small" data-row-id="<?= $u['id'] ?>" style="width: auto; text-align: left; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;">
-            <a class="user-name detail-trigger" href="usuario.php?id=<?= $u['id'] ?>" data-type="usuario" data-id="<?= $u['id'] ?>" style="font-family: 'BMI'; flex: 1;">
-              <?= htmlspecialchars($u['nome']) ?>
-              <?php if (!$u['ativada']): ?><span style="color: #888; font-size: 13px;"> (desativada)</span><?php endif; ?>
-            </a>
-            <span style="color: #666; font-size: 13px; margin-right: 15px;"><?= htmlspecialchars($u['turma_nome'] ?? '—') ?></span>
-            <span style="color: #666; font-size: 13px; font-family: 'BMI';"><?= htmlspecialchars(tipo_label($u['tipo_nome'])) ?></span>
+          <div class="user-row small" data-row-id="<?= $u['id'] ?>" style="width: auto; text-align: left; padding: 12px 15px; cursor: pointer;">
+            <p style="display: flex; align-items: center; justify-content: space-between; margin: 0; width: 100%;">
+              <a class="user-name detail-trigger" href="usuario.php?id=<?= $u['id'] ?>" data-type="usuario" data-id="<?= $u['id'] ?>" style="flex: 1;">
+                <?= htmlspecialchars($u['nome']) ?>
+                <?php if (!$u['ativada']): ?><span style="color: #888; font-size: 13px;"> (desativada)</span><?php endif; ?>
+              </a>
+              <span style="color: #666; font-size: 13px; margin-right: 15px;"><?= htmlspecialchars($u['turma_nome'] ?? '—') ?></span>
+              <span style="color: #666; font-size: 13px;"><?= htmlspecialchars(tipo_label($u['tipo_nome'])) ?></span>
+            </p>
           </div>
         <?php endforeach; ?>
       </div>

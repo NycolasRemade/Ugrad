@@ -1,4 +1,10 @@
 <?php
+if (!isset($_SESSION)) 
+    session_start();
+if ($_SESSION['usuario_tipo'] != 5) {
+    echo 'sem permissão';
+    exit;
+}
 /**
  * includes/instituicao_detail.php
  * Espera: $instituicao, $professores, $turmas
@@ -10,10 +16,10 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
   <!-- Cabeçalho com Avatar e Informações -->
   <div style="display: flex; gap: 20px; align-items: flex-start;">
     <?php if ($foto): ?>
-      <div style="width: 100px; height: 100px; border-radius: 50%; background-image: url('<?= $foto ?>'); background-size: cover; background-position: center; box-shadow: 5px 5px 4px rgba(0,0,0,0.25); flex-shrink: 0;"></div>
+      <div class="config" style="width: 100px; height: 100px; background-image: url('<?= $foto ?>'); flex-shrink: 0;"></div>
     <?php else: ?>
-      <div style="width: 100px; height: 100px; border-radius: 50%; background-color: #D9D9DF; box-shadow: 5px 5px 4px rgba(0,0,0,0.25); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'BMI'; color: #666; font-size: 28px;">
-        <?= strtoupper(substr($instituicao['nome'], 0, 1)) ?>
+      <div id="kirkle" style="width: 100px; height: 100px; flex-shrink: 0; align-items: center; justify-content: center; font-size: 28px;">
+        <span style="font-family: 'BMI'; color: #666;"><?= strtoupper(substr($instituicao['nome'], 0, 1)) ?></span>
       </div>
     <?php endif; ?>
 
@@ -58,9 +64,11 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
     <div style="display: flex; flex-direction: column; gap: 8px;">
       <?php foreach ($professores as $p): ?>
         <div class="small" style="width: auto; text-align: left; padding: 10px 15px;">
-          <a class="detail-trigger" href="usuario.php?id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" data-type="usuario" style="font-family: 'BMI';">
-            <?= htmlspecialchars($p['nome']) ?>
-          </a>
+          <p>
+            <a class="detail-trigger" href="usuario.php?id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" data-type="usuario">
+              <?= htmlspecialchars($p['nome']) ?>
+            </a>
+          </p>
         </div>
       <?php endforeach; ?>
     </div>
@@ -75,14 +83,14 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
       <?php endif; ?>
       <?php foreach ($turmas as $t): ?>
         <div class="small" style="padding: 8px 14px;">
-          <span style="font-family: 'BMI';"><?= htmlspecialchars($t['nome']) ?></span>
+          <p><?= htmlspecialchars($t['nome']) ?></p>
         </div>
       <?php endforeach; ?>
     </div>
   </div>
 
   <!-- Ações -->
-  <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; border-top: 2px solid #EEEEEE; padding-top: 15px;">
+  <div class="secao-header" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; border-top: 2px solid #EEEEEE; padding-top: 15px; border-bottom: none;">
     <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form">
       <input type="hidden" name="acao" value="gerar_codigo">
       <button type="submit" class="btn-novo" style="font-size: 14px; padding: 8px 16px;">Gerar código</button>

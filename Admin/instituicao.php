@@ -1,5 +1,10 @@
 <?php
-require __DIR__ . '/includes/data.php';
+session_start();
+if ($_SESSION['usuario_tipo'] != 5) {
+    echo 'sem permissão';
+    exit;
+}
+require 'includes/data.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $instituicao = find_instituicao($id);
@@ -14,12 +19,11 @@ if (!$instituicao) {
         exit;
     }
     if ($isPartial) {
-        echo '<p class="dim" style="padding:16px;font-size:13px;">Instituição não encontrada.</p>';
+        echo '<div class="small"><p style="color:#C50000;">Instituição não encontrada.</p></div>';
         exit;
     }
     $pageTitle = 'Instituição não encontrada';
-    require __DIR__ . '/includes/oi.php';
-    echo '<p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    echo '<div class="dashboard-container"><p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p></div>';
 ?>
 </main>
 </div>
@@ -85,7 +89,6 @@ if ($isPartial) {
 }
 
 $pageTitle = 'Painel de controle - Detalhes da instituição';
-require __DIR__ . '/includes/oi.php';
 require __DIR__ . '/includes/instituicao_detail.php';
 ?>
 </main>

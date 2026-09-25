@@ -1,14 +1,14 @@
 <?php
+if (!isset($_SESSION)) 
+    session_start();
+if ($_SESSION['usuario_tipo'] != 5) {
+    echo 'sem permissão';
+    exit;
+}
 /**
  * data.php
  * Camada de dados — consulta o banco "ugrad" via PDO.
  */
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require __DIR__ . '/config.php'; // disponibiliza $pdo
 
 /* ---------------------------------------------------------------------
  * Helpers genéricos

@@ -1,0 +1,158 @@
+/* ============================================================
+   dark-mode.css
+   Modo escuro "solto", pra usar em qualquer página (não só no
+   admin-panel). Funciona assim:
+
+   1. Inclua este arquivo DEPOIS do CSS normal da página:
+        <link rel="stylesheet" href="dark-mode.css">
+
+   2. Alguma coisa precisa marcar quando o modo escuro está ativo.
+      O jeito mais simples: colocar o atributo data-theme="dark"
+      na tag <html> da página (com JS, por exemplo, salvando a
+      escolha no localStorage). Exemplo mínimo de botão + script:
+
+        <button id="themeToggle">🌙</button>
+        <script>
+          (function () {
+            if (localStorage.getItem('theme') === 'dark') {
+              document.documentElement.setAttribute('data-theme', 'dark');
+            }
+            document.getElementById('themeToggle').addEventListener('click', function () {
+              var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+              document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+              localStorage.setItem('theme', dark ? 'light' : 'dark');
+            });
+          })();
+        </script>
+
+   3. Se a página não fizer nada disso, este arquivo também respeita
+      o modo escuro do SISTEMA OPERACIONAL automaticamente (media
+      query prefers-color-scheme), então já funciona sozinho em quem
+      usa modo escuro no Windows/celular, mesmo sem esse botão.
+
+   As variáveis abaixo (--bg, --surface, --text etc.) são os "tokens"
+   de cor. Se a página já tiver suas próprias variáveis CSS com outro
+   nome, é só trocar os nomes aqui pra bater com os dela.
+   ============================================================ */
+
+:root {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-alt: #fafafa;
+  --text: #232323;
+  --text-muted: #6f6f6f;
+  --border: #dcdcdc;
+  --link: #1a53c4;
+  --accent: #17181a;
+  --danger: #c62828;
+  --success: #2e7d32;
+}
+
+:root[data-theme="dark"] {
+  --bg: #101112;
+  --surface: #1c1d1f;
+  --surface-alt: #232426;
+  --text: #e8e8e8;
+  --text-muted: #a3a3a3;
+  --border: #3a3a3c;
+  --link: #7aa2ff;
+  --accent: #2a2b2d;
+  --danger: #e05656;
+  --success: #6fcf87;
+}
+
+/* Se ninguém escolheu nada (sem data-theme na página) e o sistema
+   operacional do usuário está em modo escuro, aplica automaticamente. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101112;
+    --surface: #1c1d1f;
+    --surface-alt: #232426;
+    --text: #e8e8e8;
+    --text-muted: #a3a3a3;
+    --border: #3a3a3c;
+    --link: #7aa2ff;
+    --accent: #2a2b2d;
+    --danger: #e05656;
+    --success: #6fcf87;
+  }
+}
+
+/* ---------- Aplicação nos elementos comuns de qualquer página ---------- */
+
+html, body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color .15s ease, color .15s ease;
+}
+
+a { color: var(--link); }
+
+hr { border-color: var(--border); }
+
+/* Contêineres/cartões genéricos — cobre classes comuns tipo
+   .card, .panel, .box, .container, .app-shell etc. Ajuste/adicione
+   os seletores da sua página aqui se ela usar outros nomes. */
+[data-theme="dark"] .card,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .box,
+[data-theme="dark"] .app-shell,
+[data-theme="dark"] .modal,
+[data-theme="dark"] .dropdown-menu {
+  background-color: var(--surface);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+/* Formulários */
+input,
+textarea,
+select {
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* Botões genéricos (não sobrescreve botões com cor própria, tipo
+   .btn-danger, .btn-primary — só o botão "cru"). */
+button {
+  background-color: var(--surface-alt);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Tabelas */
+table { border-color: var(--border); }
+th, td {
+  border-color: var(--border);
+  color: var(--text);
+}
+thead th {
+  background-color: var(--surface-alt);
+}
+
+/* Código */
+code, pre {
+  background-color: var(--surface-alt);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* Texto "apagado"/secundário — cobre classes comuns */
+.text-muted, .dim, .subtitle, .helper-text {
+  color: var(--text-muted) !important;
+}
+
+/* Barra de rolagem (Chrome/Edge/Safari) */
+[data-theme="dark"] ::-webkit-scrollbar-track { background: var(--surface); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+
+/* Selects/inputs no Windows costumam ficar "brancos por dentro"
+   mesmo com o resto escuro — isso ajuda o navegador a desenhar os
+   controles nativos (setinha do select, checkbox etc.) no tom certo. */
+[data-theme="dark"] { color-scheme: dark; }

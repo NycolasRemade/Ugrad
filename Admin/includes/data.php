@@ -5,6 +5,7 @@ if ($_SESSION['usuario_tipo'] != 5) {
     echo 'sem permissão';
     exit;
 }
+require_once '../Servidor/config.php';
 /**
  * data.php
  * Camada de dados — consulta o banco "ugrad" via PDO.

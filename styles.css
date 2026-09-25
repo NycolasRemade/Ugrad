@@ -984,3 +984,52 @@ textarea{
   width: 100%;
 }
 
+/*-------------------------------------------------*/
+/*   Estilo para painel de admininstrador
+/*-------------------------------------------------*/
+
+.fix-layout {
+  margin-top: 60px !important;
+  position: relative !important;
+  clear: both !important;
+}
+
+.fix-layout .box,
+.fix-layout details,
+.fix-layout #detailPanel {
+  position: relative !important;
+  height: auto !important;
+  overflow: visible !important;
+  display: block !important;
+}
+
+.fix-layout .user-row,
+.fix-layout .small {
+  position: relative !important;
+  float: none !important;
+  top: auto !important;
+  left: auto !important;
+  display: block !important;
+  height: auto !important;
+  margin-bottom: 8px !important;
+}
+
+.fix-layout #detailPanel > div,
+.fix-layout #detailPanel div,
+.fix-layout #detailPanel form,
+.fix-layout #detailPanel h2,
+.fix-layout #detailPanel p {
+  position: relative !important;
+  float: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+}
+
+.fix-layout #kirkle,
+.fix-layout .config {
+  position: relative !important;
+  float: none !important;
+  margin: 0 !important;
+}

@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once '../Servidor/config.php';
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -28,7 +27,7 @@ require '../header.php';
 ?>
 
 <!-- Contentor principal utilizando .dashboard-container e .multiple_inline do styles.css -->
-<div class="dashboard-container multiple_inline" style="gap: 30px; align-items: flex-start;">
+<div class="dashboard-container multiple_inline fix-layout" style="gap: 30px; align-items: flex-start;">
 
   <!-- Coluna da esquerda: Pesquisa e Listagens -->
   <div style="flex: 1; min-width: 0;">

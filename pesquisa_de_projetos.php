@@ -43,6 +43,12 @@ if ($busca !== '') {
     $projetos_id = $stmt_proj->fetchAll();
 }
 
+else{
+    $stmt_proj = $pdo->prepare('SELECT count(id) FROM projetos WHERE estado = 3');
+    $stmt_proj->execute();
+    $projetos_id = $stmt_proj->fetchAll();
+}
+
 
 
 
@@ -66,19 +72,21 @@ include 'header.php'
 <script>
     const divFeedProjetos = document.getElementById("feed-projetos");
     function carregarInfoProjeto(id) {
+
         fetch('pesquisa_de_projetos.php?info_projeto=' + id)
         .then((response) => response.json())
         .then((data) => {
             const divProjeto = document.getElementById("info-projeto-" + id);
             divProjeto.innerHTML = 
                 "<a class='projeto-card box' href='projeto.php?id= " + id +">"
-                'Nome: " + data.nome + 
+                'Nome: ' + data.nome + 
                 '<br>Criado em: ' + data.data_criacao + 
                 '<br>Descrição: ' + data.descricao + 
                 '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');"></a>';
         })
         .catch((error) => console.error(error));
     }
+
 </script>
 
 <div id='main_paper'>
@@ -102,15 +110,13 @@ include 'header.php'
     <?php endif; ?>
 
     <main id="feed-projetos" style="display:flex; flex-wrap: wrap;">
-        <?php if (empty($projetos_id)): ?>
-            <p style="padding: 10px;">Nenhum projeto encontrado para "<strong><?= htmlspecialchars($busca) ?></strong>".</p>
-        <?php else: ?>
-            <?php foreach ($projetos_id as $p): ?>
-                <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
-                    <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+
+        <?php foreach ($projetos_id as $p): ?>
+            <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
+                <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
+            </div>
+        <?php endforeach; ?>
+
     </main>
 
     </div>

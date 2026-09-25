@@ -170,7 +170,8 @@ $convites = $stmt_convites->fetchAll();
 //////////////////////////////////
 $title = 'Perfil e Configurações';
 $href = 'dashboard.php';
-include 'header.php'
+$conta = true;
+include 'header.php';
 ?>
     <div class='config_container'>
 

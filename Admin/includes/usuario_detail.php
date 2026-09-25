@@ -1,4 +1,10 @@
 <?php
+if (!isset($_SESSION)) 
+    session_start();
+if ($_SESSION['usuario_tipo'] != 5) {
+    echo 'sem permissão';
+    exit;
+}
 /**
  * includes/usuario_detail.php
  * Espera: $usuario (linha de USUARIO_SELECT), $projetos, $avaliacoes
@@ -10,10 +16,10 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
   <!-- Cabeçalho com Avatar e Informações -->
   <div style="display: flex; gap: 20px; align-items: flex-start;">
     <?php if ($foto): ?>
-      <div style="width: 100px; height: 100px; border-radius: 50%; background-image: url('<?= $foto ?>'); background-size: cover; background-position: center; box-shadow: 5px 5px 4px rgba(0,0,0,0.25); flex-shrink: 0;"></div>
+      <div class="config" style="width: 100px; height: 100px; background-image: url('<?= $foto ?>'); flex-shrink: 0;"></div>
     <?php else: ?>
-      <div style="width: 100px; height: 100px; border-radius: 50%; background-color: #D9D9DF; box-shadow: 5px 5px 4px rgba(0,0,0,0.25); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'BMI'; color: #666; font-size: 28px;">
-        <?= strtoupper(substr($usuario['nome'], 0, 1)) ?>
+      <div id="kirkle" style="width: 100px; height: 100px; flex-shrink: 0; align-items: center; justify-content: center; font-size: 28px;">
+        <span style="font-family: 'BMI'; color: #666;"><?= strtoupper(substr($usuario['nome'], 0, 1)) ?></span>
       </div>
     <?php endif; ?>
 
@@ -70,7 +76,7 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
       <?php endif; ?>
       <?php foreach ($projetos as $p): ?>
         <div class="small" style="padding: 8px 14px;">
-          <span style="font-family: 'BMI';"><?= htmlspecialchars($p['nome']) ?></span>
+          <p><?= htmlspecialchars($p['nome']) ?></p>
         </div>
       <?php endforeach; ?>
     </div>
@@ -93,9 +99,9 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
       <?php foreach ($avaliacoes as $a): ?>
         <div class="small" data-report-id="<?= $a['id'] ?>" style="width: auto; text-align: left; padding: 15px; display: flex; flex-direction: column; gap: 10px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-family: 'BMI'; font-size: 14px;">
+            <p style="margin: 0;">
               Feita em: <?= $a['tipo_rep_nome'] === 'PROJETO' ? htmlspecialchars($a['projeto_nome'] ?? 'Projeto removido') : 'Perfil do usuário' ?>
-            </span>
+            </p>
             <span style="background-color: #EEEEEE; padding: 4px 8px; font-size: 12px; font-family: 'BMI';">
               <?= htmlspecialchars(tipo_label($a['tipo_rep_nome'] ?? 'GENERICO')) ?>
             </span>
@@ -126,7 +132,7 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
   </div>
 
   <!-- Ações -->
-  <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; border-top: 2px solid #EEEEEE; padding-top: 15px;">
+  <div class="secao-header" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; border-top: 2px solid #EEEEEE; padding-top: 15px; border-bottom: none;">
     <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Enviar link de redefinição de senha para este usuário?">
       <input type="hidden" name="acao" value="senha">
       <button type="submit" class="btn-novo btn-secundario" style="font-size: 14px; padding: 8px 16px; border: 1px solid #000;">Solicitar alteração de senha</button>

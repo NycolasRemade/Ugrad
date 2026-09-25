@@ -1,11 +1,17 @@
 <?php
+if (!isset($_SESSION)) 
+    session_start();
+if ($_SESSION['usuario_tipo'] != 5) {
+    echo 'sem permissão';
+    exit;
+}
 /**
  * reportagem.php
  * Recebe os botões "Apagar" e "Ignorar" de cada card de Avaliações
  * (tabela reportagens). Responde em JSON quando chamado via AJAX pela
  * tela de pesquisa; senão, faz o fallback tradicional com redirect.
  */
-require __DIR__ . '/includes/data.php';
+require 'includes/data.php';
 
 $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 $acao = $_POST['acao'] ?? '';

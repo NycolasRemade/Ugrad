@@ -46,7 +46,7 @@ if ($busca !== '') {
 else{
     $stmt_proj = $pdo->prepare('SELECT count(id) FROM projetos WHERE estado = 3');
     $stmt_proj->execute();
-    $projetos_id = $stmt_proj->fetchAll();
+    $projetos_id = $stmt_proj->fetch();
 }
 
 
@@ -111,12 +111,17 @@ include 'header.php'
 
     <main id="feed-projetos" style="display:flex; flex-wrap: wrap;">
 
+    <?php if($projetos_id): ?>
+        <?= var_dump($projetos_id)?>
         <?php foreach ($projetos_id as $p): ?>
             <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
                 <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
             </div>
         <?php endforeach; ?>
 
+    <?php else:?>
+        <p>Nenhum projeto</p>
+    <?php endif;?>
     </main>
 
     </div>

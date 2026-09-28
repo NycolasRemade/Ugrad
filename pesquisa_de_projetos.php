@@ -37,6 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['info_projeto'])) {
 }
 
 $busca = trim($_GET['pesquisa'] ?? '');
+$projetos_id = array();
+$rand_id = array();
+
 if ($busca !== '') {
     $stmt_proj = $pdo->prepare('SELECT id FROM projetos WHERE estado = 3 AND nome LIKE ?');
     $stmt_proj->execute(['%' . $busca . '%']);
@@ -46,7 +49,17 @@ if ($busca !== '') {
 else{
     $stmt_proj = $pdo->prepare('SELECT count(id) FROM projetos WHERE estado = 3');
     $stmt_proj->execute();
-    $projetos_id = $stmt_proj->fetch();
+    $projetos_qtd = $stmt_proj->fetch();
+
+    for ($i=0; $i <= 20; $i++) { 
+        $rand_id = rand(0, $projetos_qtd["count(id)"]);
+    }
+
+    foreach ($rand_id as $idp) {
+        $stmt_proj = $pdo->prepare('SELECT nome, data_criacao, img FROM projetos WHERE id = ?');
+        $stmt_proj->execute([$idp]);
+        $projetos_id = $stmt_proj->fetchAll();
+    }
 }
 
 

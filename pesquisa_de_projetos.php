@@ -44,7 +44,7 @@ if ($busca !== '') {
     $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE estado = 3 AND nome LIKE ?');
     $stmt_proj->execute(['%' . $busca . '%']);
     $projetos_id = $stmt_proj->fetchAll();
-    var_dump($projetos_id);
+    
 }
 
 else{
@@ -53,6 +53,10 @@ else{
     $projetos_qtd = $stmt_proj->fetch();
 
     switch ($projetos_qtd) {
+        case $projetos_qtd["count(id)"] == 0:
+            $maxqtd = -1;
+            break;
+
         case $projetos_qtd["count(id)"] < 20:
             $maxqtd = $projetos_qtd["count(id)"];
             break;
@@ -70,10 +74,20 @@ else{
         $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE id = ? AND estado = 3');
         $stmt_proj->execute([$idp]);
         $projetos_id[] = $stmt_proj->fetchAll();
+        
     }
 }
 
-
+if ($projetos_id) {
+    echo json_encode([
+        'success' => true,
+        'id' => $id,
+        'nome' => $proj['nome'],
+        'data_criacao' => $proj['data_criacao'],
+        'descricao' => $proj['descricao'],
+        'img' => base64_encode($proj['img'])
+    ]);
+}
 
 
 $usuario_id = $_SESSION['usuario_id'];
@@ -103,7 +117,7 @@ include 'header.php'
             const divProjeto = document.getElementById("info-projeto-" + id);
             divProjeto.innerHTML = 
                 "<a class='projeto-card box' href='projeto.php?id= " + id +">"
-                'Nome: ' + data.nome + 
+                '<p class="projeto-titulo">'+ data.id+ '</p>' 
                 '<br>Criado em: ' + data.data_criacao + 
                 '<br>Descrição: ' + data.descricao + 
                 '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');"></a>';
@@ -136,7 +150,6 @@ include 'header.php'
     <main id="feed-projetos" style="display:flex; flex-wrap: wrap;">
 
     <?php if($projetos_id): ?>
-        <?= var_dump($projetos_id)?>
         <?php foreach ($projetos_id as $p): ?>
             <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
                 <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>

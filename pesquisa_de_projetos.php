@@ -41,9 +41,10 @@ $projetos_id = array();
 $rand_id = array();
 
 if ($busca !== '') {
-    $stmt_proj = $pdo->prepare('SELECT id FROM projetos WHERE estado = 3 AND nome LIKE ?');
+    $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE estado = 3 AND nome LIKE ?');
     $stmt_proj->execute(['%' . $busca . '%']);
     $projetos_id = $stmt_proj->fetchAll();
+    var_dump($projetos_id);
 }
 
 else{
@@ -51,14 +52,24 @@ else{
     $stmt_proj->execute();
     $projetos_qtd = $stmt_proj->fetch();
 
-    for ($i=0; $i <= 20; $i++) { 
-        $rand_id = rand(0, $projetos_qtd["count(id)"]);
+    switch ($projetos_qtd) {
+        case $projetos_qtd["count(id)"] < 20:
+            $maxqtd = $projetos_qtd["count(id)"];
+            break;
+        
+        default:
+            $maxqtd = 20;
+            break;
+    }
+
+    for ($i=0; $i <= $maxqtd; $i++) { 
+        $rand_id[$i] = rand(0, $projetos_qtd["count(id)"]);
     }
 
     foreach ($rand_id as $idp) {
-        $stmt_proj = $pdo->prepare('SELECT nome, data_criacao, img FROM projetos WHERE id = ?');
+        $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE id = ? AND estado = 3');
         $stmt_proj->execute([$idp]);
-        $projetos_id = $stmt_proj->fetchAll();
+        $projetos_id[] = $stmt_proj->fetchAll();
     }
 }
 

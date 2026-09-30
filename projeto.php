@@ -350,9 +350,8 @@ include 'header.php'
             }
         }
 
-        mudarAba('visao-geral');
-
         if (location.hash && location.hash !== '#') mudarAba(location.hash.slice(1));
+        else mudarAba('visao-geral');
 
         function toggleFormAvaliacao() {
             const formContainer = document.getElementById('form-avaliacao-container');

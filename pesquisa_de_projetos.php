@@ -112,7 +112,7 @@ include 'header.php'
                 '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');"></a>';
         })
         .catch((error) => console.error(error));
-        console.log("buhhhh")
+        console.log("buhhhh");
     }
 
 </script>
@@ -141,8 +141,8 @@ include 'header.php'
 
     <?php if($projetos_id): ?>
         <?php foreach ($projetos_id as $p): ?>
-            <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
-                <script>carregarInfoProjeto(<?= $p['id'] ?>)</script>
+            <div id="info-projeto-<?= $p['id']; ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
+                <script>carregarInfoProjeto(<?= $p['id'] ?>);</script>
             </div>
         <?php endforeach; ?>
 

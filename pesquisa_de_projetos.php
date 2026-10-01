@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['info_projeto'])) {
 $busca = trim($_GET['pesquisa'] ?? '');
 $projetos_id = array();
 $rand_id = array();
-$assist = array();
 
 if ($busca !== '') {
     $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE estado = 3 AND nome LIKE ?');
@@ -55,29 +54,20 @@ else{
 
     switch ($projetos_qtd) {
         case $projetos_qtd["count(id)"] == 0:
-            $maxqtd = range-1;
-            break;
-
-        case $projetos_qtd["count(id)"] < 20:
-            $maxqtd = $projetos_qtd["count(id)"];
+            $rand_id["None"] = 0;
             break;
         
         default:
-            $maxqtd = 20;
+            $rand_id = range(0,$projetos_qtd["count(id)"]);
+            shuffle($rand_id);
+            $rand_id = array_slice($rand_id, 0, 19);
             break;
-    }
-
-    for ($i=0; $i <= $maxqtd; $i++) { 
-        $rand_id[$i] = rand(0, $projetos_qtd["count(id)"]);
-        if($rand_id[$i] in $assist){
-            
-        }
     }
 
     foreach ($rand_id as $idp) {
         $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE id = ? AND estado = 3');
         $stmt_proj->execute([$idp]);
-        $projetos_id[] = $stmt_proj->fetchAll();
+        $projetos_id[$idp] = $stmt_proj->fetchAll();
         
     }
 }
@@ -146,8 +136,7 @@ include 'header.php'
     <?php if($projetos_id): ?>
         
         <?php foreach ($projetos_id as $p): ?>
-            <?= var_dump($p) ?>
-            <div id="info-projeto-<?= $p["id"]; ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
+            <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
                 <script>carregarInfoProjeto(<?= $p["id"] ?>);</script>
             </div>
         <?php endforeach; ?>

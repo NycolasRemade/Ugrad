@@ -67,7 +67,7 @@ else{
     foreach ($rand_id as $idp) {
         $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE id = ? AND estado = 3');
         $stmt_proj->execute([$idp]);
-        $projetos_id[$idp] = $stmt_proj->fetchAll();
+        $projetos_id[] = $stmt_proj->fetchAll();
         
     }
 }
@@ -135,10 +135,12 @@ include 'header.php'
 
     <?php if($projetos_id): ?>
         
-        <?php foreach ($projetos_id as $p): ?>
-            <div id="info-projeto-<?= $p['id'] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
+        <?php foreach ($projetos_id as $pr): ?>
+            <?php foreach ($pr as $p): ?>
+            <div id="info-projeto-<?= $p["id"] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
                 <script>carregarInfoProjeto(<?= $p["id"] ?>);</script>
             </div>
+        <?php endforeach; ?>
         <?php endforeach; ?>
 
     <?php else:?>

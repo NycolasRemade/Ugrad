@@ -115,7 +115,7 @@ include 'header.php'
                 '<a class="projeto-card box" href="projeto.php?id=' + id +'">' +
                 '<p class="projeto-titulo">'+ data.nome + '</p>' +
                 '<br>Criado em: ' + data.data_criacao + 
-                '<br>Descrição: ' + data.descricao + 
+                (data.descricao ? '<br>Descrição: ' + data.descricao : '') + 
                 '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');">' +
                 '</a>';
         })

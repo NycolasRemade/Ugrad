@@ -57,18 +57,22 @@ else{
 
     switch ($projetos_qtd) {
         case $projetos_qtd['count(id)'] == 0:
-            $rand_id['None'] = 0;
+            $rand_id['None'] = -1;
             break;
 
         case $projetos_qtd['count(id)'] < 20:
-            $rand_id = range(0,$projetos_qtd['count(id)']);
+            $rand_id = range(1,$projetos_qtd['count(id)']);
             shuffle($rand_id);
+            var_dump($rand_id);
+            echo "one";
             break;
         
         default:
             while (sizeof($rand_id) < 20) {
                 $rand_num = rand(1, $projetos_qtd['count(id)']);
                 $rand_id[$rand_num] = $rand_num;
+                var_dump($rand_id);
+                echo "two";
             }
             break;
     }

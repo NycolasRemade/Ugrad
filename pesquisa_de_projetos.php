@@ -40,6 +40,8 @@ $busca = trim($_GET['pesquisa'] ?? '');
 $projetos_id = array();
 $rand_id = array();
 
+
+// Busca de projetos por nome
 if ($busca !== '') {
     $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE estado = 3 AND nome LIKE ?');
     $stmt_proj->execute(['%' . $busca . '%']);
@@ -47,6 +49,7 @@ if ($busca !== '') {
     
 }
 
+// Algorítimo aleatório de pesquisa de projetos
 else{
     $stmt_proj = $pdo->prepare('SELECT count(id) FROM projetos WHERE estado = 3');
     $stmt_proj->execute();
@@ -56,11 +59,16 @@ else{
         case $projetos_qtd["count(id)"] == 0:
             $rand_id["None"] = 0;
             break;
-        
-        default:
+
+        case $projetos_id["count(id)"] < 20:
             $rand_id = range(0,$projetos_qtd["count(id)"]);
             shuffle($rand_id);
-            $rand_id = array_slice($rand_id, 0, 19);
+        
+        default:
+            while (sizeof($rand_id) <= 20) {
+                $rand_num = rand(1, $projetos_qtd["count(id)"]);
+                $rand_id[$rand_num] = $rand_num;
+            }
             break;
     }
 

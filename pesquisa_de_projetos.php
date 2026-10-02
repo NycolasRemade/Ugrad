@@ -60,15 +60,14 @@ else{
             $rand_id['None'] = 0;
             break;
 
-        case $projetos_id['count(id)'] < 20:
+        case $projetos_qtd['count(id)'] < 20:
             $rand_id = range(0,$projetos_qtd['count(id)']);
             shuffle($rand_id);
             break;
         
         default:
-            while (sizeof($rand_id) <= 20) {
+            while (sizeof($rand_id) < 20) {
                 $rand_num = rand(1, $projetos_qtd['count(id)']);
-                echo sizeof($rand_id);
                 $rand_id[$rand_num] = $rand_num;
             }
             break;

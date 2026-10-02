@@ -56,17 +56,19 @@ else{
     $projetos_qtd = $stmt_proj->fetch();
 
     switch ($projetos_qtd) {
-        case $projetos_qtd["count(id)"] == 0:
-            $rand_id["None"] = 0;
+        case $projetos_qtd['count(id)'] == 0:
+            $rand_id['None'] = 0;
             break;
 
-        case $projetos_id["count(id)"] < 20:
-            $rand_id = range(0,$projetos_qtd["count(id)"]);
+        case $projetos_id['count(id)'] < 20:
+            $rand_id = range(0,$projetos_qtd['count(id)']);
             shuffle($rand_id);
+            break;
         
         default:
             while (sizeof($rand_id) <= 20) {
-                $rand_num = rand(1, $projetos_qtd["count(id)"]);
+                $rand_num = rand(1, $projetos_qtd['count(id)']);
+                echo sizeof($rand_id);
                 $rand_id[$rand_num] = $rand_num;
             }
             break;
@@ -75,7 +77,7 @@ else{
     foreach ($rand_id as $idp) {
         $stmt_proj = $pdo->prepare('SELECT id, nome, data_criacao, img FROM projetos WHERE id = ? AND estado = 3');
         $stmt_proj->execute([$idp]);
-        $projetos_id[] = $stmt_proj->fetchAll();
+        $projetos_id = $stmt_proj->fetchAll();
         
     }
 }
@@ -107,11 +109,12 @@ include 'header.php'
         .then((data) => {
             const divProjeto = document.getElementById("info-projeto-" + id);
             divProjeto.innerHTML = 
-                "<a class='projeto-card box' href='projeto.php?id= " + id +">"
-                '<p class="projeto-titulo">'+ data.id+ '</p>' 
+                '<a class="projeto-card box" href="projeto.php?id=' + id +'">' +
+                '<p class="projeto-titulo">'+ data.nome + '</p>' +
                 '<br>Criado em: ' + data.data_criacao + 
                 '<br>Descrição: ' + data.descricao + 
-                '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');"></a>';
+                '<br><img style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');">' +
+                '</a>';
         })
         .catch((error) => console.error(error));
         console.log("buhhhh");
@@ -141,14 +144,11 @@ include 'header.php'
 
     <main id="feed-projetos" style="display:flex; flex-wrap: wrap;">
 
-    <?php if($projetos_id): ?>
-        
-        <?php foreach ($projetos_id as $pr): ?>
-            <?php foreach ($pr as $p): ?>
+    <?php if(!empty($projetos_id)): ?>
+        <?php foreach ($projetos_id as $p): ?>
             <div id="info-projeto-<?= $p["id"] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
                 <script>carregarInfoProjeto(<?= $p["id"] ?>);</script>
             </div>
-        <?php endforeach; ?>
         <?php endforeach; ?>
 
     <?php else:?>

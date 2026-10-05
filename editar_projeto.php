@@ -655,18 +655,18 @@ include 'header.php';
     <div>
         <div>
             <strong>Visibilidade atual:</strong> 
-            <span><?= ($projeto['estado'] == 3) ? 'Público' : 'Restrito para Professores' ?></span>
+            <span><?= ($projeto['estado'] == 3) ? 'Público' : (($projeto['estado'] == 2) ? 'Restrito para Professores' : (($projeto['estado'] == 1) ? 'Privado' : 'Em revisão' ))?></span>
         </div>
         <div style="display: flex; gap: 10px; margin: 15px 0; align-items: center; justify-content: space-between; max-width: 640px; width: 100%;">
             <form method="POST" action="" style="display: inline;">
                 <input type="hidden" name="alterar_estado_projeto" value="1">
                 <input type="hidden" name="novo_estado" value="3">
-                <button type="submit" class="btn-novo" style="background-color: #007bff; color: white;">Publicar projeto</button>
+                <button type="submit" class="btn-novo" style="background-color: #005EFF; color: white;">Publicar projeto</button>
             </form>
             <form method="POST" action="" style="display: inline;">
                 <input type="hidden" name="alterar_estado_projeto" value="1">
                 <input type="hidden" name="novo_estado" value="1">
-                <button type="submit" class="btn-novo" style="background-color: #dc3545; color: white;">Restringir visualização para professores</button>
+                <button type="submit" class="btn-novo" style="background-color: #C50000; color: white;">Restringir visualização para professores</button>
             </form>
         </div>
     </div>

@@ -49,7 +49,7 @@ if ($busca !== '') {
     
 }
 
-// Algorítimo aleatório de pesquisa de projetos
+// Algorítimo aleatório de pesquisa de projetos (temporário-final-meioquefinal-sóquenão)
 else{
     $stmt_proj = $pdo->prepare('SELECT count(id) FROM projetos WHERE estado = 3');
     $stmt_proj->execute();
@@ -63,16 +63,12 @@ else{
         case $projetos_qtd['count(id)'] < 20:
             $rand_id = range(1,$projetos_qtd['count(id)']);
             shuffle($rand_id);
-            var_dump($rand_id);
-            echo "one";
             break;
         
         default:
             while (sizeof($rand_id) < 20) {
                 $rand_num = rand(1, $projetos_qtd['count(id)']);
                 $rand_id[$rand_num] = $rand_num;
-                var_dump($rand_id);
-                echo "two";
             }
             break;
     }

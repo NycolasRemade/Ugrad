@@ -128,7 +128,7 @@ include 'header.php'
                 '<p class="projeto-titulo">'+ data.nome + '</p>' +
                 '<br>Criado em: ' + data.data_criacao + 
                 (data.descricao ? '<br>Descrição: ' + data.descricao : '') + 
-                '<br><div style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/jpeg;base64,' + data.img + '\');"></div>' +
+                '<br><div style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/webp;base64,' + data.img + '\');"></div>' +
                 '</a>';
         })
         .catch((error) => console.error(error));

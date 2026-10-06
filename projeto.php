@@ -147,7 +147,7 @@ include 'header.php'
 
         <div>
             <?php if (!empty($projeto['img'])): ?>
-                <img src="data:image/jpeg;base64,<?= base64_encode($projeto['img']) ?>" alt="Imagem do Projeto">
+                <div style="width: 640px; height:360px; background-position:center; background-repeat:none; background-size:cover; background-image: url('data:image/webp;base64,<?= base64_encode($projeto['img']) ?>');"></div>
             <?php else: ?>
                 <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
                     [ Imagem do Projeto ]
@@ -175,35 +175,8 @@ include 'header.php'
     <!-- HISTÓRIA -->
     <div id="aba-historia" style="display: none;">
         <h2>História</h2>
-
         <div>
-            <p><strong>Bloco inicial:</strong> <?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Conteúdo da história não informado.')) ?></p>
-        </div>
-
-        <h2>Título</h2>
-
-        <section>
-            <p><strong>Bloco universal/com imagem:</strong> Conteúdo descritivo da seção de história do projeto...</p>
-            
-            <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
-                [ Imagem da História ]
-            </div>
-
-            <p><strong>Bloco universal/com imagem:</strong> Continuação do texto após a imagem...</p>
-        </section>
-
-        <h3>Subtítulo</h3>
-
-        <div>
-            <p><strong>Bloco pequeno:</strong> Texto curto complementar sobre a história.</p>
-        </div>
-
-        <div>
-            <p><strong>Bloco médio:</strong> Texto com extensão média detalhando etapas do projeto.</p>
-        </div>
-
-        <div>
-            <p><strong>Bloco grande:</strong> Texto longo detalhado apresentando reflexões, histórico e conquistas do projeto.</p>
+            <p><?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Conteúdo da história não informado.')) ?></p>
         </div>
     </div>
 
@@ -226,11 +199,11 @@ include 'header.php'
                     echo '☆☆☆☆☆';
                 }
             ?></h2>
-            <button type="button" onclick="toggleFiltros()">Filtros +</button>
+            <button type="button" class="btn-novo" onclick="toggleFiltros()">Filtros +</button>
         </div>
 
         <!-- PAINEL DE FILTROS -->
-        <div id="painel-filtros" style="display: none; margin: 15px 0; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 6px;">
+        <div id="painel-filtros" class="selector selector-mini" style="display: none; margin: 15px 0; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd;">
             <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
                 <div>
                     <label for="filtro_tipo"><strong>Exibir:</strong></label>
@@ -260,15 +233,14 @@ include 'header.php'
 
         <br>
 
-        <div>
-            <button type="button" onclick="toggleFormAvaliacao()"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
+        <div id="botao-toggle-avaliacao">
+            <button type="button" onclick="toggleFormAvaliacao()"  class="btn-novo"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
+            <br><br>
         </div>
-
-        <br>
 
         <!-- ENTRADA DE TEXTO E FORMULÁRIO DE AVALIAÇÃO -->
         <div id="form-avaliacao-container" style="display: none;">
-            <button type="button" onclick="toggleFormAvaliacao()">Cancelar x</button>
+            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo btn-secundario">Cancelar x</button>
             <br><br>
             <form action="" method="POST">
                 <input type="hidden" name="id_comentario" value="<?= (empty($comentario_usuario)) ? '0' : $comentario_usuario['id'] ?>">
@@ -290,7 +262,7 @@ include 'header.php'
                         for ($i = $nota + 1; $i <= 5; $i++): ?><span onclick="definirNota(<?= $i ?>)">☆</span><?php endfor; ?>
                     </span>
                 <?php endif; ?>
-                    <button type="submit">→</button>
+                    <button type="submit" class="btn-novo">Enviar</button>
                 </div>
             </form>
         </div>
@@ -304,7 +276,7 @@ include 'header.php'
                          data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
                         <div>
                             <div class="projeto-membros">
-                                <img class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
+                                <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
                             </div>
                                 <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
                             <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
@@ -355,10 +327,13 @@ include 'header.php'
 
         function toggleFormAvaliacao() {
             const formContainer = document.getElementById('form-avaliacao-container');
+            const botaoToggleAvaliacao = document.getElementById('botao-toggle-avaliacao');
             if (formContainer.style.display === 'none') {
                 formContainer.style.display = 'block';
+                botaoToggleAvaliacao.style.display = 'none';
             } else {
                 formContainer.style.display = 'none';
+                botaoToggleAvaliacao.style.display = 'block';
             }
         }
 

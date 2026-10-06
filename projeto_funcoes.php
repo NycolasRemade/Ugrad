@@ -27,9 +27,14 @@
 
         function toggleFormAvaliacao() {
             const formContainer = document.getElementById('form-avaliacao-container');
-            const resultado = formContainer.style.display = (formContainer.style.display === 'none') ? 'block' : 'none';
             const botaoToggleAvaliacao = document.getElementById('botao-toggle-avaliacao');
-            botaoToggleAvaliacao.style.display = (resultado === 'none') ? 'block' : 'none';
+            if (formContainer.style.display === 'none') {
+                formContainer.style.display = 'block';
+                botaoToggleAvaliacao.style.display = 'none';
+            } else {
+                formContainer.style.display = 'none';
+                botaoToggleAvaliacao.style.display = 'block';
+            }
         }
 
         function definirNota(valor) {

@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $pdo->prepare('INSERT INTO turmas (nome, id_instituicao) VALUES (?, ?)');
                     $stmt->execute([$nome_turma, $id_instituicao]);
                     $mensagem_sucesso = 'Turma criada com sucesso!';
+                    header('Location: gerenciar_turmas.php');
+                    exit;
                 } catch (\PDOException $e) {
                     $mensagem_erro = 'Erro ao criar turma';
                 }
@@ -56,6 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 if ($stmt->rowCount() > 0) {
                     $mensagem_sucesso = 'Nome da turma alterado com sucesso!';
+                    header('Location: gerenciar_turmas.php');
+                    exit;
                 } else {
                     $mensagem_erro = 'Nenhuma alteração realizada ou turma não encontrada.';
                 }
@@ -97,6 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $mensagem_sucesso = 'Código anterior revogado e novo código gerado com sucesso!';
                 }
+                header('Location: gerenciar_turmas.php');
+                exit;
             } else {
                 $mensagem_erro = 'Turma inválida ou sem permissão.';
             }
@@ -127,6 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 $stmt_up->execute([$id_turma, $id_instituicao, $id_aluno]);
                 $mensagem_sucesso = 'Aluno adicionado à turma com sucesso!';
+                header('Location: gerenciar_turmas.php');
+                exit;
             } else {
                 $mensagem_erro = 'Aluno ou Turma inválidos.';
             }
@@ -143,18 +151,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_rem = $pdo->prepare('UPDATE extra_usuarios SET id_turma = NULL WHERE id_usuario = ? AND id_instituicao = ?');
             $stmt_rem->execute([$id_aluno, $id_instituicao]);
             $mensagem_sucesso = 'Aluno removido da turma com sucesso!';
+            header('Location: gerenciar_turmas.php');
+            exit;
         }
     }
 }
 
 // Consulta turmas da instituição incluindo o código cadastrado na tabela codigo_instituicao
-$stmt_turmas = $pdo->prepare('
-    SELECT t.id, t.nome, c.codigo 
+$stmt_turmas = $pdo->prepare(
+   'SELECT t.id, t.nome, c.codigo 
     FROM turmas t 
     LEFT JOIN codigo_instituicao c ON c.id_turma = t.id AND c.tipo_usuario = 1 AND c.id_instituicao = ?
     WHERE t.id_instituicao = ? 
-    ORDER BY t.nome ASC
-');
+    ORDER BY t.nome ASC'
+);
 $stmt_turmas->execute([$id_instituicao, $id_instituicao]);
 $turmas = $stmt_turmas->fetchAll();
 

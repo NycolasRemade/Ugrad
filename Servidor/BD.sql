@@ -192,8 +192,7 @@ INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
 
 INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, id_turma) VALUES
   (2, 'abcdefgh', 1, 1),
-  (2, 'abcdefghijk', 1, 2),
-  (2, 'abcdefghijklmnopqrstuvwxyz', 1, 1);
+  (2, 'abcdefghijk', 1, 2);
 
 INSERT INTO categorias (nome) VALUES
   ('categoria1'),

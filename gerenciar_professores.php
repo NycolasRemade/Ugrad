@@ -140,11 +140,15 @@ $title = 'Gerenciamento de Professores';
 $href = 'dashboard.php';
 include 'header.php';
 ?>
+<div class="centrao">
     <div style="height: 200px"></div>
 
-    <h1>Gerenciamento de Professores</h1>
+<div id="main_paper">
+    <h1>Gerenciamento de professores</h1>
     <p>Instituição: <strong><?= htmlspecialchars($_SESSION['usuario_nome'] ?? '') ?></strong></p>
+    <br>
     <p><a href="dashboard.php" class="btn-novo">Voltar ao Painel</a></p>
+    <br>
 
     <hr>
 
@@ -247,6 +251,7 @@ include 'header.php';
     <?php else: ?>
         <p>Nenhum professor encontrado para esta instituição.</p>
     <?php endif; ?>
-
+</div>
+</div>
 </body>
 </html>

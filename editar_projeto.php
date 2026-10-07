@@ -504,7 +504,7 @@ include 'header.php';
             <div>
                 <label for="descricao"><strong>Descrição:</strong></label><br>
                 <textarea id="descricao" name="descricao" rows="4" 
-                style="width: 100%; max-width: 640px;"><?= htmlspecialchars($projeto['descricao'] ?? '') ?></textarea>
+                style="width: 100%; max-width: 640px; border: 1px solid black;"><?= htmlspecialchars($projeto['descricao'] ?? '') ?></textarea>
             </div>
 
             <br>
@@ -522,7 +522,7 @@ include 'header.php';
             <input type="hidden" name="salvar_historia" value="1">
 
             <textarea name="historia_projeto" id="historia_projeto" 
-            style="max-width: 640px;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
+            style="max-width: 640px; border: 1px solid black;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
 
             <br>
 

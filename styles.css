@@ -594,7 +594,7 @@ footer p{
 }
 
 .btn-novo {
-  background-color: #000000;
+  background-color: #111111;
   color: #FFFFFF;
   border: none;
   padding: 10px 20px;
@@ -611,7 +611,7 @@ footer p{
 
 .btn-secundario {
   background-color: #FFFFFF;
-  color: #000000;
+  color: #111111;
 }
 
 /* Grid e Cards de Projetos */
@@ -850,7 +850,6 @@ details{
   width: 524px;
   font-size: 16px;
   background-color: #ffffff;
-  
   padding-left: 20px;
   margin-top: 10px;
 }
@@ -930,13 +929,15 @@ textarea{
   margin-top: -45px;
 }
 
-#main_paper{
+#main_paper, #main_paper_edit{
   width: 1253px;
   min-height: 500px;
   padding: 50px 50px;
   background-color: white;
   box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
   margin-top: 150px;
+  display: flex;
+  flex-direction: column;
 }
 
 
@@ -945,14 +946,17 @@ textarea{
 /*   Estilo para edição de projetos
 /*-------------------------------------------------*/
 
-
+#main_paper_edit{
+  align-items: center;
+}
 
 #mudaraba{
   display: flex;
   flex-direction: row;
-  margin-left: -50px;
-  margin-top: -30px;
-  margin-bottom: 20px;
+  margin-left: -35px;
+  margin-top: -20px;
+  margin-bottom: 45px;
+  align-self: baseline;
 }
 
 .deepmod{
@@ -975,7 +979,7 @@ textarea{
 }
 
 .btn-novo_mod{
-  background-color: #000000;
+  background-color: #111111;
   color: #FFFFFF;
   border: none;
   cursor: pointer;
@@ -1005,7 +1009,23 @@ input[type=text]:hover, textarea:hover{
 }
 
 hr{
-  color: #CECECE;
+  background-color: #cecece;
+  border: 0;
+  height: 1px;
+  margin-bottom: 30px;
+}
+
+#main_paper_edit hr, #main_paper hr{
+  width: calc(100% + 40px);
+}
+
+#main_paper_edit input[type=text]{
+  text-align: center;
+  font-size: 3rem; 
+  width: 200%;
+  font-family: BMI;
+  max-width: 800px;
+  offset-anchor: 50% 50%;
 }
 
 /*-------------------------------------------------*/

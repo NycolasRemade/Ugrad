@@ -336,7 +336,7 @@ include 'header.php';
     <div style="height: 100px"></div>
 
 
-<div id='main_paper'>
+<div id='main_paper_edit'>
     <nav id='mudaraba'>
         <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
         <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
@@ -360,8 +360,7 @@ include 'header.php';
             <input type="hidden" name="salvar_visao_geral" value="1">
 
             <div>
-                <label for="nome_projeto"><strong>Nome do projeto:</strong></label><br>
-                <input type="text" id="nome_projeto" name="nome_projeto" value="<?= htmlspecialchars($projeto['nome'] ?? '') ?>" required style="font-size: 1.5rem; font-weight: bold; width: 100%; max-width: 640px;">
+                <input type="text" id="nome_projeto" name="nome_projeto" value="<?= htmlspecialchars($projeto['nome'] ?? '') ?>" required>
             </div>
             <br>
 

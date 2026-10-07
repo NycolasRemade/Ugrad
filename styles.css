@@ -992,9 +992,20 @@ textarea{
   width: 100%;
 }
 
+<<<<<<< HEAD
+input[type=text]:focus, textarea:focus{
+  outline: none;
+=======
 input [type=text]:hover, textarea:hover{
   border-style: dashed solid;
   border-color: rgba(0, 0, 0, 0.5);
+>>>>>>> e710b418a3d423e129230963292b23e5a594228c
+}
+
+input[type=text]:hover, textarea:hover{
+  outline: 2px dashed black;
+  outline-offset: -2px;
+  border-color: transparent !important;
 }
 
 hr{

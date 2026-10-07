@@ -48,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_ins->execute([$id_instituicao, $novo_codigo]);
 
             $mensagem_sucesso = "Código para professor gerado com sucesso: <code>" . htmlspecialchars($novo_codigo) . "</code>";
+            header('Location: gerenciar_professores.php');
+            exit;
         } catch (Exception $e) {
             $mensagem_erro = 'Erro ao gerar o código para professor.';
         }
@@ -79,6 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $pdo->commit();
                     $mensagem_sucesso = 'Conta rebaixada para aluno com sucesso!';
+                    header('Location: gerenciar_professores.php');
+                    exit;
                 } catch (Exception $e) {
                     $pdo->rollBack();
                     $mensagem_erro = 'Erro ao alterar a conta do professor.';
@@ -97,6 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $pdo->commit();
                     $mensagem_sucesso = 'Conta do professor excluída com sucesso!';
+                    header('Location: gerenciar_professores.php');
+                    exit;
                 } catch (Exception $e) {
                     $pdo->rollBack();
                     $mensagem_erro = 'Erro ao excluir a conta do professor.';

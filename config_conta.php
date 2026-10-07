@@ -56,6 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                     $stmt->execute();
 
                     $mensagem_sucesso = 'Imagem de perfil atualizada!';
+                    header('Location: config_conta.php');
+                    exit;
                 } catch (PDOException $e) {
                     $mensagem_erro = 'Erro ao atualizar imagem de perfil';
                 }
@@ -70,6 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             $stmt = $pdo->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
             $stmt->execute([$nome, $usuario_id]);
             $mensagem_sucesso = 'Nome alterado com sucesso!';
+            header('Location: config_conta.php');
+            exit;
         } else {
             $mensagem_erro = 'Preencha o nome corretamente';
         }
@@ -83,6 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                 $stmt = $pdo->prepare('UPDATE usuarios SET email = ? WHERE id = ?');
                 $stmt->execute([$email, $usuario_id]);
                 $mensagem_sucesso = 'E-mail alterado com sucesso!';
+                header('Location: config_conta.php');
+                exit;
             } catch (PDOException $e) {
                 $erro = 'E-mail já está em uso ou é inválido';
             }
@@ -97,6 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
         $stmt->execute([password_hash($senha, PASSWORD_DEFAULT), $usuario_id]);
         $mensagem_sucesso = 'Senha alterada com sucesso!';
+        header('Location: config_conta.php');
+        exit;
     }
 
     // descrição
@@ -105,6 +113,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $stmt = $pdo->prepare('UPDATE usuarios SET descricao = ? WHERE id = ?');
         $stmt->execute([$descricao, $usuario_id]);
         $mensagem_sucesso = 'Descrição alterada com sucesso!';
+        header('Location: config_conta.php');
+        exit;
     }
 
     // aceitar convite de projeto
@@ -114,6 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $stmt = $pdo->prepare('UPDATE proj_membros SET status_membro = 2 WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
         $mensagem_sucesso = 'Convite aceito!';
+        header('Location: config_conta.php');
+        exit;
     }
 
     // recusar convite de projeto
@@ -122,6 +134,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $stmt = $pdo->prepare('DELETE FROM proj_membros WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
         $mensagem_sucesso = 'Convite recusado';
+        header('Location: config_conta.php');
+        exit;
     }
 
     // sair da conta

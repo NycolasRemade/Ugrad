@@ -553,7 +553,7 @@ include 'header.php';
         </div>
 
         <!-- PAINEL DE FILTROS -->
-        <div id="painel-filtros" style="display: none; margin: 15px 0; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 6px;">
+        <div id="painel-filtros" class="selector selector-mini" style="display: none; margin: 15px 0; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd;">
             <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
                 <div>
                     <label for="filtro_tipo"><strong>Exibir:</strong></label>
@@ -583,40 +583,6 @@ include 'header.php';
 
         <br>
 
-        <div>
-            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo" id="botao-toggle-avaliacao"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
-        </div>
-
-        <div id="form-avaliacao-container" style="display: none;">
-            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo btn-secundario">Cancelar x</button>
-            <br><br>
-            <form action="" method="POST">
-                <input type="hidden" name="id_comentario" value="<?= (empty($comentario_usuario)) ? '0' : $comentario_usuario['id'] ?>">
-                <div>
-                    <textarea name="comentario" placeholder="Escreva uma avaliação..." rows="4" required><?php if (!empty($comentario_usuario)) { echo htmlspecialchars($comentario_usuario['comentario']); }?></textarea>
-                </div>
-                <br>
-                <div>
-                <?php if (empty($comentario_usuario)): ?>
-                    <input type="hidden" name="nota" id="nota_input" value="5">
-                    <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
-                        <span onclick="definirNota(1)">★</span><span onclick="definirNota(2)">★</span><span onclick="definirNota(3)">★</span><span onclick="definirNota(4)">★</span><span onclick="definirNota(5)">★</span>
-                    </span>
-                <?php else: ?>
-                    <input type="hidden" name="nota" id="nota_input" value="<?= $comentario_usuario['nota'] ?>">
-                    <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
-                        <?php $nota = (int)$comentario_usuario['nota'];
-                        for ($i = 1; $i <= $nota; $i++): ?><span onclick="definirNota(<?= $i ?>)">★</span><?php endfor;
-                        for ($i = $nota + 1; $i <= 5; $i++): ?><span onclick="definirNota(<?= $i ?>)">☆</span><?php endfor; ?>
-                    </span>
-                <?php endif; ?>
-                    <button type="submit" class="btn-novo">→</button>
-                </div>
-            </form>
-        </div>
-
-        <br>
-
         <main id="lista-comentarios">
             <?php if (!empty($comentarios)): ?>
                 <?php foreach ($comentarios as $c): ?>
@@ -626,7 +592,7 @@ include 'header.php';
                          data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
                         <div>
                             <div class="projeto-membros">
-                                <img class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>">
+                                <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
                             </div>
                                 <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
                             <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
@@ -643,7 +609,7 @@ include 'header.php';
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p>Nenhuma avaliação cadastrada para este projeto ainda.</p>
+                <p>Nenhuma avaliação para este projeto ainda.</p>
             <?php endif; ?>
         </main>
     </div>

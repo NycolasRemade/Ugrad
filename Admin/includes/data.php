@@ -54,7 +54,7 @@ function formatar_data(?string $timestamp): string {
 function avatar_data_uri(?string $blob): ?string {
     if (!$blob) return null;
     $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mime = $finfo->buffer($blob) ?: 'image/jpeg';
+    $mime = $finfo->buffer($blob) ?: 'image/webp';
     return 'data:' . $mime . ';base64,' . base64_encode($blob);
 }
 

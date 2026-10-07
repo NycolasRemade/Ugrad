@@ -994,6 +994,7 @@ textarea{
 
 input [type=text]:hover, textarea:hover{
   border-style: dashed solid;
+  border-color: rgba(0, 0, 0, 0.5);
 }
 
 hr{

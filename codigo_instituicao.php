@@ -45,17 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 //
+$title = 'Código de Instituições';
+$conta = false;
+include 'header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles.css">
-    <title>Seleção de Instituição</title>
-</head>
-
-<body onLoad="window.scroll(0, 0)" style="overflow-y: hidden;">
 
     <div id="logo_2">
         <img src="Fotos/Logo_alt1.png" alt="logo_alt1">

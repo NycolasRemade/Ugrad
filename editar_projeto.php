@@ -384,8 +384,8 @@ include 'header.php';
             <!-- MEMBROS -->
             <div>
                 <strong>Membros:</strong>
-                <div class="multiple_inline">
-                    <div id="membros-ativos-lista" class="multiple_inline">
+                <div class="multiple_inline_mod">
+                    <div id="membros-ativos-lista">
                         <?php foreach ($membros_ativos as $ma): ?>
                             <div id="membro-ativo-<?= $ma['id'] ?>">
                                 <span><?= htmlspecialchars($ma['nome'] ?: $ma['email']) ?></span>
@@ -435,8 +435,8 @@ include 'header.php';
             <!-- CONVITES PENDENTES E NOVO CONVITE -->
             <div>
                 <strong>Convites pendentes:</strong>
-                <div class="multiple_inline">
-                    <div id="membros-selecionados" class="multiple_inline">
+                <div class="multiple_inline_mod">
+                    <div id="membros-selecionados" class="multiple_inline_mod">
                         <?php foreach ($membros_pendentes as $mp): ?>
                             <div id="membros-item-<?= $mp['id'] ?>">
                                 <span><?= htmlspecialchars($mp['nome'] ?: $mp['email']) ?></span>
@@ -470,7 +470,7 @@ include 'header.php';
 
             <div>
                 <strong>Categorias:</strong>
-                <div class="multiple_inline">
+                <div class="multiple_inline_mod">
                     <div id="categorias-selecionados">
                         <?php foreach ($categorias_projeto as $cp): ?>
                             <div id="categorias-item-<?= $cp['id'] ?>">

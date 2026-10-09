@@ -131,8 +131,10 @@ $title = urldecode($projeto['nome'] ?? 'Projeto');
 $href = 'dashboard.php';
 include 'header.php'
 ?>
+<div class="centrao">
     <div style="height: 200px"></div>
 
+<div id="main_paper">
     <nav id='mudaraba'>
         <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
         <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
@@ -297,6 +299,8 @@ include 'header.php'
             <?php endif; ?>
         </main>
     </div>
+</div>
+</div>
 
 
     <script>

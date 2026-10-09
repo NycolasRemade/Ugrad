@@ -333,10 +333,10 @@ include 'header.php';
 
 
 <main class='centrao'>
-    <div style="height: 200px"></div>
+    <div style="height: 100px"></div>
 
 
-<div id='main_paper'>
+<div id='main_paper_edit'>
     <nav id='mudaraba'>
         <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
         <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
@@ -360,8 +360,7 @@ include 'header.php';
             <input type="hidden" name="salvar_visao_geral" value="1">
 
             <div>
-                <label for="nome_projeto"><strong>Nome do projeto:</strong></label><br>
-                <input type="text" id="nome_projeto" name="nome_projeto" value="<?= htmlspecialchars($projeto['nome'] ?? '') ?>" required style="font-size: 1.5rem; font-weight: bold; width: 100%; max-width: 640px;">
+                <input type="text" id="nome_projeto" name="nome_projeto" value="<?= htmlspecialchars($projeto['nome'] ?? '') ?>" required>
             </div>
             <br>
 
@@ -385,8 +384,8 @@ include 'header.php';
             <!-- MEMBROS -->
             <div>
                 <strong>Membros:</strong>
-                <div class="multiple_inline">
-                    <div id="membros-ativos-lista" class="multiple_inline">
+                <div class="multiple_inline_mod">
+                    <div id="membros-ativos-lista">
                         <?php foreach ($membros_ativos as $ma): ?>
                             <div id="membro-ativo-<?= $ma['id'] ?>">
                                 <span><?= htmlspecialchars($ma['nome'] ?: $ma['email']) ?></span>
@@ -436,8 +435,8 @@ include 'header.php';
             <!-- CONVITES PENDENTES E NOVO CONVITE -->
             <div>
                 <strong>Convites pendentes:</strong>
-                <div class="multiple_inline">
-                    <div id="membros-selecionados" class="multiple_inline">
+                <div class="multiple_inline_mod">
+                    <div id="membros-selecionados" class="multiple_inline_mod">
                         <?php foreach ($membros_pendentes as $mp): ?>
                             <div id="membros-item-<?= $mp['id'] ?>">
                                 <span><?= htmlspecialchars($mp['nome'] ?: $mp['email']) ?></span>
@@ -471,7 +470,7 @@ include 'header.php';
 
             <div>
                 <strong>Categorias:</strong>
-                <div class="multiple_inline">
+                <div class="multiple_inline_mod">
                     <div id="categorias-selecionados">
                         <?php foreach ($categorias_projeto as $cp): ?>
                             <div id="categorias-item-<?= $cp['id'] ?>">
@@ -504,7 +503,7 @@ include 'header.php';
             <div>
                 <label for="descricao"><strong>Descrição:</strong></label><br>
                 <textarea id="descricao" name="descricao" rows="4" 
-                style="width: 100%; max-width: 640px;"><?= htmlspecialchars($projeto['descricao'] ?? '') ?></textarea>
+                style="width: 100%; max-width: 640px; border: 1px solid black;"><?= htmlspecialchars($projeto['descricao'] ?? '') ?></textarea>
             </div>
 
             <br>
@@ -522,7 +521,7 @@ include 'header.php';
             <input type="hidden" name="salvar_historia" value="1">
 
             <textarea name="historia_projeto" id="historia_projeto" 
-            style="max-width: 640px;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
+            style="max-width: 640px; border: 1px solid black;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
 
             <br>
 

@@ -31,6 +31,7 @@ include 'header.php'
             <br>
             <a class="btn-novo" href="Admin/pesquisa.php">Painel de administrador</a>
             <br>
+            <br>
         <?php endif; ?>
 
         <?php if ($dados['tipo'] === 1 || $dados['tipo'] === 5): // ALUNO ou ADMINISTRADOR

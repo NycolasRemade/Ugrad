@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header('Location: criar_conta.php');
                 exit;
             } else {
-                $erro = "Código inválido, nenhuma instituição foi encontrada com este código.";
+                $erro = 'Código inválido, nenhuma instituição foi encontrada com este código.';
             }
         } catch (\PDOException $e) {
             $erro = 'Ocorreu um erro ao processar sua solicitação. Tente novamente.';
@@ -86,7 +86,7 @@ include 'header.php';
 
         <form action="codigo_instituicao.php" method="POST" id="form_login">
             <div>
-                <input type="text" class="input_login" name="codigo_instituicao" required placeholder="Código">
+                <input type="text" class="input_login" name="codigo_instituicao" required placeholder="Código" value="<?= $_GET['codigo'] ?? ''; ?>">
                 <button type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="72" height="71" viewBox="0 0 72 71" fill="none">
                         <rect width="72" height="71" fill="#111111" />

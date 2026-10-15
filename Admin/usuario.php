@@ -15,18 +15,13 @@ if (!$usuario) {
         exit;
     }
     if ($isPartial) {
-        echo '<div class="small"><p style="color:#C50000;">Usuário não encontrado.</p></div>';
+        echo '<p class="detail-placeholder">Usuário não encontrado.</p>';
         exit;
     }
     $pageTitle = 'Usuário não encontrado';
     require __DIR__ . '/includes/header.php';
-    echo '<div class="dashboard-container"><p>Usuário não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p></div>';
-?>
-</main>
-</div>
-</body>
-</html>
-<?php
+    echo '<p>Usuário não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/footer.php';
     exit;
 }
 
@@ -85,8 +80,4 @@ if ($isPartial) {
 $pageTitle = 'Painel de controle - Detalhes do usuário';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/usuario_detail.php';
-?>
-</main>
-</div>
-</body>
-</html>
+require __DIR__ . '/includes/footer.php';

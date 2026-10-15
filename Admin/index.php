@@ -13,7 +13,5 @@ require __DIR__ . '/includes/header.php';
     <a class="dash-link" href="pesquisa.php?tab=projetos">Ver Projetos</a>
     <a href="pesquisa.php"><button type="button" class="dash-search-btn">Pesquisar</button></a>
 </div>
-</main>
-</div>
-</body>
-</html>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>

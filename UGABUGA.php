@@ -14,5 +14,5 @@ if ($_SESSION['usuario_id'] != 5) {
 
 for ($i = 0; $i < 100; $i++) {
     $stmt = $pdo->query("INSERT INTO projetos (nome, estado) VALUES (teste$i, 3)");
-    $stmt2 = $pdo->query("INSERT INTO proj_membros (id_convidante, id_convidado, status_membro) VALUES (1, 1, 1), (1, 2, 2)");
+    $stmt2 = $pdo->query("INSERT INTO proj_membros (id_convidante, id_convidado, status_membro) VALUES (1, 1, 1), (1, 3, 2)");
 }

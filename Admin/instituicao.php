@@ -15,18 +15,13 @@ if (!$instituicao) {
         exit;
     }
     if ($isPartial) {
-        echo '<div class="small"><p style="color:#C50000;">Instituição não encontrada.</p></div>';
+        echo '<p class="detail-placeholder">Instituição não encontrada.</p>';
         exit;
     }
     $pageTitle = 'Instituição não encontrada';
     require __DIR__ . '/includes/header.php';
-    echo '<div class="dashboard-container"><p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p></div>';
-?>
-</main>
-</div>
-</body>
-</html>
-<?php
+    echo '<p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/footer.php';
     exit;
 }
 
@@ -88,8 +83,4 @@ if ($isPartial) {
 $pageTitle = 'Painel de controle - Detalhes da instituição';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/instituicao_detail.php';
-?>
-</main>
-</div>
-</body>
-</html>
+require __DIR__ . '/includes/footer.php';

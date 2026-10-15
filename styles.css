@@ -998,11 +998,11 @@ textarea{
   width: 100%;
 }
 
-input[type=text]:focus, textarea:focus{
+.centrao input[type=text]:focus, textarea:focus{
   outline: none;
 }
 
-input[type=text]:hover, textarea:hover{
+.centrao input[type=text]:hover, textarea:hover{
   outline: 2px dashed black;
   outline-offset: -2px;
   border-color: transparent !important;

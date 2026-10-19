@@ -1,6 +1,5 @@
 <?php
 
-
 $stmt_imagem = $pdo->prepare(
     'SELECT imagem_perfil
     FROM usuarios

@@ -531,6 +531,8 @@ include 'header.php';
         </form>
     </div>
 
+    <script src='modular_text.js'></script>
+
     <!-- AVALIAÇÕES -->
     <div id="aba-avaliacoes" style="display: none; min-width: 640px;">
         <div>

@@ -940,7 +940,11 @@ textarea{
   flex-direction: column;
 }
 
-
+.projeto{
+  background-color: #D9D9DF;
+  width: calc(50% - 24px);
+  height: fit-content;
+}
 
 /*-------------------------------------------------*/
 /*   Estilo para edição de projetos

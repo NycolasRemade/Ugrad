@@ -177,7 +177,7 @@ include 'header.php'
     <!-- HISTÓRIA -->
     <div id="aba-historia" style="display: none;">
         <h2>História</h2>
-        <div>
+        <div id="saida-historia-projeto">
             <p><?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Conteúdo da história não informado.')) ?></p>
         </div>
     </div>

@@ -66,13 +66,10 @@ body {
 a { color: inherit; text-decoration: none; }
 
 .app-shell {
-  max-width: 1100px;
-  margin: 32px auto;
+  margin: 0;
   background: var(--card-bg);
-  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  min-height: 560px;
+  min-height: 100vh;
   transition: background-color .15s ease;
 }
 
@@ -85,19 +82,21 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   padding: 14px 24px 26px;
   font-family: 'Tan Meringue', 'Brush Script MT', 'Segoe Script', cursive;
-  /* borda rasgada/pontuda embaixo, feito com um recorte em zig-zag ao
-     invés de um border-radius liso, pra bater com o wireframe original */
-  clip-path: polygon(
-    0% 0%, 100% 0%,
-    100.0% calc(100% - 4px), 96.67% calc(100% - 16px), 93.33% calc(100% - 7px), 90.0% calc(100% - 13px),
-    86.67% calc(100% - 5px), 83.33% calc(100% - 15px), 80.0% calc(100% - 8px), 76.67% calc(100% - 12px),
-    73.33% calc(100% - 6px), 70.0% calc(100% - 14px), 66.67% calc(100% - 4px), 63.33% calc(100% - 16px),
-    60.0% calc(100% - 7px), 56.67% calc(100% - 13px), 53.33% calc(100% - 5px), 50.0% calc(100% - 15px),
-    46.67% calc(100% - 8px), 43.33% calc(100% - 12px), 40.0% calc(100% - 6px), 36.67% calc(100% - 14px),
-    33.33% calc(100% - 4px), 30.0% calc(100% - 16px), 26.67% calc(100% - 7px), 23.33% calc(100% - 13px),
-    20.0% calc(100% - 5px), 16.67% calc(100% - 15px), 13.33% calc(100% - 8px), 10.0% calc(100% - 12px),
-    6.67% calc(100% - 6px), 3.33% calc(100% - 14px), 0.0% calc(100% - 4px)
-  );
+  /* borda rasgada/pontuda embaixo — recorta a .topbar usando o
+     silhueta real de papel rasgado (imagem enviada) como máscara,
+     em vez do polígono em zig-zag feito à mão. */
+  -webkit-mask-image: url('img/header-torn.png');
+  mask-image: url('img/header-torn.png');
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  /* a imagem original afina nos dois cantos de cima — aumentando a
+     largura da máscara além de 100% e centralizando, esses cantos
+     ficam pra fora da área visível e o preto cobre a tela inteira
+     de ponta a ponta, sem sobrar borda branca no canto. */
+  -webkit-mask-size: 130% 100%;
+  mask-size: 130% 100%;
+  -webkit-mask-position: center top;
+  mask-position: center top;
 }
 
 .logo {

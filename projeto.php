@@ -129,6 +129,7 @@ try {
 //////////////////////////////////
 $title = urldecode($projeto['nome'] ?? 'Projeto');
 $href = 'dashboard.php';
+$baseUrl = '_projeto';
 include 'header.php'
 ?>
 <div class="centrao">

@@ -327,6 +327,7 @@ try {
 
 $title = 'Editar ' . htmlspecialchars($projeto['nome']);
 $href = 'dashboard.php';
+$baseUrl = '_projeto';
 include 'header.php';
 ?>
 
@@ -521,8 +522,9 @@ include 'header.php';
             <input type="hidden" name="salvar_historia" value="1">
 
             <textarea name="historia_projeto" id="historia_projeto" 
-            style="max-width: 640px; border: 1px solid black;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
+            style="max-width: 100%px; border: 1px solid black;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
 
+            <br>
             <br>
 
             <div class='buttons_criar'>

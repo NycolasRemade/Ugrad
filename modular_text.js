@@ -5,7 +5,7 @@ function lexer(str) {
     const tokens = [];
     for (let i = 0, len = str.length; i < len; ++i) {
 
-        if (str[i] === '<') {
+        if (str[i] === '<' && str[i+1] === '¨') {
             const tagTk = { type: 'tag', value: '' };
             while (str[++i] && str[i] !== ' ' && str[i] !== '>') {
                 tagTk.value += str[i];
@@ -14,7 +14,7 @@ function lexer(str) {
             continue;
         }
 
-        if (str[i] === '>') {
+        if (str[i] === '¨' && str[i+1] === '>') {
             tokens.push({ type: 'closetag', value: '' });
             continue;
         }

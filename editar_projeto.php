@@ -530,7 +530,6 @@ include 'header.php';
             </div>
         </form>
     </div>
-
     <script src='modular_text.js'></script>
 
     <!-- AVALIAÇÕES -->

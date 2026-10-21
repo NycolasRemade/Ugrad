@@ -175,6 +175,8 @@ include 'header.php'
 
 
     <!-- HISTÓRIA -->
+    <script src='modular_text.js'></script>
+
     <div id="aba-historia" style="display: none;">
         <h2>História</h2>
         <div id="saida-historia-projeto">

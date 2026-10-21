@@ -1,11 +1,13 @@
-const blocoInicial = document.getElementById('historia_projeto');
+function isLetter(char) {
+    return char = char.charCodeAt(0), (char >= 97 && char <= 122) || (char >= 65 && char <= 90);
+}
 
 function lexer(str) {
 
     const tokens = [];
     for (let i = 0, len = str.length; i < len; ++i) {
 
-        if (str[i] === '<') {
+        if (str[i] === '<' && isLetter(str[i+1])) {
             const tagTk = { type: 'tag', value: '' };
             while (str[++i] && str[i] !== ' ' && str[i] !== '>') {
                 tagTk.value += str[i];
@@ -29,7 +31,7 @@ function lexer(str) {
             continue;
         }
 
-        const tk = { type: 'text', value: '' };
+        const tk = { type: 'string', value: '' };
         while (str[i] && str[i] !== '<' && str[i] !== '>') {
             if (str[i] === '\\') {
                 ++i;
@@ -44,19 +46,31 @@ function lexer(str) {
 }
 
 function parser(tokens) {
+
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < tokens.length; ++i) {
         switch (tokens[i].type) {
             case "tag":
                 switch (tokens[i].value) {
+                    case "t": 
+                    case "sub": {
+                        const title = document.createElement("span");
+                        title.className = (tokens[i].value === "t") ? "historia-titulo" : "historia-subtitulo";
+                        while (tokens[++i].type !== "closetag") {
+                            title.innerText += tokens[i].value + '\n';
+                        }
+                        --i;
+                        break;
+                    }
                     case "img": {
                         ++i;
                         if (tokens[i].type === "string") {
                             const img = document.createElement("div");
-                            img.className = ""; // COLOCAR CLASSE DE IMAGEM AQUI
+                            img.className = "historia-imagem";
                             img.style.backgroundImage = "url('" + tokens[i].value + "')";
                             fragment.appendChild(img);
                         }
+                        if (tokens[i+1].type === "closetag") ++i;
                         break;
                     }
                     default: {
@@ -71,6 +85,9 @@ function parser(tokens) {
                 fragment.appendChild(node);
                 break;
             }
+            case "closetag": {
+                break;
+            }
             default: {
                 fragment.appendChild(
                     document.createTextNode(tokens[i].value)
@@ -80,3 +97,10 @@ function parser(tokens) {
     }
     return fragment;
 }
+
+const textareaEntrada = document.getElementById('historia_projeto');
+const divSaida = document.getElementById('saida-historia-projeto');
+if (!textareaEntrada) throw new Error("sem entrada de texto");
+if (!divSaida) throw new Error("sem div de saída");
+
+divSaida.replaceChildren(parser(lexer(textareaEntrada.value)));

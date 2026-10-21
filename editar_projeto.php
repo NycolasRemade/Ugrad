@@ -358,17 +358,16 @@ include 'header.php';
     <!-- VISÃO GERAL -->
 
     <?=include 'editar_visao-geral.php';?>
-    
-    <!-- HISTÓRIA DO PROJETO -->
-
-    <?=include 'editar_historia.php';?>
 
     <!-- AVALIAÇÕES -->
 
     <?=include 'editar_avaliacoes.php'?>
     
-
 </div>
+
+    <!-- HISTÓRIA DO PROJETO -->
+
+    <?=include 'editar_historia.php';?>
 
     <!-- BARRA DE AÇÕES INFERIOR -->
     <hr style="margin-top: 30px; max-width: 640px; width: 100%;">

@@ -19,6 +19,7 @@
             } else {
                 document.getElementById('aba-visao-geral').style.display = 'block';
                 location.hash = 'visao-geral';
+                
             }
         }
 

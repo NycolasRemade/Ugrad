@@ -138,28 +138,13 @@ img{
   align-items: center;
 }
 
-#title_paper{
-  margin-top: 200px;
-  width: calc(45em - 80px);
-}
-
-#title_paper h1{
-  z-index: 999;
-  rotate: -1.28deg;
-}
-
-#title_paper img{
-  margin-left: -80px;
-  margin-top: -45px;
-}
-
 #main_paper, #main_paper_edit{
   width: 1253px;
   min-height: 500px;
   padding: 50px 50px;
   background-color: white;
   box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
-  margin-top: 150px;
+  margin-top: 120px;
   display: flex;
   flex-direction: column;
 }

@@ -191,7 +191,7 @@ include 'header.php'
 
     <?php if(!empty($projetos_id)): ?>
         <?php foreach ($projetos_id as $p): ?>
-            <div id="info-projeto-<?= $p["id"] ?>" style="background-color: lightgray; width: calc(50% - 16px); height: fit-content;">
+            <div id="info-projeto-<?= $p["id"] ?>" class='projeto'>
                 <script>carregarInfoProjeto(<?= $p["id"] ?>);</script>
             </div>
         <?php endforeach; ?>

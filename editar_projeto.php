@@ -459,10 +459,10 @@ include 'header.php';
                         </select>
                     </div>
 
-                    <button type="button" class="plus" onclick="mostrarSeletor('membros')">
-                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="72" height="72" fill="#111111"/>
-                            <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
+                    <button type="button" class="smallplus" onclick="mostrarSeletor('membros')">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="48" height="48" fill="#111111"/>
+                            <path d="M22.7903 31.6827V24.9947H16.3903V22.8187H22.7903V16.1307H25.2223V22.8187H31.6223V24.9947H25.2223V31.6827H22.7903Z" fill="white"/>
                         </svg>
                     </button>
                 </div>
@@ -491,10 +491,10 @@ include 'header.php';
                         </select>
                     </div>
 
-                    <button type="button" class="plus" onclick="mostrarSeletor('categorias')">
-                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="72" height="72" fill="#111111"/>
-                            <path d="M34.4878 45.52V37.16H26.4878V34.44H34.4878V26.08H37.5278V34.44H45.5278V37.16H37.5278V45.52H34.4878Z" fill="white"/>
+                    <button type="button" class="smallplus" onclick="mostrarSeletor('categorias')">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="48" height="48" fill="#111111"/>
+                            <path d="M22.7903 31.6827V24.9947H16.3903V22.8187H22.7903V16.1307H25.2223V22.8187H31.6223V24.9947H25.2223V31.6827H22.7903Z" fill="white"/>
                         </svg>
                     </button>
                 </div>

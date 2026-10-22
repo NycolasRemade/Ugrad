@@ -1,9 +1,8 @@
 
 
 
-<div id="aba-historia" style="display: none; min-width: 640px;">
+<div id="aba-historia" class='box long'>
 
-        <h2>História</h2>
         <form method="POST" action="">
             <input type="hidden" name="salvar_historia" value="1">
 

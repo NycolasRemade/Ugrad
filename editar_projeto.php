@@ -355,6 +355,8 @@ include 'header.php';
         <input type="file" id="imagem_projeto" name="imagem_projeto" accept="image/png, image/jpeg, image/webp" >
     </form>
 
+    <h2 id="Historia">História</h2>
+
     <!-- VISÃO GERAL -->
 
     <?=include 'editar_visao-geral.php';?>

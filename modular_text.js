@@ -8,15 +8,18 @@ function lexer(str) {
     for (let i = 0, len = str.length; i < len; ++i) {
 
         if (str[i] === '<' && str[i+1] === '¨') {
+            ++i;
             const tagTk = { type: 'tag', value: '' };
-            while (str[++i] && str[i] !== ' ' && str[i] !== '>') {
+            while (str[++i] && str[i] !== ' ' && !(str[i] === '¨' && str[i+1] === '>')) {
                 tagTk.value += str[i];
             }
+            if (str[i] !== ' ') --i;
             tokens.push(tagTk);
             continue;
         }
 
         if (str[i] === '¨' && str[i+1] === '>') {
+            ++i;
             tokens.push({ type: 'closetag', value: '' });
             continue;
         }
@@ -32,13 +35,14 @@ function lexer(str) {
         }
 
         const tk = { type: 'string', value: '' };
-        while (str[i] && str[i] !== '<' && str[i] !== '>') {
+        while (str[i] && !(str[i] === '<' && str[i+1] === '¨') && !(str[i] === '¨' && str[i+1] !== '>')) {
             if (str[i] === '\\') {
                 ++i;
             }
             tk.value += str[i];
             ++i;
         }
+        --i;
         tokens.push(tk);
 
     }
@@ -71,6 +75,10 @@ function parser(tokens) {
                             fragment.appendChild(img);
                         }
                         if (tokens[i+1].type === "closetag") ++i;
+                        break;
+                    }
+                    case "br": {
+                        fragment.appendChild(document.createElement("br"));
                         break;
                     }
                     default: {

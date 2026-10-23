@@ -1,10 +1,11 @@
 <?php
 $host = 'localhost';
+$port = '3306';
 $db   = 'ugrad';
 $user = 'root';
-$pass = '';
+$pass = 'ugrad';
 
-$dsn = "mysql:host=$host;dbname=$db;charset=utf8";
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=utf8";
 $options = [
      PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, 
      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       

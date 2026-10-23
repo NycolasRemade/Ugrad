@@ -8,7 +8,7 @@ pra roda o cocker do davi
 `docker run --name ugrad -e MYSQL_ROOT_PASSWORD=ugrad -e MYSQL_DATABASE=ugrad -v /Users/davi_polheim.ADVENTISTAS~ --hostname ugrad -p 3306:3306 -d mysql`
 
 pra roda o cocker do nycolas
-`docker run --name ugrad -e MYSQL_ROOT_PASSWORD=ugrad -e MYSQL_DATABASE=ugrad -v /Users/nycolas_pierobon~ --hostname ugrad -p 3306:3306 -d mysql`
+`docker run --name ugrad -e MYSQL_ROOT_PASSWORD=ugrad -e MYSQL_DATABASE=ugrad -v /Users/nycolas_pierobon.ADVENTISTAS~ --hostname ugrad -p 3306:3306 -d mysql`
 
 pra roda o cocker do outro davi que não é davi
 `docker run --name ugrad -e MYSQL_ROOT_PASSWORD=ugrad -e MYSQL_DATABASE=ugrad -v /Users/davi_polheim.ADVENTISTAS~ --hostname ugrad -p 3306:3306 -d mysql`

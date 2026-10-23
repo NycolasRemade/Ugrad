@@ -4,6 +4,7 @@
             document.getElementById('aba-visao-geral').style.display = 'none';
             document.getElementById('aba-historia').style.display = 'none';
             document.getElementById('aba-avaliacoes').style.display = 'none';
+            document.getElementById('Historia').style.display = 'none';
 
             document.getElementById('btn_visao-geral').className = 'deepmod';
             document.getElementById('btn_historia').className = 'deepmod';
@@ -16,13 +17,6 @@
                 bloco.style.display = 'block';
                 location.hash = nomeAba;
                 if (botao) botao.className = 'btn-novo_mod';
-
-                if (bloco === "aba-historia"){
-                    document.getElementById('Historia').style.display = 'block';
-                }
-                else{
-                    document.getElementById('Historia').style.display = 'none';
-                }
             } else {
                 document.getElementById('aba-visao-geral').style.display = 'block';
                 location.hash = 'visao-geral';

@@ -85,6 +85,7 @@ function parser(tokens) {
                         fragment.appendChild(
                             document.createTextNode('<' + tokens[i].value + '>')
                         );
+                        break;
                     }
                 }
                 break;
@@ -100,6 +101,7 @@ function parser(tokens) {
                 fragment.appendChild(
                     document.createTextNode(tokens[i].value)
                 );
+                break;
             }
         }
     }

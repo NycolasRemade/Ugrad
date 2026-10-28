@@ -17,6 +17,9 @@ if (!isset($_SESSION['usuario_id'])) {
 }
 
 if ((int)($_SESSION['usuario_tipo'] ?? 0) !== 5) {
-    header('Location: ../dashboard.php');
+    // Não é administrador: volta pro dashboard do site (se este painel estiver
+    // dentro do site completo); rodando isolado, cai na tela de login.
+    $destino = file_exists(__DIR__ . '/../../dashboard.php') ? '../dashboard.php' : 'login.php';
+    header('Location: ' . $destino);
     exit;
 }

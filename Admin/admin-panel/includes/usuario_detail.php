@@ -26,7 +26,11 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
     </div>
     <div>
       <div class="field-label">Turma</div>
-      <div class="field-value"><?= htmlspecialchars($usuario['turma_nome'] ?? '—') ?></div>
+      <div class="field-value">
+        <?php if (!empty($usuario['id_turma'])): ?>
+          <a class="detail-trigger" href="turma.php?id=<?= $usuario['id_turma'] ?>" data-type="turma" data-id="<?= $usuario['id_turma'] ?>"><?= htmlspecialchars($usuario['turma_nome'] ?? '—') ?></a>
+        <?php else: ?>—<?php endif; ?>
+      </div>
     </div>
     <div>
       <div class="field-label">E-mail</div>
@@ -59,7 +63,7 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
       <p class="dim" style="font-size:var(--fs-sm);">Nenhum projeto vinculado.</p>
     <?php endif; ?>
     <?php foreach ($projetos as $p): ?>
-      <span class="chip"><?= htmlspecialchars($p['nome']) ?></span>
+      <a class="chip detail-trigger" href="projeto.php?id=<?= $p['id'] ?>" data-type="projeto" data-id="<?= $p['id'] ?>"><?= htmlspecialchars($p['nome']) ?></a>
     <?php endforeach; ?>
   </div>
 </div>
@@ -105,7 +109,7 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
 </div>
 
 <div class="actions-row">
-  <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Enviar link de redefinição de senha para este usuário?">
+  <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Gerar uma nova senha temporária para este usuário e enviar por e-mail? A senha atual deixa de funcionar.">
     <input type="hidden" name="acao" value="senha">
     <button type="submit" class="btn btn-outline">Solicitar alteração de senha</button>
   </form>

@@ -25,7 +25,7 @@ header('Pragma: no-cache');
     <nav class="topnav">
       <a href="pesquisa.php" class="topnav-pill">Pesquisar de Projeto</a>
     </nav>
-    <a class="account" href="#">
+    <a class="account" href="conta.php">
       <span>Conta</span>
       <span class="avatar-wrap">
         <span class="avatar-dot" aria-hidden="true"></span>

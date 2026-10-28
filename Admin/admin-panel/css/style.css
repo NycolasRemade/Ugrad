@@ -175,25 +175,89 @@ h1.page-title {
   margin: 0 0 20px;
 }
 
+/* ---------- Estatísticas do dashboard ---------- */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 14px;
+  text-align: center;
+  background: var(--soft-bg);
+}
+
+.stat-value {
+  display: block;
+  font-size: 28px;
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+}
+
+.stat-value.stat-ok { color: var(--green); }
+.stat-value.stat-off { color: var(--red); }
+
+.stat-label {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.stats-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  max-width: 760px;
+  margin: 14px auto 0;
+}
+
+.stats-chip {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 6px 14px;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.stats-chip strong { color: var(--text); font-weight: var(--fw-semibold); }
+
 /* ---------- Dashboard sidebar-style menu ---------- */
+.dash-wrap {
+  /* centraliza o menu no espaço vertical que sobra na tela (sem
+     bater no header, nas estatísticas, nem empurrar o rodapé pra
+     fora) */
+  min-height: calc(100vh - 360px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .dash-menu {
-  max-width: 260px;
-  margin: 10px auto 0;
+  max-width: 340px;
+  width: 100%;
+  margin: 0 auto;
   text-align: center;
 }
 
 .dash-avatar {
-  width: 64px;
-  height: 64px;
+  width: 104px;
+  height: 104px;
   border-radius: 50%;
   background: var(--avatar-bg);
-  margin: 0 auto 18px;
+  margin: 0 auto 26px;
 }
 
 .dash-menu a.dash-link {
   display: block;
-  padding: 8px 4px;
-  font-size: var(--fs-base);
+  padding: 12px 4px;
+  font-size: var(--fs-lg);
   color: var(--text);
   border-bottom: 1px solid transparent;
 }
@@ -202,18 +266,23 @@ h1.page-title {
 
 .dash-search-btn {
   display: block;
-  margin: 18px auto 0;
+  margin: 26px auto 0;
   background: var(--black);
   color: #fff;
   border: none;
   border-radius: var(--radius);
-  padding: 10px 0;
+  padding: 14px 0;
   width: 100%;
-  font-size: var(--fs-base);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
   cursor: pointer;
 }
 
 .dash-search-btn:hover { background: var(--near-black); }
+
+@media (max-width: 640px) {
+  .dash-wrap { min-height: calc(100vh - 420px); }
+}
 
 /* ---------- Search page ---------- */
 .search-layout {
@@ -549,3 +618,52 @@ h1.page-title {
   .detail-fields { grid-template-columns: 1fr; }
   .user-row { grid-template-columns: 18px 1fr; row-gap: 2px; }
 }
+
+/* ---------- Utilitários e telas adicionadas depois ---------- */
+.dim { color: var(--text-muted); }
+
+/* itens clicáveis dentro dos detalhes (turmas, projetos, instituição…) */
+a.chip.detail-trigger,
+.field-value a.detail-trigger { cursor: pointer; }
+a.chip.detail-trigger:hover,
+.field-value a.detail-trigger:hover { text-decoration: underline; }
+a.chip.detail-trigger { background: var(--soft-bg); }
+
+/* item selecionado na lista (pills de instituição/turma/projeto) */
+.pill.selected {
+  background: var(--row-selected-bg);
+  border-color: var(--red);
+}
+
+/* contagem no título do acordeão */
+.accordion-header .dim { font-weight: var(--fw-regular); }
+
+/* tela de login */
+.login-wrap {
+  min-height: calc(100vh - 220px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+}
+
+.login-label {
+  display: block;
+  margin: 14px 0 6px;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.login-input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--fs-base);
+}
+
+.login-card .dash-search-btn { margin-top: 24px; }

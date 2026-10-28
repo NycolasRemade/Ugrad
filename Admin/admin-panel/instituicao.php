@@ -37,7 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                 : 'Não foi possível gerar o código (tipo "ALUNO" não encontrado em tipos_usuario).';
             break;
         case 'senha':
-            $result['message'] = 'Link de alteração de senha seria enviado (envio de e-mail não implementado).';
+            $reset = usuario_resetar_senha($id, $instituicao['email'], $instituicao['nome']);
+            $result['success'] = $reset['ok'];
+            if (!$reset['ok']) {
+                $result['message'] = 'Não foi possível redefinir a senha de ' . $instituicao['nome'] . '.';
+            } elseif ($reset['enviado']) {
+                $result['message'] = 'Nova senha temporária enviada para ' . $instituicao['email'] . '.';
+            } else {
+                $result['message'] = 'Senha de ' . $instituicao['nome'] . ' redefinida, mas o e-mail não pôde ser enviado (servidor de e-mail não configurado). '
+                                   . 'Senha temporária para repassar: ' . $reset['senha'];
+            }
             break;
         case 'desativar':
             usuario_toggle_ativacao($id, false);

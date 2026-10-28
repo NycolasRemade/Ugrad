@@ -62,7 +62,7 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
       <p class="dim" style="font-size:var(--fs-sm);">Nenhuma turma cadastrada.</p>
     <?php endif; ?>
     <?php foreach ($turmas as $t): ?>
-      <span class="chip"><?= htmlspecialchars($t['nome']) ?></span>
+      <a class="chip detail-trigger" href="turma.php?id=<?= $t['id'] ?>" data-type="turma" data-id="<?= $t['id'] ?>"><?= htmlspecialchars($t['nome']) ?></a>
     <?php endforeach; ?>
   </div>
 </div>
@@ -73,7 +73,7 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
     <button type="submit" class="btn btn-dark">Gerar código</button>
   </form>
 
-  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Enviar link de redefinição de senha?">
+  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Gerar uma nova senha temporária para esta instituição e enviar por e-mail? A senha atual deixa de funcionar.">
     <input type="hidden" name="acao" value="senha">
     <button type="submit" class="btn btn-outline">Solicitar alteração de senha</button>
   </form>

@@ -31,8 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     switch ($_POST['acao']) {
         case 'senha':
-            // Não há sistema de e-mail/token neste protótipo — apenas confirma a intenção.
-            $result['message'] = 'Link de alteração de senha seria enviado para ' . $usuario['email'] . ' (envio de e-mail não implementado).';
+            $reset = usuario_resetar_senha($id, $usuario['email'], $usuario['nome']);
+            $result['success'] = $reset['ok'];
+            if (!$reset['ok']) {
+                $result['message'] = 'Não foi possível redefinir a senha de ' . $usuario['nome'] . '.';
+            } elseif ($reset['enviado']) {
+                $result['message'] = 'Nova senha temporária enviada para ' . $usuario['email'] . '.';
+            } else {
+                $result['message'] = 'Senha de ' . $usuario['nome'] . ' redefinida, mas o e-mail não pôde ser enviado (servidor de e-mail não configurado). '
+                                   . 'Senha temporária para repassar: ' . $reset['senha'];
+            }
             break;
         case 'desativar':
             usuario_toggle_ativacao($id, false);

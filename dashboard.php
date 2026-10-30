@@ -17,7 +17,7 @@ $dados = $stmt->fetch();
 $title = 'Painel - Ugrad';
 $href = 'Ugrad.html';
 $pdp = true;
-include 'header.php'
+require 'header.php'
 ?>
 
     <main class="dashboard-container">

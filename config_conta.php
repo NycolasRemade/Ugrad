@@ -200,7 +200,7 @@ include 'header.php';
     <div id='config_container'>
 
         <div class='img_container'>
-                <div id="kirkle"><div class="config" style="background-image: url('data:image/webp;base64,<?= base64_encode($usuario['imagem_perfil']) ?>')" alt="Foto de Perfil"></div></div>
+                <div id="kirkle"><div class="config" style="background-image: url('<?= isset($usuario['imagem_perfil']) ? 'data:image/webp;base64,' + base64_encode($usuario['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div></div>
 
             <form method="POST" enctype="multipart/form-data" id="form-imagem-perfil">
                 <input type="hidden" name="acao" value="alterar_imagem">

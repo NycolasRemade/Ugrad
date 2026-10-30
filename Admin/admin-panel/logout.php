@@ -19,5 +19,5 @@ if (ini_get('session.use_cookies')) {
 }
 session_destroy();
 
-header('Location: login.php');
+header('Location: ' . (file_exists(__DIR__ . '/../login.php') ? '../login.php' : 'login.php'));
 exit;

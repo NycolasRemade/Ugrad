@@ -11,15 +11,19 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Login "normal" do site: fica uma pasta acima deste painel (../login.php).
+// Este painel não tem tela de login própria.
+$loginUrl = file_exists(__DIR__ . '/../../login.php') ? '../login.php' : 'login.php';
+
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
+    header('Location: ' . $loginUrl);
     exit;
 }
 
 if ((int)($_SESSION['usuario_tipo'] ?? 0) !== 5) {
     // Não é administrador: volta pro dashboard do site (se este painel estiver
-    // dentro do site completo); rodando isolado, cai na tela de login.
-    $destino = file_exists(__DIR__ . '/../../dashboard.php') ? '../dashboard.php' : 'login.php';
+    // dentro do site completo); senão, pro login.
+    $destino = file_exists(__DIR__ . '/../../dashboard.php') ? '../dashboard.php' : $loginUrl;
     header('Location: ' . $destino);
     exit;
 }

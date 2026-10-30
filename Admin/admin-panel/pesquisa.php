@@ -24,7 +24,7 @@ require __DIR__ . '/includes/header.php';
 
   <div class="search-col">
     <form class="search-bar" id="searchForm" method="get">
-      <input type="text" name="q" value="<?= htmlspecialchars($q) ?>" placeholder="Pesquisar usuários, turmas, instituições ou projetos...">
+      <input type="text" name="q" value="<?= htmlspecialchars($q) ?>"<?= isset($_GET['foco']) ? ' autofocus' : '' ?> placeholder="Pesquisar usuários, turmas, instituições ou projetos...">
       <input type="hidden" name="tab" id="tabField" value="<?= htmlspecialchars($openTab) ?>">
       <button type="submit">+</button>
     </form>

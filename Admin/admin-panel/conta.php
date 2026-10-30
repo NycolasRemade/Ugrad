@@ -7,7 +7,7 @@ if (!$eu) {
     // a conta logada não existe mais: encerra a sessão
     $_SESSION = [];
     session_destroy();
-    header('Location: login.php');
+    header('Location: ' . $loginUrl);
     exit;
 }
 

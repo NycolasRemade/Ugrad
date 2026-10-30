@@ -4,9 +4,8 @@
 -- O que faz: cria uma coluna nova que guarda quando a conta logou pela
 -- última vez. Não mexe em nenhuma coluna ou dado existente.
 --
--- Depois de rodar, o login deste painel (login.php) já passa a gravar o
--- horário. Pra contar também alunos, professores e empresas, o login do
--- site principal precisa chamar uma linha logo após autenticar:
+-- Depois de rodar, o login do site principal precisa chamar uma linha logo
+-- após autenticar o usuário pra o horário ser gravado:
 --
 --     require_once 'admin-panel/includes/data.php';  // ajuste o caminho
 --     registrar_acesso($idDoUsuarioLogado);

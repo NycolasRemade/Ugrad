@@ -23,7 +23,7 @@ header('Pragma: no-cache');
   <header class="topbar">
     <a class="logo" href="../dashboard.php">Ugrad</a>
     <nav class="topnav">
-      <a href="pesquisa.php" class="topnav-pill">Pesquisar de Projeto</a>
+      <a href="pesquisa.php?tab=projetos&amp;foco=1" class="topnav-pill">Pesquisa de Projeto</a>
     </nav>
     <a class="account" href="../config_conta.php">
       <span>Conta</span>

@@ -189,20 +189,25 @@ textarea{
   align-self: flex-start;
 }
 
+#title_paper{
+  margin-top: 500px;
+  margin-bottom: 200px;
+  width: 45em;
+  align-self: center;
+}
+
 .title_paper h1, #title_paper h1{
   font-size: 48px;
   position: absolute;
-}
-
-.title_paper img{
-  margin-left: -30px;
-  margin-top: -50px;
 }
 
 .title_paper img, #title_paper img{
   width: 45em;
   -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
+  margin-left: -90px;
+  margin-top: -50px;
+  z-index: -10;
 }
 
 .long, .short{

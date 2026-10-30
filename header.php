@@ -47,7 +47,7 @@ if (!isset($conta) || $conta){
         <?php if(!isset($conta)): ?>
         <a href="config_conta.php" class="conta">
             <h3>Conta</h3>
-            <div style="background-image: url('<?= isset($imagem['imagem_perfil']) ? 'data:image/webp;base64,' + base64_encode($imagem['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div>
+            <div style="background-image: url('<?= isset($imagem['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($imagem['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div>
         </a>
         <?php endif;?>
 

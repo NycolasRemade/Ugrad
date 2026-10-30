@@ -14,7 +14,7 @@ $mensagem_erro = '';
 $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
-    // imagem de perfil
+    // imagem de perfil - alterar
     if ($_POST['acao'] === 'alterar_imagem' && isset($_FILES['imagem_perfil'])) {
         $imagem = $_FILES['imagem_perfil'];
         if (
@@ -65,6 +65,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         }
     }
 
+    // imagem de perfil - apagar
+    if ($_POST['acao'] === 'remover_imagem') {
+        try {
+            $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = NULL WHERE id = ?');
+            $stmt->execute([$usuario_id]);
+
+            $mensagem_sucesso = 'Imagem de perfil removida com sucesso!';
+            header('Location: config_conta.php');
+            exit;
+        } catch (PDOException $e) {
+            $mensagem_erro = 'Erro ao remover imagem de perfil.';
+        }
+    }
+
     // nome
     if ($_POST['acao'] === 'alterar_nome') {
         $nome = trim($_POST['nome']);
@@ -99,12 +113,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // senha
     if ($_POST['acao'] === 'alterar_senha') {
-        $senha = trim($_POST['senha']);
-        $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
-        $stmt->execute([password_hash($senha, PASSWORD_DEFAULT), $usuario_id]);
-        $mensagem_sucesso = 'Senha alterada com sucesso!';
-        header('Location: config_conta.php');
-        exit;
+        $senha_atual = $_POST['senha_atual'] ?? '';
+        $nova_senha = trim($_POST['senha'] ?? '');
+
+        $stmt_pass = $pdo->prepare('SELECT senha FROM usuarios WHERE id = ?');
+        $stmt_pass->execute([$usuario_id]);
+        $user_pass = $stmt_pass->fetch();
+
+        if ($user_pass && password_verify($senha_atual, $user_pass['senha'])) {
+            if (!empty($nova_senha)) {
+                $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
+                $stmt->execute([password_hash($nova_senha, PASSWORD_DEFAULT), $usuario_id]);
+                $mensagem_sucesso = 'Senha alterada com sucesso!';
+                header('Location: config_conta.php');
+                exit;
+            } else {
+                $mensagem_erro = 'A nova senha não pode estar vazia.';
+            }
+        } else {
+            $mensagem_erro = 'Senha atual incorreta.';
+        }
     }
 
     // descrição
@@ -200,13 +228,22 @@ include 'header.php';
     <div id='config_container'>
 
         <div class='img_container'>
-                <div id="kirkle"><div class="config" style="background-image: url('<?= isset($usuario['imagem_perfil']) ? 'data:image/webp;base64,' + base64_encode($usuario['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div></div>
+            <div id="kirkle"><div class="config" style="background-image: url('<?= !empty($usuario['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($usuario['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div></div>
 
-            <form method="POST" enctype="multipart/form-data" id="form-imagem-perfil">
+            <div>
+            <form method="POST" enctype="multipart/form-data" id="form-imagem-perfil" style="display: inline-block;">
                 <input type="hidden" name="acao" value="alterar_imagem">
                 <input style="display:none" id="input-imagem-perfil" type="file" name="imagem_perfil" accept="image/jpeg, image/png, image/webp">
-                <button id="botao-imagem-perfil" type="button" class="btn-novo">Definir imagem</button>
+                <button id="botao-imagem-perfil" type="button" class="btn-novo"><?= (empty($usuario['imagem_perfil'])) ? 'Definir foto' : 'Alterar foto' ?></button>
             </form>
+
+            <?php if (!empty($usuario['imagem_perfil'])): ?>
+            <form method="POST" id="form-remover-imagem" style="display: inline-block;">
+                <input type="hidden" name="acao" value="remover_imagem">
+                <button type="submit" class="btn-novo btn-secundario">Apagar</button>
+            </form>
+            <?php endif; ?>
+            </div>
 
             <script>
                 const botaoImagemPerfil = document.getElementById("botao-imagem-perfil");
@@ -245,7 +282,8 @@ include 'header.php';
 
         <form method="POST">
             <input type="hidden" name="acao" value="alterar_senha">
-            <label for="senha">Senha</label><br>
+            <label for="senha">Alterar Senha</label><br>
+            <input type="password" id="senha_atual" name="senha_atual" placeholder="Senha atual" required><br>
             <input type="password" id="senha" name="senha" placeholder="Nova senha" required>
             <button type="submit" class='btn-novo'>Alterar</button>
         </form>
@@ -288,7 +326,6 @@ include 'header.php';
                     <div class='nome_convite'><h3><?= htmlspecialchars($convite['nome_convidante']) ?></h3></div>
 
                     <p>
-                        
                         Você foi convidado para participar do projeto <strong><?= htmlspecialchars($convite['nome_projeto']) ?></strong>
                     </p>
 
@@ -329,7 +366,6 @@ include 'header.php';
             Ao excluir a conta, ela ainda será recuperável por 7 dias; Após o prazo, não há nada que podemos fazer por você.
         </p>
     </div>
-    
     
 </body>
 </html>

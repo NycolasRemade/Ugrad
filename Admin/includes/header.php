@@ -21,11 +21,11 @@ header('Pragma: no-cache');
 <div class="app-shell">
 
   <header class="topbar">
-    <a class="logo" href="index.php">Ugrad</a>
+    <a class="logo" href="../dashboard.php">Ugrad</a>
     <nav class="topnav">
       <a href="pesquisa.php?tab=projetos&amp;foco=1" class="topnav-pill">Pesquisa de Projeto</a>
     </nav>
-    <a class="account" href="conta.php">
+    <a class="account" href="../config_conta.php">
       <span>Conta</span>
       <span class="avatar-wrap">
         <span class="avatar-dot" aria-hidden="true"></span>

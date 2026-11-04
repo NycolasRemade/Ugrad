@@ -64,7 +64,7 @@ require 'header.php'
                 $stmt_membros->execute([$proj['id_do_projeto']]);
                 $membros = $stmt_membros->fetchAll();
             ?>
-                <a class="projeto-card box" href="editar_projeto.php?id=<?= $proj['id_do_projeto'] ?>" style='background-image: url()'>
+                <a class="projeto-card box" href="editar_projeto.php?id=<?= $proj['id_do_projeto'] ?>" style="background-image: url('data:image/webp;base64,<?= base64_encode($proj['img']); ?>')">
                     <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                     <div class="projeto-membros">
                         <?php foreach ($membros as $m): ?>
@@ -258,10 +258,23 @@ require 'header.php'
         <?php endif; ?>
     </main>
 
-<?php include 'projeto_funcoes.php' ?>
-
 <script>
-    document.getElementById('nome_png').style.width = getTextWidth("Olá, <?= htmlspecialchars($dados['nome']); ?>!", "36px IBM");;
+    function getTextWidth() {
+
+        const inputText = "Olá, <?= htmlspecialchars($dados['nome']); ?>!";
+        const font = "36px IBM";
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        context.font = font;
+        const width = context.measureText(inputText).width;
+        const formattedWidth = Math.ceil(width) + 50;
+
+        document.getElementById('nome_png').style.width = formattedWidth + "px";
+        console.log(formattedWidth);
+        }
+
+    getTextWidth();
 </script>
 
 </body>

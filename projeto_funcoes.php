@@ -165,18 +165,5 @@
                 }
             });
         }
-
-        function getTextWidth(txt,fnt) {
-
-        const inputText = txt;
-        const font = fnt;
-
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        context.font = font;
-        const width = context.measureText(inputText).width;
-        const formattedWidth = (Math.ceil(width) + 50) + "px";
-        return formattedWidth;
-        }
         
     </script>

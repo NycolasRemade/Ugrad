@@ -1,41 +1,23 @@
 <?php
 /**
- * reportagem.php
- * Recebe os botões "Apagar" e "Ignorar" de cada card de Avaliações
- * (tabela reportagens). Responde em JSON quando chamado via AJAX pela
- * tela de pesquisa; senão, faz o fallback tradicional com redirect.
+ * logout.php — encerra a sessão. Só aceita POST (botão "Sair" da página
+ * Conta), pra um link/imagem de terceiros não conseguir deslogar o admin.
  */
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
-
-$id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
-$acao = $_POST['acao'] ?? '';
-$voltar = $_POST['voltar'] ?? 'pesquisa.php';
-$isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
-
-$rep = reportagem_find($id);
-
-if (!$rep) {
-    $result = ['success' => false, 'message' => 'Reportagem não encontrada.', 'usuario_removido' => false];
-} elseif ($acao === 'ignorar') {
-    $ok = reportagem_ignorar($id);
-    $result = [
-        'success' => $ok,
-        'message' => $ok ? 'Reportagem ignorada.' : 'Não foi possível ignorar a reportagem.',
-        'usuario_removido' => false,
-    ];
-} elseif ($acao === 'apagar') {
-    $result = reportagem_apagar($id);
-} else {
-    $result = ['success' => false, 'message' => 'Ação desconhecida.', 'usuario_removido' => false];
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-if ($isAjax) {
-    header('Content-Type: application/json');
-    echo json_encode($result);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: conta.php');
     exit;
 }
 
-flash_set($result['message']);
-header('Location: ' . ($result['usuario_removido'] ? 'pesquisa.php' : $voltar));
+$_SESSION = [];
+if (ini_get('session.use_cookies')) {
+    $p = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+}
+session_destroy();
+
+header('Location: ' . (file_exists(__DIR__ . '/../login.php') ? '../login.php' : 'login.php'));
 exit;

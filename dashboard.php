@@ -17,7 +17,7 @@ $dados = $stmt->fetch();
 $title = 'Painel - Ugrad';
 $href = 'Ugrad.html';
 $pdp = true;
-include 'header.php'
+require 'header.php'
 ?>
 
     <main class="dashboard-container">
@@ -36,7 +36,7 @@ include 'header.php'
 
         <?php if ($dados['tipo'] === 1 || $dados['tipo'] === 5): // ALUNO ou ADMINISTRADOR
             $stmt_projetos = $pdo->prepare(
-               'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto
+               'SELECT p.id AS id_do_projeto, p.nome AS nome_projeto, p.img
                 FROM projetos p INNER JOIN proj_membros m 
                 ON m.id_projeto = p.id 
                 WHERE m.id_convidado = ? AND m.status_membro != 3'
@@ -64,7 +64,7 @@ include 'header.php'
                 $stmt_membros->execute([$proj['id_do_projeto']]);
                 $membros = $stmt_membros->fetchAll();
             ?>
-                <a class="projeto-card box" href="editar_projeto.php?id=<?= $proj['id_do_projeto'] ?>">
+                <a class="projeto-card box" href="editar_projeto.php?id=<?= $proj['id_do_projeto'] ?>" style="background-image: url('data:image/webp;base64,<?= base64_encode($proj['img']); ?>')">
                     <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                     <div class="projeto-membros">
                         <?php foreach ($membros as $m): ?>
@@ -259,7 +259,6 @@ include 'header.php'
     </main>
 
 <script>
-
     function getTextWidth() {
 
         const inputText = "Olá, <?= htmlspecialchars($dados['nome']); ?>!";

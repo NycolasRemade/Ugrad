@@ -104,15 +104,18 @@ $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? null;
 //////////////////////////////////
 $title = 'Pesquisa de Projetos';
 $href = 'dashboard.php';
+$baseUrl = '_projeto';
 $pdp = true;
 include 'header.php'
 ?>
 
 <div class='centrao'>
+    <div style="height: 100px"></div>
 
-<div id='title_paper'>
-    <h1 class='meringue'>Pesquisa de Projetos</h1>
+<div class='title_paper'>
     <img src="Fotos/Polygon 3.png" alt="title">
+    <h1 class='meringue'>Pesquisa de Projetos</h1>
+    
 </div>
 
 <script>

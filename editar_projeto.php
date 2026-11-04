@@ -355,19 +355,21 @@ include 'header.php';
         <input type="file" id="imagem_projeto" name="imagem_projeto" accept="image/png, image/jpeg, image/webp" >
     </form>
 
+    <h2 id="Historia">História</h2>
+
     <!-- VISÃO GERAL -->
 
-    <?=include 'editar_visao-geral.php';?>
+    <?php include 'editar_visao-geral.php'; ?>
 
     <!-- AVALIAÇÕES -->
 
-    <?=include 'editar_avaliacoes.php'?>
+    <?php include 'editar_avaliacoes.php'; ?>
     
 </div>
 
     <!-- HISTÓRIA DO PROJETO -->
 
-    <?=include 'editar_historia.php';?>
+    <?php include 'editar_historia.php';?>
 
     <!-- BARRA DE AÇÕES INFERIOR -->
     <hr style="margin-top: 30px; max-width: 640px; width: 100%;">
@@ -391,7 +393,7 @@ include 'header.php';
     </div>
 </main>
 
-<?= include 'projeto_funcoes.php'; ?>
+<?php include 'projeto_funcoes.php'; ?>
 
 </body>
 </html>

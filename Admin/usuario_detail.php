@@ -23,9 +23,9 @@ header('Pragma: no-cache');
   <header class="topbar">
     <a class="logo" href="index.php">Ugrad</a>
     <nav class="topnav">
-      <a href="pesquisa.php" class="topnav-pill">Pesquisar de Projeto</a>
+      <a href="pesquisa.php?tab=projetos&amp;foco=1" class="topnav-pill">Pesquisa de Projeto</a>
     </nav>
-    <a class="account" href="#">
+    <a class="account" href="<?= file_exists(__DIR__ . '/../../config_conta.php') ? '../config_conta.php' : 'conta.php' ?>">
       <span>Conta</span>
       <span class="avatar-wrap">
         <span class="avatar-dot" aria-hidden="true"></span>

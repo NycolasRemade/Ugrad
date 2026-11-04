@@ -5,6 +5,8 @@ function isLetter(char) {
 function lexer(str) {
 
     const tokens = [];
+    if (!str) return tokens;
+
     for (let i = 0, len = str.length; i < len; ++i) {
 
         if (str[i] === '<' && str[i+1] === '¨') {
@@ -51,6 +53,8 @@ function lexer(str) {
 
 function parser(tokens) {
 
+    if (!tokens) return document.createTextNode("Conteúdo da história não informado.");
+
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < tokens.length; ++i) {
         switch (tokens[i].type) {
@@ -76,6 +80,15 @@ function parser(tokens) {
                         }
                         if (tokens[i+1].type === "closetag") ++i;
                         break;
+                    }
+                    case "bloco": {
+                        const bloco = document.createElement("div");
+                        bloco.className = "historia-bloco";
+                        while (tokens[++i].type !== "closetag") {
+                            bloco.innerText += tokens[i].value;
+                        }
+                        --i;
+                        fragment.appendChild(bloco);
                     }
                     case "br": {
                         fragment.appendChild(document.createElement("br"));
@@ -107,10 +120,3 @@ function parser(tokens) {
     }
     return fragment;
 }
-
-const textareaEntrada = document.getElementById('historia_projeto');
-const divSaida = document.getElementById('saida-historia-projeto');
-if (!textareaEntrada) throw new Error("sem entrada de texto");
-if (!divSaida) throw new Error("sem div de saída");
-
-divSaida.replaceChildren(parser(lexer(textareaEntrada.value)));

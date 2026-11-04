@@ -181,7 +181,12 @@ include 'header.php'
     <div id="aba-historia" style="display: none;">
         <h2>História</h2>
         <div id="saida-historia-projeto">
-            <p><?= nl2br(htmlspecialchars($projeto['historia'] ?? 'Conteúdo da história não informado.')) ?></p>
+            <script>
+                const divSaida = document.getElementById('saida-historia-projeto');
+                divSaida.replaceChildren(parser(lexer(
+                    <?= htmlspecialchars($projeto['historia']); ?>
+                )));
+            </script>
         </div>
     </div>
 

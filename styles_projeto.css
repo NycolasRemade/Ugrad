@@ -491,3 +491,31 @@ hr{
   background-color: inherit;
   padding: 10px 20px;
 }
+
+/* seção da história do projeto */
+.historia-titulo {
+  color: black;
+  font-size: 48px;
+}
+
+.historia-subtitulo {
+  color: black;
+  font-size: 32px;
+}
+
+.historia-imagem {
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.historia-bloco {
+  width: 100%;
+  height: fit-content;
+  background-image: url("Fotos/Polygon\ 17.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-clip: padding-box;
+}

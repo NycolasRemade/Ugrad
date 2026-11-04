@@ -5,7 +5,7 @@ if (isset($_SESSION['usuario_id'])) {
     header('Location: dashboard.php');
     exit;
 }
-
+//
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);

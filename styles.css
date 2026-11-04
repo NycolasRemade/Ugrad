@@ -629,6 +629,7 @@ footer p{
   justify-content: space-between;
   min-height: 150px;
   position: relative; /* Remove a propriedade absolute herdada genericamente se houver */
+  background-repeat: no-repeat;
 }
 
 .projeto-titulo {

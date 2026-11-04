@@ -185,7 +185,7 @@ textarea{
 
 .title_paper{
   margin-top: 100px;
-  margin-bottom: 100px;
+  margin-bottom: 0px;
   width: 45em;
   align-self: center;
   text-align: center;
@@ -193,7 +193,7 @@ textarea{
 
 .title_paper h1{
   font-size: 48px;
-  position: absolute;
+  z-index: 0s;
 }
 
 .title_paper img{
@@ -201,6 +201,9 @@ textarea{
   -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   margin-top: -50px;
+  margin-left: -22.5em;
+  position: absolute;
+  z-index: -1;
 }
 
 .long, .short{

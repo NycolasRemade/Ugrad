@@ -115,6 +115,7 @@ include 'header.php'
 <div class='title_paper'>
     <img src="Fotos/Polygon 3.png" alt="title">
     <h1 class='meringue'>Pesquisa de Projetos</h1>
+    
 </div>
 
 <script>

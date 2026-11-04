@@ -181,7 +181,11 @@ img{
   color: #333;
   text-shadow: 0px 0px 2px white;
   margin-top: -55px;
+}
 
+.projeto-data-criacao{
+  margin-top: 200px;
+  position: absolute;
 }
 
 /* Caixas de texto*/

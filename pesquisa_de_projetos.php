@@ -129,9 +129,9 @@ include 'header.php'
             divProjeto.innerHTML = 
                 '<a class="projeto-card box" href="projeto.php?id=' + id +'">' +
                 '<p class="projeto-titulo">'+ data.nome + '</p>' +
-                '<p class="desc">' + (data.descricao ? data.descricao : '') + '</p>' + 
+                '<p class="projeto-desc">' + (data.descricao ? data.descricao : '') + '</p>' + 
                 '<br><div style="width: 600px; height: 200px; background-position: center; background-size: cover; background-image: url(\'data:image/webp;base64,' + data.img + '\');"></div>' +
-                '<p>Criado em: ' + data.data_criacao + '</p>' +
+                '<p class="projeto-data-criacao">Criado em: ' + data.data_criacao + '</p>' +
                 '</a>';
         })
         .catch((error) => console.error(error));

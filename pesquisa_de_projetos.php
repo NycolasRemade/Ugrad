@@ -129,9 +129,9 @@ include 'header.php'
             divProjeto.innerHTML = 
                 '<a class="projeto-card box" href="projeto.php?id=' + id +'">' +
                 '<p class="projeto-titulo">'+ data.nome + '</p>' +
-                '<br>Criado em: ' + data.data_criacao + 
-                (data.descricao ? '<br>Descrição: ' + data.descricao : '') + 
-                '<br><div style="width: 600px; height: 200px; background-position: center; background-size: cover; background-repeat: no-repeat; background-image: url(\'data:image/webp;base64,' + data.img + '\');"></div>' +
+                '<p class="desc">' + (data.descricao ? data.descricao : '') + '</p>' + 
+                '<br><div style="width: 600px; height: 200px; background-position: center; background-size: cover; background-image: url(\'data:image/webp;base64,' + data.img + '\');"></div>' +
+                '<p>Criado em: ' + data.data_criacao + '</p>' +
                 '</a>';
         })
         .catch((error) => console.error(error));
@@ -190,11 +190,11 @@ include 'header.php'
         <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
-    <main id="feed-projetos" style="display:flex; flex-wrap: wrap;">
+    <main id="feed-projetos">
 
     <?php if(!empty($projetos_id)): ?>
         <?php foreach ($projetos_id as $p): ?>
-            <div id="info-projeto-<?= $p["id"] ?>" class='projeto'>
+            <div id="info-projeto-<?= $p["id"] ?>">
                 <script>carregarInfoProjeto(<?= $p["id"] ?>);</script>
             </div>
         <?php endforeach; ?>

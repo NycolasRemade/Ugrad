@@ -154,7 +154,7 @@ img{
 
 #feed-projetos{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, calc(50% - 15px)));
+  grid-template-columns: repeat(auto-fill, minmax(300px, calc(25% - 30px)));
   gap: 30px;
   width: 100%;
 }

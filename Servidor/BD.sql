@@ -204,13 +204,14 @@ INSERT INTO proj_dados (id_projeto, descricao, historia) VALUES
 (
 1,
 'Descrição do projeto',
-'<#t Título - história do projeto#>
-<#sub Subtítulo#>
+'<#t Título - história do projeto #>
+<#sub Subtítulo #>
 
 <#bloco
 Bloco de texto com imagem
 <#img "Fotos/Ugrad logo cinza.png"#>
-Mais texto aqui em baixo
+Mais texto
+aqui em baixo
 #>'
 );
 INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES

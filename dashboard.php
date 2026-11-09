@@ -50,31 +50,32 @@ require 'header.php'
                 WHERE m.id_projeto = ?
                 ORDER BY m.status_membro DESC, m.data_convite DESC'
             );
-        ?>
-
-        <section class="projetos-secao">
-            <div class="secao-header">
-                <h3>Meus projetos</h3>
-                <a class="btn-novo" href="criar_projeto.php">+ Novo projeto</a>
-            </div>
-            
-            <div class="projetos-grid">
-            <?php
-            foreach ($projetos as $proj): 
-                $stmt_membros->execute([$proj['id_do_projeto']]);
-                $membros = $stmt_membros->fetchAll();
             ?>
-                <a class="projeto-card box" href="editar_projeto.php?id=<?= $proj['id_do_projeto'] ?>" style="background-image: url('data:image/webp;base64,<?= base64_encode($proj['img']); ?>')">
-                    <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
-                    <div class="projeto-membros">
-                        <?php foreach ($membros as $m): ?>
-                            <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($m['imagem_perfil']) ?>')" title="<?= htmlspecialchars($m['nome']); ?>"></div>
-                        <?php endforeach; ?>
-                    </div>
-                </a>
-            <?php endforeach; ?>
-            </div>
-        </section>
+
+            <section class="projetos-secao">
+                <div class="secao-header">
+                    <h3>Meus projetos</h3>
+                    <a class="btn-novo" href="criar_projeto.php">+ Novo projeto</a>
+                </div>
+                
+                <div class="projetos-grid">
+                <?php
+                foreach ($projetos as $proj): 
+                    $stmt_membros->execute([$proj['id_do_projeto']]);
+                    $membros = $stmt_membros->fetchAll();
+                ?>
+                    <a class="projeto-card box" href="editar_projeto.php?id=<?= $proj['id_do_projeto'] ?>" 
+                    style="background-image: url('data:image/webp;base64,<?= base64_encode($proj['img']); ?>')">
+                        <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
+                        <div class="projeto-membros">
+                            <?php foreach ($membros as $m): ?>
+                                <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($m['imagem_perfil']) ?>')" title="<?= htmlspecialchars($m['nome']); ?>"></div>
+                            <?php endforeach; ?>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
+                </div>
+            </section>
         <?php elseif ($dados['tipo'] === 2): // PROFESSOR
             $stmt = $pdo->prepare('SELECT nome FROM turmas WHERE id_instituicao = ?');
             $stmt->execute([$_SESSION['usuario_id_instituicao']]);
@@ -102,61 +103,61 @@ require 'header.php'
             );
             $stmt->execute([$_SESSION['usuario_id_instituicao']]);
             $projetos = $stmt->fetchAll();
-        ?>
-
-        <details>
-            <summary>
-                <span>Turmas fixadas</span>
-            </summary>
-        </details>
-
-        <details>
-            <summary>
-                <span>Turmas</span>
-                <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
-            </summary>
-            <div>
-            <?php foreach ($turmas as $t): ?>
-                <div><?= htmlspecialchars($t['nome']) ?></div>
-            <?php endforeach; ?>
-            </div>
-        </details>
-
-        <details>
-            <summary>
-                <span>Alunos</span>
-            </summary>
-            <div>
-            <?php foreach ($alunos as $a): ?>
-                <div><?= htmlspecialchars($a['nome']) ?></div>
-            <?php endforeach; ?>
-            </div>
-        </details>
-
-        <details open>
-            <summary>
-                <span>Projetos dos alunos</span>
-            </summary>
-            <div class="projetos-grid">
-
-            <?php
-            $tamanho = count($projetos);
-            for ($i = 0; $i < $tamanho; $i++):
-                $id_projeto = $projetos[$i]['id'];
             ?>
-                <a class="projeto-card box" href="projeto.php?id=<?= $projetos[$i]['id'] ?>">
-                    <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
+            <details>
+                <summary>
+                    <span>Turmas fixadas</span>
+                </summary>
+            </details>
 
-                    <div class="projeto-membros">
-                    <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
-                        <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
-                    <?php $i++; endwhile; $i--;?>
-                    </div>
-                </a>
+            <details>
+                <summary>
+                    <span>Turmas</span>
+                    <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
+                </summary>
+                <div>
+                <?php foreach ($turmas as $t): ?>
+                    <div><?= htmlspecialchars($t['nome']) ?></div>
+                <?php endforeach; ?>
+                </div>
+            </details>
 
-            <?php endfor; ?>
-            </div>
-        </details>
+            <details>
+                <summary>
+                    <span>Alunos</span>
+                </summary>
+                <div>
+                <?php foreach ($alunos as $a): ?>
+                    <div><?= htmlspecialchars($a['nome']) ?></div>
+                <?php endforeach; ?>
+                </div>
+            </details>
+
+            <details open>
+                <summary>
+                    <span>Projetos dos alunos</span>
+                </summary>
+                <div class="projetos-grid">
+
+                <?php
+                $tamanho = count($projetos);
+                for ($i = 0; $i < $tamanho; $i++):
+                    $id_projeto = $projetos[$i]['id'];
+                ?>
+                    <a class="projeto-card box" href="projeto.php?id=<?= $projetos[$i]['id'] ?>" 
+                    style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['img']); ?>')">
+                        <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
+
+                        <div class="projeto-membros">
+                        <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
+                            <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
+                        <?php $i++; endwhile; $i--;?>
+                        </div>
+                    </a>
+
+                <?php endfor; ?>
+                </div>
+            </details>
 
         <?php elseif ($dados['tipo'] === 4): // INSTITUIÇÂO 
             $stmt = $pdo->prepare('SELECT nome FROM turmas WHERE id_instituicao = ?');
@@ -187,74 +188,73 @@ require 'header.php'
             );
             $stmt->execute([$id_usuario]);
             $projetos = $stmt->fetchAll();
-        ?>
-
-        <details>
-            <summary>
-                <span>Turmas fixadas</span>
-            </summary>
-        </details>
-
-        <details>
-            <summary>
-                    <span>Turmas</span>
-                    <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
-            </summary>
-            <div>
-            <?php foreach ($turmas as $t): ?>
-                <div><?= htmlspecialchars($t['nome']) ?></div>
-            <?php endforeach; ?>
-            </div>
-        </details>
-
-        <details>
-            <summary>
-                    <span>Professores</span>
-                    <a class="btn-novo" href="gerenciar_professores.php">Gerenciar professores</a>
-            </summary>
-            <div>
-            <?php foreach ($professores as $prof): ?>
-                <div><?= htmlspecialchars($prof['nome']) ?></div>
-            <?php endforeach; ?>
-            </div>
-        </details>
-
-        <details>
-            <summary>
-                <span>Alunos</span>
-            </summary>
-            <div>
-            <?php foreach ($alunos as $a): ?>
-                <div><?= htmlspecialchars($a['nome']) ?></div>
-            <?php endforeach; ?>
-            </div>
-        </details>
-
-        <details open>
-            <summary>
-                <span>Projetos dos alunos</span>
-            </summary>
-            <div class="projetos-grid">
-
-            <?php
-            $tamanho = count($projetos);
-            for ($i = 0; $i < $tamanho; $i++):
-                $id_projeto = $projetos[$i]['id'];
             ?>
-                <a class="projeto-card box" href="projeto.php?id=<?= $projetos[$i]['id'] ?>">
-                    <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
+            <details>
+                <summary>
+                    <span>Turmas fixadas</span>
+                </summary>
+            </details>
 
-                    <div class="projeto-membros">
-                    <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
-                        <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
-                    <?php $i++; endwhile; $i--;?>
-                    </div>
-                </a>
+            <details>
+                <summary>
+                        <span>Turmas</span>
+                        <a class="btn-novo" href="gerenciar_turmas.php">Gerenciar turmas</a>
+                </summary>
+                <div>
+                <?php foreach ($turmas as $t): ?>
+                    <div><?= htmlspecialchars($t['nome']) ?></div>
+                <?php endforeach; ?>
+                </div>
+            </details>
 
-            <?php endfor; ?>
-            </div>
-        </details>
+            <details>
+                <summary>
+                        <span>Professores</span>
+                        <a class="btn-novo" href="gerenciar_professores.php">Gerenciar professores</a>
+                </summary>
+                <div>
+                <?php foreach ($professores as $prof): ?>
+                    <div><?= htmlspecialchars($prof['nome']) ?></div>
+                <?php endforeach; ?>
+                </div>
+            </details>
 
+            <details>
+                <summary>
+                    <span>Alunos</span>
+                </summary>
+                <div>
+                <?php foreach ($alunos as $a): ?>
+                    <div><?= htmlspecialchars($a['nome']) ?></div>
+                <?php endforeach; ?>
+                </div>
+            </details>
+
+            <details open>
+                <summary>
+                    <span>Projetos dos alunos</span>
+                </summary>
+                <div class="projetos-grid">
+
+                <?php
+                $tamanho = count($projetos);
+                for ($i = 0; $i < $tamanho; $i++):
+                    $id_projeto = $projetos[$i]['id'];
+                ?>
+                    <a class="projeto-card box" href="projeto.php?id=<?= $projetos[$i]['id'] ?>"
+                    style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['img']); ?>')">
+                        <p class="projeto-titulo"><?= htmlspecialchars($projetos[$i]['nome']); ?></p>
+
+                        <div class="projeto-membros">
+                        <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
+                            <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
+                        <?php $i++; endwhile; $i--;?>
+                        </div>
+                    </a>
+
+                <?php endfor; ?>
+                </div>
+            </details>
         <?php endif; ?>
     </main>
 

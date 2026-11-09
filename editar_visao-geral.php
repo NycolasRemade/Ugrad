@@ -1,8 +1,4 @@
-
-
-
-
-<div id="aba-visao-geral" style="min-width: 640px;">
+    <div id="aba-visao-geral" style="min-width: 640px;">
         <form method="POST" action="">
             <input type="hidden" name="salvar_visao_geral" value="1">
 
@@ -155,7 +151,7 @@
 
             <br>
             <div class='buttons_criar'>
-                <button type="submit" class="btn-novo">Salvar Alterações</button>
+                <button type="submit" class="btn-novo">Salvar</button>
             </div>
         </form>
     </div>

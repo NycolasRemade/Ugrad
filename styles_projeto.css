@@ -185,7 +185,7 @@ img{
   font-family: 'BMI', sans-serif;
   font-size: 20px;
   color: #333;
-  text-shadow: 0px 0px 2px white;
+  text-shadow: 0px 0px 4px white;
   margin-top: -55px;
   width: 250px;
   overflow: hidden;
@@ -195,12 +195,12 @@ img{
   overflow-clip-margin: 20px;
 }
 
-.projeto-data-criacao{
-  margin-top: 190px;
+.projeto-data-criacao {
+  margin-top: 210px;
   position: absolute;
 }
 
-.projeto-desc{
+.projeto-desc {
   position: absolute;
   text-shadow: 0px 0px 2px white;
   width: 300px;
@@ -566,29 +566,42 @@ hr{
 /* seção da história do projeto */
 .historia-titulo {
   color: black;
-  font-size: 48px;
+  font-size: 36px;
+  font-weight: 800;
 }
 
 .historia-subtitulo {
   color: black;
-  font-size: 32px;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 .historia-imagem {
-  width: 320px;
-  height: 180px;
+  width: 640px;
+  height: 360px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 4px;
+}
+
+.historia-bloco {
+  width: fit-content;
+  height: fit-content;
+  padding: 24px;
+  box-sizing: border-box;
+  background-image: url("Fotos/Polygon 17.png");
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.historia-bloco {
-  width: 100%;
-  height: fit-content;
-  padding: 16px;
+#saida-historia-projeto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
   box-sizing: border-box;
-  background-image: url("Fotos/Polygon\ 17.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-color: #F2F2F7;
 }

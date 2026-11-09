@@ -10,42 +10,72 @@ $id_projeto = $_GET['id'];
 
 $stmt = null;
 $projeto = null;
+$pode_editar_projeto = false;
 // dados do projeto
 if ($_SESSION['usuario_tipo'] === 1) {
     // ALUNO
+
     $stmt = $pdo->prepare(
        'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
         FROM projetos p 
         LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
         JOIN proj_membros pm ON p.id = pm.id_projeto
-        WHERE p.id = ? AND pm.id_convidado = ?'
+        WHERE p.id = ? AND (pm.id_convidado = ? OR p.estado = 3)'
     );
+    // se o usuário for convidado
+    // ou se o projeto for público
     $stmt->execute([$id_projeto, $_SESSION['usuario_id']]);
     $projeto = $stmt->fetch();
+
+    $stmt = $pdo->prepare('SELECT p.id FROM projetos p 
+                           JOIN proj_membros pm ON p.id = pm.id_projeto 
+                           WHERE pm.convidado = ?');
+    $pode_editar_projeto = ($stmt->fetch()) ? true : false;
+
 } elseif ($_SESSION['usuario_tipo'] === 2 || $_SESSION['usuario_tipo'] === 4) {
     // PROFESSOR ou INSTITUICAO
+
     $stmt = $pdo->prepare(
        'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
         FROM projetos p 
         LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
         INNER JOIN proj_membros pm ON p.id = pm.id_projeto
         LEFT JOIN extra_usuarios e ON e.id_usuario = pm.id_convidado
-        WHERE p.id = ? AND pm.id_convidado = pm.id_convidante AND e.id_instituicao = ?'
+        WHERE p.id = ? AND ((pm.id_convidado = pm.id_convidante AND e.id_instituicao = ?) OR p.estado = 3)'
     );
+    // se o membro principal (que é convidado e convidante) 
+    // for da mesma instituição do usuário
+    // ou se o projeto for público
     $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
     $projeto = $stmt->fetch();
+
 } elseif ($_SESSION['usuario_tipo'] === 3) {
     // EMPRESARIO
+
+    $stmt = $pdo->prepare(
+       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+        FROM projetos p 
+        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
+        WHERE p.id = ? AND p.estado = 3'
+    );
+    // se o projeto for público
+    $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
+    $projeto = $stmt->fetch();
+
 } elseif ($_SESSION['usuario_tipo'] === 5) {
     // ADMINISTRADOR
+
     $stmt = $pdo->prepare(
        'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
         FROM projetos p 
         LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
         WHERE p.id = ?'
     );
+    // qualquer projeto
     $stmt->execute([$id_projeto]);
     $projeto = $stmt->fetch();
+    $pode_editar_projeto = true;
+
 }
 
 if (empty($projeto)) {
@@ -179,13 +209,18 @@ include 'header.php'
     <script src='modular_text.js'></script>
 
     <div id="aba-historia" style="display: none;">
-        <h2>História</h2>
+        <h2>História</h2><br>
+        <?php if ($pode_editar_projeto): ?>
+        <div class='buttons_criar' style="float: left;">
+            <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
+        </div><br><br>
+        <?php endif; ?>
         <div id="saida-historia-projeto">
             <script>
                 const divSaida = document.getElementById('saida-historia-projeto');
                 divSaida.replaceChildren(parser(lexer(
                     <?= json_encode($projeto['historia']); ?>
-                )));
+                .replace(/\r/g, ""))));
             </script>
         </div>
     </div>

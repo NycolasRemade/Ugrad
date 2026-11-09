@@ -70,6 +70,7 @@ function parser(tokens) {
                             title.innerText += tokens[i].value + '\n';
                         }
                         --i;
+                        fragment.appendChild(title);
                         break;
                     }
                     case "img": {

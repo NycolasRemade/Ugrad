@@ -184,7 +184,7 @@ include 'header.php'
             <script>
                 const divSaida = document.getElementById('saida-historia-projeto');
                 divSaida.replaceChildren(parser(lexer(
-                    <?= htmlspecialchars($projeto['historia']); ?>
+                    <?= json_encode($projeto['historia']); ?>
                 )));
             </script>
         </div>

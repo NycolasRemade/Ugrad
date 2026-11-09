@@ -29,7 +29,7 @@ require 'header.php'
 
         <?php if ($dados['tipo'] === 5): ?>
             <br>
-            <a class="btn-novo" href="Admin/pesquisa.php">Painel de administrador</a>
+            <a class="btn-novo" href="Admin/">Painel de administrador</a>
             <br>
             <br>
         <?php endif; ?>

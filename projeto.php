@@ -128,7 +128,7 @@ try {
 //
 //////////////////////////////////
 $title = urldecode($projeto['nome'] ?? 'Projeto');
-$href = 'dashboard.php';
+$href = 'pesquisa_de_projetos.php';
 $baseUrl = '_projeto';
 include 'header.php'
 ?>

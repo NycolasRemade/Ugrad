@@ -150,6 +150,11 @@ img{
   /*z-index: 0;*/
 }
 
+#main_paper{
+  margin-bottom: 100px;
+  padding-bottom: 50px;
+}
+
 /* Pesquisa de Projetos*/
 
 #feed-projetos{
@@ -182,6 +187,12 @@ img{
   color: #333;
   text-shadow: 0px 0px 2px white;
   margin-top: -55px;
+  width: 250px;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-clip-margin: 20px;
 }
 
 .projeto-data-criacao{
@@ -202,8 +213,15 @@ img{
   word-break: break-word;
 }
 
-.projeto-card :hover {
-  
+.projeto-card {
+  -webkit-backdrop-filter: blur(4px); /* Use for Safari 9+, Edge 17+ (not a mistake) and iOS Safari 9.2+ */
+  backdrop-filter: blur(4px); /* Supported in all major browsers 
+  implementeaçãoendo*/
+}
+
+.blurer{
+  -webkit-backdrop-filter: blur(4px); /* Use for Safari 9+, Edge 17+ (not a mistake) and iOS Safari 9.2+ */
+  backdrop-filter: blur(4px); 
 }
 
 /* Caixas de texto*/

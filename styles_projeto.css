@@ -566,9 +566,10 @@ hr{
 .historia-bloco {
   width: 100%;
   height: fit-content;
+  padding: 16px;
+  box-sizing: border-box;
   background-image: url("Fotos/Polygon\ 17.png");
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
-  background-clip: padding-box;
+  background-size: cover;
 }

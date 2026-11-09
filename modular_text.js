@@ -9,10 +9,11 @@ function lexer(str) {
 
     for (let i = 0, len = str.length; i < len; ++i) {
 
-        if (str[i] === '<' && str[i+1] === '¨') {
+        if (str[i] === '<' && str[i+1] === '#') {
             ++i;
             const tagTk = { type: 'tag', value: '' };
-            while (str[++i] && str[i] !== ' ' && !(str[i] === '¨' && str[i+1] === '>')) {
+            while (str[i+1] === ' ') ++i;
+            while (str[++i] && str[i] !== ' ' && !(str[i] === '#' && str[i+1] === '>')) {
                 tagTk.value += str[i];
             }
             if (str[i] !== ' ') --i;
@@ -20,9 +21,10 @@ function lexer(str) {
             continue;
         }
 
-        if (str[i] === '¨' && str[i+1] === '>') {
+        if (str[i] === '#' && str[i+1] === '>') {
             ++i;
             tokens.push({ type: 'closetag', value: '' });
+            if (str[i+1] === ' ') ++i;
             continue;
         }
 
@@ -37,14 +39,14 @@ function lexer(str) {
         }
 
         const tk = { type: 'string', value: '' };
-        while (str[i] && !(str[i] === '<' && str[i+1] === '¨') && !(str[i] === '¨' && str[i+1] !== '>')) {
+        while (str[i] && !(str[i] === '<' && str[i+1] === '#') && !(str[i] === '#' && str[i+1] === '>')) {
             if (str[i] === '\\') {
                 ++i;
             }
             tk.value += str[i];
             ++i;
         }
-        --i;
+        if (str[i] !== ' ') --i;
         tokens.push(tk);
 
     }

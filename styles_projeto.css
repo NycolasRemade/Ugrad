@@ -1,142 +1,3 @@
-@font-face {
-  font-family: 'IBM';
-  font-style: normal;
-  src: url(Fontes/IBM\ Plex\ Mono\ -\ Regular.woff2);
-}
-
-@font-face {
-  font-family: 'BMI';
-  font-style: bold;
-  src: url(Fontes/IBM\ Plex\ Mono\ -\ Grosso.woff2);
-}
-
-@font-face {
-  font-family: 'BMIP';
-  font-style: bolder;
-  src: url(Fontes/IBM\ Plex\ Mono\ -\ Grosso++.woff2);
-}
-
-@font-face {
-  font-family: 'Tan';
-  font-style: normal;
-  src: url(Fontes/TAN\ MERINGUE.woff2)
-}
-
-@keyframes fadeaway {
-  0% {opacity: 100%;}
-  100%{opacity: 0%;}
-}
-
-*{
-  margin: 0;
-  padding: 0;
-  font-family: IBM;
-}
-
-html{
-  display: flex;
-  flex-direction: column;
-}
-
-body{
-  background-color: #F2F2F7;
-  overflow-x: hidden;
-  width: 1920px;
-  align-self: center;
-}
-
-.meringue{
-  font-family: tan;
-  font-weight: lighter;
-}
-
-a{
-  font-style: normal;
-  text-decoration: none;
-  color: inherit;
-  scroll-behavior: smooth;
-}
-
-svg{
-  -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
-  filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25))
-}
-
-img{
-  position: absolute
-}
-
-#navbar{
-  position: fixed;
-  height: 150px;
-  margin-left: 0px;
-}
-
-#navbar{
-  top: -30px;
-  margin-top: 00px;
-  color: white;
-  
-  width: 100%;
-  z-index: 989;
-}
-
-#navbar img{
-  width: 1920px;
-  margin-top: 0px;
-  -webkit-filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
-  filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
-}
-
-#navbar h1{
-  position: absolute;
-  font-size: 6em;
-  rotate: -3.96deg;
-  margin-left: 150px;
-  margin-top: 50px;
-}
-
-#navbar h2{
-  font-size: 1.5em;
-  margin-top: 80px;
-  position: absolute;
-  margin-left: 790px;
-}
-
-#navbar .conta{
-  position: absolute;
-  margin-left: 1550px;
-  margin-top: 70px;
-  display: flex;
-}
-
-#navbar .conta h3{
-  font-weight: normal;
-  font-size: 1.8em;
-  
-}
-
-#navbar .conta div{
-  width: 90px;
-  height: 90px;
-  border-radius: 100%;
-  z-index: 99999999;
-  margin-top: -20px;
-  margin-left: 30px;
-  -webkit-filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
-  filter: drop-shadow(0px 10px 2px rgba(0, 0, 0, 0.25));
-  background-color: black;
-  background-position: center;
-  background-repeat: none;
-  background-size: cover;
-}
-
-.centrao{
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 #main_paper, #main_paper_edit{
   width: 77%;
@@ -196,7 +57,7 @@ img{
 }
 
 .projeto-data-criacao {
-  margin-top: 210px;
+  margin-top: 185px;
   position: absolute;
 }
 
@@ -211,17 +72,29 @@ img{
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: break-word;
+  transition: 200ms;
 }
 
-.projeto-card {
-  -webkit-backdrop-filter: blur(4px); /* Use for Safari 9+, Edge 17+ (not a mistake) and iOS Safari 9.2+ */
-  backdrop-filter: blur(4px); /* Supported in all major browsers 
-  implementeaçãoendo*/
+.projeto-imagem{
+  -webkit-filter: blur(0px);
+  filter: blur(0px); 
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  margin-top: -25px;
+  margin-left: -25px;
+  transition: 200ms;
 }
 
-.blurer{
-  -webkit-backdrop-filter: blur(4px); /* Use for Safari 9+, Edge 17+ (not a mistake) and iOS Safari 9.2+ */
-  backdrop-filter: blur(4px); 
+.projeto-card:hover .projeto-imagem{
+  -webkit-filter: blur(4px);
+  filter: blur(4px); 
+  opacity: 60%;
+  background: white;
+}
+
+.projeto-card:hover .projeto-desc{
+  opacity: 100%;
 }
 
 /* Caixas de texto*/

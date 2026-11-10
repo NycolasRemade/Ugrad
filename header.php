@@ -18,6 +18,7 @@ if (!isset($conta) || $conta){
 <head>
     <meta charset="UTF-8">
     <title><?=$title?></title>
+    <link rel="stylesheet" href="base_styles.css">
     <link rel="stylesheet" href="styles<?= $baseUrl ?? '' ?>.css">
 <!-- Códigos para o Favicon -->
     <link rel="icon" type="image/png" href="Fotos/favicon-96x96.png" sizes="96x96" />

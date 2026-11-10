@@ -29,7 +29,7 @@ if ($_SESSION['usuario_tipo'] === 1) {
 
     $stmt = $pdo->prepare('SELECT p.id FROM projetos p 
                            JOIN proj_membros pm ON p.id = pm.id_projeto 
-                           WHERE pm.convidado = ?');
+                           WHERE pm.id_convidado = ?');
     $pode_editar_projeto = ($stmt->fetch()) ? true : false;
 
 } elseif ($_SESSION['usuario_tipo'] === 2 || $_SESSION['usuario_tipo'] === 4) {

@@ -12,6 +12,11 @@ $stmt = $pdo->prepare('SELECT nome, email, tipo FROM usuarios WHERE id = ?');
 $stmt->execute([$id_usuario]);
 $dados = $stmt->fetch();
 
+if($dados['tipo'] === 3){
+    header('Location: pesquisa_de_projetos.php');
+    exit;
+}
+
 //
 //////////////////////////////////
 $title = 'Painel - Ugrad';

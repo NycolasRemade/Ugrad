@@ -11,7 +11,7 @@ function lexer(str) {
 
         if (str[i] === '<' && str[i+1] === '#') {
             ++i;
-            const tagTk = { type: 'tag', value: '' };
+            const tagTk = { type: 'tag', value: 'bloco' }; //quebrei, mas você entende o que quero fazer
             while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
             while (str[++i] && str[i] !== ' ' && str[i] !== '\n' && !(str[i] === '#' && str[i+1] === '>')) {
                 tagTk.value += str[i];
@@ -28,9 +28,9 @@ function lexer(str) {
             continue;
         }
 
-        if (str[i] === '"') {
+        if (str[i] === "'") {
             const strTk = { type: 'string', value: '' };
-            while (str[++i] && str[i] !== '"') {
+            while (str[++i] && str[i] !== "'") {
                 if (str[i] === '\\') ++i;
                 strTk.value += str[i];
             }
@@ -41,9 +41,16 @@ function lexer(str) {
         if (str[i] === '#' && (!str[i-1] || str[i-1] === '\n')) {
             if (str[i+1] === '#' && str[i+2] === '#') {
                 i += 2;
-                tokens.push({ type: 'tag', value: 't' });
-            } else {
-                tokens.push({ type: 'tag', value: 'sub' });
+                tokens.push({ type: 'tag', value: 'h1' });
+            } 
+
+            else if(str[i+1] === '#'){
+                ++i;
+                tokens.push({ type: 'tag', value: 'h2' });
+            }
+            
+            else {
+                tokens.push({ type: 'tag', value: 'h3' });
             }
             if (str[i+1] === ' ') ++i;
             const strTk = { type: 'string', value: '' };
@@ -83,10 +90,11 @@ const parser = (function(){
         switch (_tokens[_i].type) {
             case "tag":
                 switch (_tokens[_i].value) {
-                    case "t": 
-                    case "sub": {
+                    case "h1": 
+                    case "h2":                     
+                    case "h3":{
                         const title = document.createElement("span");
-                        title.className = (_tokens[_i].value === "t") ? "historia-titulo" : "historia-subtitulo";
+                        title.className = (_tokens[_i].value === "h1") ? "historia-titulo" : ((_tokens[_i].value === "h2") ? "historia-subtitulo" : "historia-textogrande");
                         while (_tokens[++_i].type !== "closetag") {
                             title.innerText += _tokens[_i].value + '\n';
                         }
@@ -117,6 +125,9 @@ const parser = (function(){
                         _fragment = previousFragment;
                         _fragment.appendChild(bloco);
                     }
+                    case "blocoP" : {}
+                    case "blocoM" : {} // Vamos descobrir como fazer o bloco normal funcionar bem primeiro
+                    case "blocoG" : {}
                     case "br": {
                         _fragment.appendChild(document.createElement("br"));
                         if (_tokens[_i+1]?.type === "closetag") ++_i;

@@ -1,5 +1,5 @@
 
-#main_paper, #main_paper_edit{
+#main_paper, #main_paper_edit, #historia_bloco_inicial{
   width: 77%;
   min-height: 00px;
   padding: 50px 50px;
@@ -11,7 +11,7 @@
   /*z-index: 0;*/
 }
 
-#main_paper{
+#main_paper, #historia_bloco_inicial{
   margin-bottom: 100px;
   padding-bottom: 50px;
 }
@@ -202,6 +202,10 @@ textarea{
   display: none; 
   min-width: 500px; 
   margin-top: -0px;
+}
+
+#historia_bloco_inicial{
+  width: 100%;
 }
 
 footer{

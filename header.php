@@ -6,7 +6,7 @@ $stmt_imagem = $pdo->prepare(
     WHERE id = ?'
 );
 
-if (!isset($conta) || $conta){
+if ((!isset($conta) || $conta) && isset($href)){
     $stmt_imagem->execute([$_SESSION['usuario_id']]);
     $imagem = $stmt_imagem->fetch();
 }

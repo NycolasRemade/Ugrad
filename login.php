@@ -44,15 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 //
-?>
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+
+include 'header.php';
+?>
 
 <body onLoad="window.scroll(0, 0)" style="overflow-y: hidden;">
 

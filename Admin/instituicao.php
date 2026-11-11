@@ -1,68 +1,100 @@
 <?php
-/**
- * includes/turma_detail.php
- * Espera: $turma, $membros, $codigos
- */
-?>
-<div class="detail-grid">
-  <div class="detail-avatar"></div>
-  <div class="detail-fields">
-    <div>
-      <div class="field-label">ID da turma</div>
-      <div class="field-value">#<?= $turma['id'] ?></div>
-    </div>
-    <div>
-      <div class="field-label">Contas na turma</div>
-      <div class="field-value"><?= count($membros) ?></div>
-    </div>
-    <div>
-      <div class="field-label">Nome</div>
-      <div class="field-value"><?= htmlspecialchars($turma['nome']) ?></div>
-    </div>
-    <div>
-      <div class="field-label">Instituição</div>
-      <div class="field-value">
-        <a class="detail-trigger" href="instituicao.php?id=<?= $turma['id_instituicao'] ?>" data-type="instituicao" data-id="<?= $turma['id_instituicao'] ?>"><?= htmlspecialchars($turma['instituicao_nome']) ?></a>
-      </div>
-    </div>
-  </div>
-</div>
+require __DIR__ . '/includes/auth_admin.php';
+require __DIR__ . '/includes/data.php';
 
-<div class="block">
-  <h2>Alunos e membros</h2>
-  <?php if (empty($membros)): ?>
-    <p class="dim" style="font-size:var(--fs-sm);">Nenhuma conta vinculada a esta turma.</p>
-  <?php endif; ?>
-  <?php foreach ($membros as $m): ?>
-    <div class="user-row">
-      <span class="radio"></span>
-      <a class="user-name detail-trigger" href="usuario.php?id=<?= $m['id'] ?>" data-id="<?= $m['id'] ?>" data-type="usuario"><?= htmlspecialchars($m['nome']) ?><?php if (!$m['ativada']): ?> <span class="dim">(desativada)</span><?php endif; ?></a>
-      <span class="dim"><?= htmlspecialchars($m['email']) ?></span>
-      <span class="dim"><?= htmlspecialchars(tipo_label($m['tipo_nome'])) ?></span>
-    </div>
-  <?php endforeach; ?>
-</div>
+$id = (int)($_GET['id'] ?? 0);
+$instituicao = find_instituicao($id);
+$isPartial = ($_GET['partial'] ?? '') === '1';
+$isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
 
-<div class="block">
-  <h2>Códigos de acesso</h2>
-  <div class="chip-row">
-    <?php if (empty($codigos)): ?>
-      <p class="dim" style="font-size:var(--fs-sm);">Nenhum código gerado para esta turma.</p>
-    <?php endif; ?>
-    <?php foreach ($codigos as $c): ?>
-      <span class="chip"><?= htmlspecialchars($c['codigo']) ?> <span class="dim">· <?= htmlspecialchars(tipo_label($c['tipo_nome'])) ?> · <?= htmlspecialchars(formatar_data($c['data_criacao'])) ?></span></span>
-    <?php endforeach; ?>
-  </div>
-</div>
+if (!$instituicao) {
+    http_response_code(404);
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Instituição não encontrada.']);
+        exit;
+    }
+    if ($isPartial) {
+        echo '<p class="detail-placeholder">Instituição não encontrada.</p>';
+        exit;
+    }
+    $pageTitle = 'Instituição não encontrada';
+    require __DIR__ . '/includes/header.php';
+    echo '<p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/footer.php';
+    exit;
+}
 
-<div class="actions-row">
-  <form method="post" action="turma.php?id=<?= $turma['id'] ?>" class="ajax-action-form">
-    <input type="hidden" name="acao" value="gerar_codigo">
-    <button type="submit" class="btn btn-dark">Gerar código de aluno</button>
-  </form>
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
+    $result = ['success' => true, 'acao' => $_POST['acao'], 'id' => $id, 'message' => '', 'removed' => false];
 
-  <form method="post" action="turma.php?id=<?= $turma['id'] ?>" class="ajax-action-form" data-confirm="Excluir esta turma? Os alunos ficam sem turma e os códigos dela são apagados.">
-    <input type="hidden" name="acao" value="excluir">
-    <button type="submit" class="btn btn-danger">Excluir turma</button>
-  </form>
-</div>
+    switch ($_POST['acao']) {
+        case 'gerar_codigo':
+            $gerado = instituicao_gerar_codigo($id, 'ALUNO');
+            $result['success'] = (bool)$gerado;
+            if (!$gerado) {
+                $result['message'] = 'Não foi possível gerar o código.';
+            } elseif ($gerado['novo']) {
+                $result['message'] = 'Código de acesso gerado: ' . $gerado['codigo'];
+            } else {
+                $result['message'] = 'Código de acesso da instituição atualizado: ' . $gerado['codigo'];
+            }
+            break;
+        case 'senha':
+            $reset = usuario_resetar_senha($id, $instituicao['email'], $instituicao['nome']);
+            $result['success'] = $reset['ok'];
+            if (!$reset['ok']) {
+                $result['message'] = 'Não foi possível redefinir a senha de ' . $instituicao['nome'] . '.';
+            } elseif ($reset['enviado']) {
+                $result['message'] = 'Nova senha temporária enviada para ' . $instituicao['email'] . '.';
+            } else {
+                $result['message'] = 'Senha de ' . $instituicao['nome'] . ' redefinida, mas o e-mail não pôde ser enviado (servidor de e-mail não configurado). '
+                                   . 'Senha temporária para repassar: ' . $reset['senha'];
+            }
+            break;
+        case 'desativar':
+            usuario_toggle_ativacao($id, false);
+            $result['message'] = 'Instituição ' . $instituicao['nome'] . ' desativada.';
+            break;
+        case 'reativar':
+            usuario_toggle_ativacao($id, true);
+            $result['message'] = 'Instituição ' . $instituicao['nome'] . ' reativada.';
+            break;
+        case 'excluir':
+            if (usuario_excluir($id)) {
+                $result['message'] = 'Instituição ' . $instituicao['nome'] . ' excluída.';
+                $result['removed'] = true;
+            } else {
+                $result['success'] = false;
+                $result['message'] = 'Não foi possível excluir "' . $instituicao['nome'] . '": existem registros vinculados que não puderam ser removidos automaticamente.';
+            }
+            break;
+        default:
+            $result['success'] = false;
+            $result['message'] = 'Ação desconhecida.';
+    }
+
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+
+    flash_set($result['message']);
+    header('Location: ' . ($result['removed'] ? 'pesquisa.php' : ('instituicao.php?id=' . $id)));
+    exit;
+}
+
+$professores = professores_da_instituicao($id);
+$turmas = turmas_da_instituicao($id);
+$codigos = codigos_da_instituicao($id);
+
+if ($isPartial) {
+    require __DIR__ . '/includes/instituicao_detail.php';
+    exit;
+}
+
+$pageTitle = 'Painel de controle - Detalhes da instituição';
+require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/instituicao_detail.php';
+require __DIR__ . '/includes/footer.php';

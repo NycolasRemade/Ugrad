@@ -127,14 +127,12 @@ include 'header.php'
         .then((data) => {
             const divProjeto = document.getElementById("info-projeto-" + id);
             divProjeto.innerHTML = 
-                '<a class="projeto-card box" href="projeto.php?id=' + id +'" style="background-position: center; background-size: cover; background-image: url(\'data:image/webp;base64,' + data.img + '\');">' +
-                '<p class="projeto-titulo">'+ data.nome + '</p>' +
-                '' +
-                '<p class="projeto-data-criacao">Criado em: ' + data.data_criacao + '</p>' +
-                '<p class="projeto-desc">' + (data.descricao ? data.descricao : '') + '</p>' + 
-                //'<br><div style="width: 600px; height: 200px; background-position: center; background-size: cover; background-image: url(\'data:image/webp;base64,' + data.img + '\');"></div>' +
-                
-                '</a>';
+                `<a class="projeto-card box" href="projeto.php?id=${ id }">
+                    <div class="projeto-imagem" style="background-position: center; background-size: cover; background-image: url(\'data:image/webp;base64,${ data.img }\');"></div>
+                    <p class="projeto-titulo">${ data.nome }</p>
+                    <p class="projeto-data-criacao">Criado em: ${ data.data_criacao }</p>
+                    <p class="projeto-desc">${ (data.descricao) ? data.descricao : '' }</p>
+                </a>`;
         })
         .catch((error) => console.error(error));
     }

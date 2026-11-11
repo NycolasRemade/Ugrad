@@ -197,3 +197,24 @@ INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, id_turma) 
 INSERT INTO categorias (nome) VALUES
   ('categoria1'),
   ('categoria2');
+
+INSERT INTO projetos (nome, estado) VALUES
+  ('Projeto 1', 3);
+INSERT INTO proj_dados (id_projeto, descricao, historia) VALUES
+(
+1,
+'Descrição do projeto',
+'<#t Título - história do projeto #>
+<#sub Subtítulo #>
+
+<#bloco
+Bloco de texto com imagem
+<#img "Fotos/Ugrad logo cinza.png"#>
+Mais texto
+aqui em baixo
+#>'
+);
+INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES
+  (1, 1, 1, 1);
+INSERT INTO proj_categorias (id_projeto, id_categoria) VALUES
+  (1, 1);

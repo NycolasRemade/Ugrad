@@ -196,6 +196,14 @@ textarea{
   width: 100%;
 }
 
+.medio{
+  background-image: url("Fotos/Polygon 4.png");
+}
+
+.rebarba{
+  background-image: url("Fotos/Polygon 5.png");
+}
+
 /*Elementos de edição*/
 
 #aba-historia{

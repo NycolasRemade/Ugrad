@@ -11,7 +11,7 @@ function lexer(str) {
 
         if (str[i] === '<' && str[i+1] === '#') {
             ++i;
-            const tagTk = { type: 'tag', value: 'bloco' }; //quebrei, mas você entende o que quero fazer
+            const tagTk = { type: 'tag', value: 'bloco' };
             while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
             while (str[++i] && str[i] !== ' ' && str[i] !== '\n' && !(str[i] === '#' && str[i+1] === '>')) {
                 tagTk.value += str[i];
@@ -20,6 +20,45 @@ function lexer(str) {
             tokens.push(tagTk);
             continue;
         }
+
+        if (str[i] === '<' && str[i+1] === '¨') {
+            ++i;
+            const tagTk = { type: 'tag', value: 'blocoP' };
+            while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
+            while (str[++i] && str[i] !== ' ' && str[i] !== '\n' && !(str[i] === '#' && str[i+1] === '>')) {
+                tagTk.value += str[i];
+            }
+            if (str[i] !== ' ') --i;
+            tokens.push(tagTk);
+            continue;
+        }
+
+        if (str[i] === '<' && str[i+1] === ';') {
+            ++i;
+            const tagTk = { type: 'tag', value: 'blocoM' };
+            while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
+            while (str[++i] && str[i] !== ' ' && str[i] !== '\n' && !(str[i] === '#' && str[i+1] === '>')) {
+                tagTk.value += str[i];
+            }
+            if (str[i] !== ' ') --i;
+            tokens.push(tagTk);
+            continue;
+        }
+
+        if (str[i] === '<' && str[i+1] === '/') {
+            ++i;
+            const tagTk = { type: 'tag', value: 'blocoG' };
+            while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
+            while (str[++i] && str[i] !== ' ' && str[i] !== '\n' && !(str[i] === '#' && str[i+1] === '>')) {
+                tagTk.value += str[i];
+            }
+            if (str[i] !== ' ') --i;
+            tokens.push(tagTk);
+            continue;
+        }
+
+
+
 
         if (str[i] === '#' && str[i+1] === '>') {
             ++i;
@@ -113,9 +152,12 @@ const parser = (function(){
                         if (_tokens[_i+1].type === "closetag") ++_i;
                         break;
                     }
-                    case "bloco": {
+                    case "bloco":
+                    case "blocoP" : 
+                    case "blocoM" : 
+                    case "blocoG" : {
                         const bloco = document.createElement("div");
-                        bloco.className = "historia-bloco";
+                        bloco.className = (_tokens[_i].value === "bloco") ? "box long" : ((_tokens[_i].value === "blocoP") ? "box short" : ((_tokens[_i].value === "blocoM") ? "poly medio" : "poly rebarba"));
                         const previousFragment = _fragment;
                         _fragment = bloco;
                         while (_tokens[++_i] && _tokens[_i].type !== "closetag") {
@@ -125,9 +167,6 @@ const parser = (function(){
                         _fragment = previousFragment;
                         _fragment.appendChild(bloco);
                     }
-                    case "blocoP" : {}
-                    case "blocoM" : {} // Vamos descobrir como fazer o bloco normal funcionar bem primeiro
-                    case "blocoG" : {}
                     case "br": {
                         _fragment.appendChild(document.createElement("br"));
                         if (_tokens[_i+1]?.type === "closetag") ++_i;

@@ -8,8 +8,8 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario_id = $_SESSION['usuario_id'];
 
-$mensagem_sucesso = '';
-$mensagem_erro = '';
+static $sucesso = '';
+static $erro = '';
 
 $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
@@ -55,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                     $stmt->bindParam(2, $usuario_id);
                     $stmt->execute();
 
-                    $mensagem_sucesso = 'Imagem de perfil atualizada!';
+                    $sucesso = 'Imagem de perfil atualizada!';
                     header('Location: config_conta.php');
                     exit;
                 } catch (PDOException $e) {
-                    $mensagem_erro = 'Erro ao atualizar imagem de perfil';
+                    $erro = 'Erro ao atualizar imagem de perfil';
                 }
             }
         }
@@ -71,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = NULL WHERE id = ?');
             $stmt->execute([$usuario_id]);
 
-            $mensagem_sucesso = 'Imagem de perfil removida com sucesso!';
+            $sucesso = 'Imagem de perfil removida com sucesso!';
             header('Location: config_conta.php');
             exit;
         } catch (PDOException $e) {
-            $mensagem_erro = 'Erro ao remover imagem de perfil.';
+            $erro = 'Erro ao remover imagem de perfil.';
         }
     }
 
@@ -85,11 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         if (!empty($nome)) {
             $stmt = $pdo->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
             $stmt->execute([$nome, $usuario_id]);
-            $mensagem_sucesso = 'Nome alterado com sucesso!';
+            $sucesso = 'Nome alterado com sucesso!';
             header('Location: config_conta.php');
             exit;
         } else {
-            $mensagem_erro = 'Preencha o nome corretamente';
+            $erro = 'Preencha o nome corretamente';
         }
     }
 
@@ -100,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             try {
                 $stmt = $pdo->prepare('UPDATE usuarios SET email = ? WHERE id = ?');
                 $stmt->execute([$email, $usuario_id]);
-                $mensagem_sucesso = 'E-mail alterado com sucesso!';
+                $sucesso = 'E-mail alterado com sucesso!';
                 header('Location: config_conta.php');
                 exit;
             } catch (PDOException $e) {
                 $erro = 'E-mail já está em uso ou é inválido';
             }
         } else {
-            $mensagem_Erro = 'Preencha o e-mail corretamente';
+            $erro = 'Preencha o e-mail corretamente';
         }
     }
 
@@ -124,14 +124,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             if (!empty($nova_senha)) {
                 $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
                 $stmt->execute([password_hash($nova_senha, PASSWORD_DEFAULT), $usuario_id]);
-                $mensagem_sucesso = 'Senha alterada com sucesso!';
+                $sucesso = 'Senha alterada com sucesso!';
                 header('Location: config_conta.php');
                 exit;
             } else {
-                $mensagem_erro = 'A nova senha não pode estar vazia.';
+                $erro = 'A nova senha não pode estar vazia.';
             }
         } else {
-            $mensagem_erro = 'Senha atual incorreta.';
+            $erro = 'Senha atual incorreta.';
         }
     }
 
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $descricao = trim($_POST['descricao']);
         $stmt = $pdo->prepare('UPDATE usuarios SET descricao = ? WHERE id = ?');
         $stmt->execute([$descricao, $usuario_id]);
-        $mensagem_sucesso = 'Descrição alterada com sucesso!';
+        $sucesso = 'Descrição alterada com sucesso!';
         header('Location: config_conta.php');
         exit;
     }
@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         // Status 2 corresponde a MEMBRO
         $stmt = $pdo->prepare('UPDATE proj_membros SET status_membro = 2 WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
-        $mensagem_sucesso = 'Convite aceito!';
+        $sucesso = 'Convite aceito!';
         header('Location: config_conta.php');
         exit;
     }
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $id_convite = intval($_POST['id_convite']);
         $stmt = $pdo->prepare('DELETE FROM proj_membros WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
-        $mensagem_sucesso = 'Convite recusado';
+        $sucesso = 'Convite recusado';
         header('Location: config_conta.php');
         exit;
     }
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $stmt = $pdo->prepare('UPDATE usuarios SET ativada = FALSE WHERE id = ?');
         $stmt->execute([$usuario_id]);
         session_destroy();
-        $mensagem_erro = 'Sua conta foi desativada.';
+        $erro = 'Sua conta foi desativada.';
         header('Location: login.php');
         exit;
     }
@@ -215,14 +215,15 @@ $href = 'dashboard.php';
 $conta = true;
 include 'header.php';
 ?>
-    <div class='config_container'>
 
-    <?php if ($mensagem_sucesso): ?>
-        <p id='message'><strong><?= htmlspecialchars($mensagem_sucesso) ?></strong></p>
+<div class='config_container'>
+
+    <?php if ($sucesso): ?>
+        <p id='message'><strong><?= htmlspecialchars($sucesso) ?></strong></p>
     <?php endif; ?>
 
-    <?php if ($mensagem_erro): ?>
-        <p id='erro'><strong><?= htmlspecialchars($mensagem_erro) ?></strong></p>
+    <?php if ($erro): ?>
+        <p id='erro'><strong><?= htmlspecialchars($erro) ?></strong></p>
     <?php endif; ?>
 
     <div id='config_container'>

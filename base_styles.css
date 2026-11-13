@@ -173,3 +173,11 @@ img{
   flex-direction: column;
   align-items: center;
 }
+
+#message{
+  position: absolute;
+  animation: 'fadeaway' .4s;
+  animation-delay: 1s;
+  margin-top: -50px;
+  animation-fill-mode: forwards;
+}

@@ -688,14 +688,6 @@ details{
   background-color: #C50000;
 }
 
-#message{
-  position: absolute;
-  animation: 'fadeaway' .4s;
-  animation-delay: 1s;
-  margin-top: -50px;
-  animation-fill-mode: forwards;
-}
-
 #descr_container{
   display: flex;
   flex-direction: column;

@@ -452,19 +452,28 @@ hr{
 /* seção da história do projeto */
 .historia-titulo {
   color: black;
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 800;
 }
 
 .historia-subtitulo {
   color: black;
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 600;
 }
 
+.historia-textogrande {
+  color: black;
+  font-size: 26px;
+}
+
+#saida-historia-projeto img{
+  position: relative;
+}
+
 .historia-imagem {
-  width: 640px;
-  height: 360px;
+  width: 800px;
+  min-height: 360px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

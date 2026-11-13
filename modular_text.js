@@ -122,7 +122,7 @@ const parser = (function(){
                     case "img": {
                         ++_i;
                         if (_tokens[_i].type === "string") {
-                            const img = document.createElement("div");
+                            const img = document.createElement("img");
                             img.className = "historia-imagem";
                             img.style.backgroundImage = "url(" + _tokens[_i].value + ")";
                             _fragment.appendChild(img);

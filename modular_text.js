@@ -9,6 +9,18 @@ function lexer(str) {
 
     for (let i = 0, len = str.length; i < len; ++i) {
 
+        if (str[i] === '<' && str[i+1] === '|') {
+            ++i;
+            const tagTk = { type: 'tag', value: '' };
+            while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
+            while (str[++i] && str[i] !== ' ' && str[i] !== '\n' && !(str[i] === '#' && str[i+1] === '>')) {
+                tagTk.value += str[i];
+            }
+            if (str[i] !== ' ') --i;
+            tokens.push(tagTk);
+            continue;
+        }
+
         if (str[i] === '<' && str[i+1] === '#') {
             ++i;
             const tagTk = { type: 'tag', value: 'bloco' };

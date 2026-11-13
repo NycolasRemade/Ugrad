@@ -75,7 +75,7 @@ function parser(tokens) {
                         if (tokens[i].type === "string") {
                             const img = document.createElement("div");
                             img.className = "historia-imagem";
-                            img.style.backgroundImage = "url('" + tokens[i].value + "')";
+                            img.style.backgroundImage = "url(" + tokens[i].value + ")";
                             fragment.appendChild(img);
                         }
                         if (tokens[i+1].type === "closetag") ++i;

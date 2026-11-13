@@ -124,7 +124,7 @@ const parser = (function(){
                         if (_tokens[_i].type === "string") {
                             const img = document.createElement("div");
                             img.className = "historia-imagem";
-                            img.style.backgroundImage = "url('" + _tokens[_i].value + "')";
+                            img.style.backgroundImage = "url(" + _tokens[_i].value + ")";
                             _fragment.appendChild(img);
                         }
                         if (_tokens[_i+1].type === "closetag") ++_i;

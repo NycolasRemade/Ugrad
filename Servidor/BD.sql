@@ -204,12 +204,12 @@ INSERT INTO proj_dados (id_projeto, descricao, historia) VALUES
 (
 1,
 'Descrição do projeto',
-'### Título - história do projeto
-## Subtítulo
+'<#h1 Título - história do projeto#>
+<#h2 Subtítulo#>
 
-<;
+<|
 Bloco de texto com imagem
-<|img "Fotos/Ugrad logo cinza.png"#>
+<#img "Fotos/Ugrad logo cinza.png"#>
 Mais texto
 aqui em baixo
 #>'

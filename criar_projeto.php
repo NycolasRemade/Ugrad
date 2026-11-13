@@ -72,7 +72,7 @@ $lista_categorias = $categorias_query->fetchAll();
 
 //
 //////////////////////////////////
-$title = 'Novo Projeto';
+$title = 'Novo Projeto - Ugrad';
 $href = 'dashboard.php';
 include 'header.php'
 ?>

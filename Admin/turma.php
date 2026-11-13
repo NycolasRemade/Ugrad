@@ -1,16 +1,81 @@
--- OPCIONAL — rode uma vez no banco "ugrad" se quiser as estatísticas
--- "Logaram na última hora" e "Logaram nas últimas 24h" no dashboard.
---
--- O que faz: cria uma coluna nova que guarda quando a conta logou pela
--- última vez. Não mexe em nenhuma coluna ou dado existente.
---
--- Depois de rodar, o login do site principal precisa chamar uma linha logo
--- após autenticar o usuário pra o horário ser gravado:
---
---     require_once 'admin-panel/includes/data.php';  // ajuste o caminho
---     registrar_acesso($idDoUsuarioLogado);
---
--- Sem rodar este arquivo, os dois cards simplesmente não aparecem.
+<?php
+require __DIR__ . '/includes/auth_admin.php';
+require __DIR__ . '/includes/data.php';
 
-ALTER TABLE usuarios
-  ADD COLUMN ultimo_acesso timestamp NULL DEFAULT NULL;
+$id = (int)($_GET['id'] ?? 0);
+$turma = find_turma($id);
+$isPartial = ($_GET['partial'] ?? '') === '1'; // pedido via AJAX pela tela de pesquisa
+$isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
+
+if (!$turma) {
+    http_response_code(404);
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Turma não encontrada.']);
+        exit;
+    }
+    if ($isPartial) {
+        echo '<p class="detail-placeholder">Turma não encontrada.</p>';
+        exit;
+    }
+    $pageTitle = 'Turma não encontrada';
+    require __DIR__ . '/includes/header.php';
+    echo '<p>Turma não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/footer.php';
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
+    $result = ['success' => true, 'acao' => $_POST['acao'], 'id' => $id, 'message' => '', 'removed' => false];
+
+    switch ($_POST['acao']) {
+        case 'gerar_codigo':
+            $gerado = instituicao_gerar_codigo((int)$turma['id_instituicao'], 'ALUNO', $id);
+            $result['success'] = (bool)$gerado;
+            if (!$gerado) {
+                $result['message'] = 'Não foi possível gerar o código.';
+            } elseif ($gerado['novo']) {
+                $result['message'] = 'Código de acesso da turma ' . $turma['nome'] . ': ' . $gerado['codigo'];
+            } else {
+                $result['message'] = 'A turma ' . $turma['nome'] . ' teve o código de acesso atualizado: ' . $gerado['codigo'];
+            }
+            break;
+        case 'excluir':
+            if (turma_excluir($id)) {
+                $result['message'] = 'Turma ' . $turma['nome'] . ' excluída. Os alunos ficaram sem turma.';
+                $result['removed'] = true;
+            } else {
+                $result['success'] = false;
+                $result['message'] = 'Não foi possível excluir a turma "' . $turma['nome'] . '".';
+            }
+            break;
+        default:
+            $result['success'] = false;
+            $result['message'] = 'Ação desconhecida.';
+    }
+
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+
+    // Fallback sem JS: navegação normal com mensagem via sessão.
+    flash_set($result['message']);
+    header('Location: ' . ($result['removed'] ? 'pesquisa.php?tab=turmas' : ('turma.php?id=' . $id)));
+    exit;
+}
+
+$membros = membros_da_turma($id);
+$codigos = codigos_da_turma($id);
+
+if ($isPartial) {
+    // Fragmento puro (sem <html>/header/footer) para ser injetado via fetch()
+    require __DIR__ . '/includes/turma_detail.php';
+    exit;
+}
+
+$pageTitle = 'Painel de controle - Detalhes da turma';
+require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/turma_detail.php';
+require __DIR__ . '/includes/footer.php';

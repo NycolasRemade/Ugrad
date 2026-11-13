@@ -3,24 +3,24 @@ require __DIR__ . '/includes/auth_admin.php';
 require __DIR__ . '/includes/data.php';
 
 $id = (int)($_GET['id'] ?? 0);
-$instituicao = find_instituicao($id);
-$isPartial = ($_GET['partial'] ?? '') === '1';
+$projeto = find_projeto($id);
+$isPartial = ($_GET['partial'] ?? '') === '1'; // pedido via AJAX pela tela de pesquisa
 $isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
 
-if (!$instituicao) {
+if (!$projeto) {
     http_response_code(404);
     if ($isAjax) {
         header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => 'Instituição não encontrada.']);
+        echo json_encode(['success' => false, 'message' => 'Projeto não encontrado.']);
         exit;
     }
     if ($isPartial) {
-        echo '<p class="detail-placeholder">Instituição não encontrada.</p>';
+        echo '<p class="detail-placeholder">Projeto não encontrado.</p>';
         exit;
     }
-    $pageTitle = 'Instituição não encontrada';
+    $pageTitle = 'Projeto não encontrado';
     require __DIR__ . '/includes/header.php';
-    echo '<p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    echo '<p>Projeto não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
     require __DIR__ . '/includes/footer.php';
     exit;
 }
@@ -29,44 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
     $result = ['success' => true, 'acao' => $_POST['acao'], 'id' => $id, 'message' => '', 'removed' => false];
 
     switch ($_POST['acao']) {
-        case 'gerar_codigo':
-            $gerado = instituicao_gerar_codigo($id, 'ALUNO');
-            $result['success'] = (bool)$gerado;
-            if (!$gerado) {
-                $result['message'] = 'Não foi possível gerar o código.';
-            } elseif ($gerado['novo']) {
-                $result['message'] = 'Código de acesso gerado: ' . $gerado['codigo'];
-            } else {
-                $result['message'] = 'Código de acesso da instituição atualizado: ' . $gerado['codigo'];
-            }
-            break;
-        case 'senha':
-            $reset = usuario_resetar_senha($id, $instituicao['email'], $instituicao['nome']);
-            $result['success'] = $reset['ok'];
-            if (!$reset['ok']) {
-                $result['message'] = 'Não foi possível redefinir a senha de ' . $instituicao['nome'] . '.';
-            } elseif ($reset['enviado']) {
-                $result['message'] = 'Nova senha temporária enviada para ' . $instituicao['email'] . '.';
-            } else {
-                $result['message'] = 'Senha de ' . $instituicao['nome'] . ' redefinida, mas o e-mail não pôde ser enviado (servidor de e-mail não configurado). '
-                                   . 'Senha temporária para repassar: ' . $reset['senha'];
-            }
-            break;
-        case 'desativar':
-            usuario_toggle_ativacao($id, false);
-            $result['message'] = 'Instituição ' . $instituicao['nome'] . ' desativada.';
-            break;
-        case 'reativar':
-            usuario_toggle_ativacao($id, true);
-            $result['message'] = 'Instituição ' . $instituicao['nome'] . ' reativada.';
-            break;
         case 'excluir':
-            if (usuario_excluir($id)) {
-                $result['message'] = 'Instituição ' . $instituicao['nome'] . ' excluída.';
+            if (projeto_excluir($id)) {
+                $result['message'] = 'Projeto ' . $projeto['nome'] . ' excluído.';
                 $result['removed'] = true;
             } else {
                 $result['success'] = false;
-                $result['message'] = 'Não foi possível excluir "' . $instituicao['nome'] . '": existem registros vinculados que não puderam ser removidos automaticamente.';
+                $result['message'] = 'Não foi possível excluir o projeto "' . $projeto['nome'] . '": há dados vinculados que não puderam ser removidos.';
             }
             break;
         default:
@@ -80,21 +49,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         exit;
     }
 
+    // Fallback sem JS: navegação normal com mensagem via sessão.
     flash_set($result['message']);
-    header('Location: ' . ($result['removed'] ? 'pesquisa.php' : ('instituicao.php?id=' . $id)));
+    header('Location: ' . ($result['removed'] ? 'pesquisa.php?tab=projetos' : ('projeto.php?id=' . $id)));
     exit;
 }
 
-$professores = professores_da_instituicao($id);
-$turmas = turmas_da_instituicao($id);
-$codigos = codigos_da_instituicao($id);
+$categorias = categorias_do_projeto($id);
+$membros = membros_do_projeto($id);
+$reportagens = reportagens_do_projeto($id);
 
 if ($isPartial) {
-    require __DIR__ . '/includes/instituicao_detail.php';
+    // Fragmento puro (sem <html>/header/footer) para ser injetado via fetch()
+    require __DIR__ . '/includes/projeto_detail.php';
     exit;
 }
 
-$pageTitle = 'Painel de controle - Detalhes da instituição';
+$pageTitle = 'Painel de controle - Detalhes do projeto';
 require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/instituicao_detail.php';
+require __DIR__ . '/includes/projeto_detail.php';
 require __DIR__ . '/includes/footer.php';

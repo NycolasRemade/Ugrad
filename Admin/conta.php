@@ -1,10 +1,24 @@
 <?php
-/**
- * includes/instituicao_detail.php
- * Espera: $instituicao, $professores, $turmas, $codigos
- */
-$foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
+require __DIR__ . '/includes/auth_admin.php';
+require __DIR__ . '/includes/data.php';
+
+$eu = find_usuario((int)$_SESSION['usuario_id']);
+if (!$eu) {
+    // a conta logada não existe mais: encerra a sessão
+    $_SESSION = [];
+    session_destroy();
+    header('Location: ' . $loginUrl);
+    exit;
+}
+
+$pageTitle = 'Minha conta';
+$foto = avatar_data_uri($eu['imagem_perfil'] ?? null);
+$pendentes = total_reportagens();
+require __DIR__ . '/includes/header.php';
 ?>
+
+<h1 class="page-title">Minha conta</h1>
+
 <div class="detail-grid">
   <?php if ($foto): ?>
     <div class="detail-avatar" style="background-image:url('<?= $foto ?>');background-size:cover;background-position:center;"></div>
@@ -13,97 +27,40 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
   <?php endif; ?>
   <div class="detail-fields">
     <div>
-      <div class="field-label">ID da instituição</div>
-      <div class="field-value">#<?= $instituicao['id'] ?></div>
-    </div>
-    <div>
-      <div class="field-label">Status</div>
-      <div class="field-value" style="color: <?= $instituicao['ativada'] ? 'var(--green)' : 'var(--red)' ?>;"><?= $instituicao['ativada'] ? 'Ativa' : 'Desativada' ?></div>
-    </div>
-    <div>
       <div class="field-label">Nome</div>
-      <div class="field-value"><?= htmlspecialchars($instituicao['nome']) ?></div>
+      <div class="field-value"><?= htmlspecialchars($eu['nome']) ?></div>
+    </div>
+    <div>
+      <div class="field-label">Tipo</div>
+      <div class="field-value"><?= htmlspecialchars(tipo_label($eu['tipo_nome'])) ?></div>
     </div>
     <div>
       <div class="field-label">E-mail</div>
-      <div class="field-value"><?= htmlspecialchars($instituicao['email']) ?></div>
+      <div class="field-value"><?= htmlspecialchars($eu['email']) ?></div>
     </div>
     <div>
-      <div class="field-label">Data de criação</div>
-      <div class="field-value"><?= htmlspecialchars(formatar_data($instituicao['data_criacao'])) ?></div>
+      <div class="field-label">Conta criada em</div>
+      <div class="field-value"><?= htmlspecialchars(formatar_data($eu['data_criacao'])) ?></div>
     </div>
   </div>
 </div>
 
 <div class="block">
-  <h2>Descrição</h2>
-  <div class="desc-box"><?= htmlspecialchars($instituicao['descricao'] ?: 'Sem descrição.') ?></div>
-</div>
-
-<div class="block">
-  <h2>Professores</h2>
-  <?php if (empty($professores)): ?>
-    <p class="dim" style="font-size:var(--fs-sm);">Nenhum professor vinculado.</p>
-  <?php endif; ?>
-  <?php foreach ($professores as $p): ?>
-    <div class="user-row">
-      <span class="radio"></span>
-      <a class="user-name detail-trigger" href="usuario.php?id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" data-type="usuario"><?= htmlspecialchars($p['nome']) ?></a>
-      <span class="dim"><?= htmlspecialchars($p['email']) ?></span>
-      <span class="dim"></span>
-    </div>
-  <?php endforeach; ?>
-</div>
-
-<div class="block">
-  <h2>Turmas</h2>
-  <div class="chip-row">
-    <?php if (empty($turmas)): ?>
-      <p class="dim" style="font-size:var(--fs-sm);">Nenhuma turma cadastrada.</p>
+  <h2>Pendências</h2>
+  <div class="desc-box">
+    <?php if ($pendentes > 0): ?>
+      Há <strong><?= $pendentes ?></strong> denúncia<?= $pendentes > 1 ? 's' : '' ?> aguardando análise nas telas de detalhe.
+    <?php else: ?>
+      Nenhuma denúncia pendente.
     <?php endif; ?>
-    <?php foreach ($turmas as $t): ?>
-      <a class="chip detail-trigger" href="turma.php?id=<?= $t['id'] ?>" data-type="turma" data-id="<?= $t['id'] ?>"><?= htmlspecialchars($t['nome']) ?></a>
-    <?php endforeach; ?>
-  </div>
-</div>
-
-<div class="block">
-  <h2>Códigos de acesso</h2>
-  <div class="chip-row">
-    <?php if (empty($codigos)): ?>
-      <p class="dim" style="font-size:var(--fs-sm);">Nenhum código gerado.</p>
-    <?php endif; ?>
-    <?php foreach ($codigos as $c): ?>
-      <span class="chip"><?= htmlspecialchars($c['codigo']) ?> <span class="dim">· <?= htmlspecialchars($c['turma_nome'] ?? 'Sem turma') ?> · <?= htmlspecialchars(formatar_data($c['data_criacao'])) ?></span></span>
-    <?php endforeach; ?>
   </div>
 </div>
 
 <div class="actions-row">
-  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form">
-    <input type="hidden" name="acao" value="gerar_codigo">
-    <button type="submit" class="btn btn-dark">Gerar código</button>
-  </form>
-
-  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Gerar uma nova senha temporária para esta instituição e enviar por e-mail? A senha atual deixa de funcionar.">
-    <input type="hidden" name="acao" value="senha">
-    <button type="submit" class="btn btn-outline">Solicitar alteração de senha</button>
-  </form>
-
-  <?php if ($instituicao['ativada']): ?>
-    <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Desativar esta instituição?">
-      <input type="hidden" name="acao" value="desativar">
-      <button type="submit" class="btn btn-danger">Desativar</button>
-    </form>
-  <?php else: ?>
-    <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Reativar esta instituição?">
-      <input type="hidden" name="acao" value="reativar">
-      <button type="submit" class="btn btn-dark">Reativar</button>
-    </form>
-  <?php endif; ?>
-
-  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Tem certeza que deseja excluir esta instituição?">
-    <input type="hidden" name="acao" value="excluir">
-    <button type="submit" class="btn btn-danger">Excluir</button>
+  <a class="btn btn-outline" href="index.php">Voltar ao painel</a>
+  <form method="post" action="logout.php">
+    <button type="submit" class="btn btn-danger">Sair</button>
   </form>
 </div>
+
+<?php require __DIR__ . '/includes/footer.php'; ?>

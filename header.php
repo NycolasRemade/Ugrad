@@ -6,7 +6,7 @@ $stmt_imagem = $pdo->prepare(
     WHERE id = ?'
 );
 
-if (!isset($conta) || $conta){
+if ((!isset($conta) || $conta) && isset($href)){
     $stmt_imagem->execute([$_SESSION['usuario_id']]);
     $imagem = $stmt_imagem->fetch();
 }
@@ -18,6 +18,7 @@ if (!isset($conta) || $conta){
 <head>
     <meta charset="UTF-8">
     <title><?=$title?></title>
+    <link rel="stylesheet" href="base_styles.css">
     <link rel="stylesheet" href="styles<?= $baseUrl ?? '' ?>.css">
 <!-- Códigos para o Favicon -->
     <link rel="icon" type="image/png" href="Fotos/favicon-96x96.png" sizes="96x96" />

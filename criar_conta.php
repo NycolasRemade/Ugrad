@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 //
 //////////////////////////////////
-$title = 'Cadastro';
+$title = 'Cadastro - Ugrad';
 $conta = false;
 include 'header.php'
 

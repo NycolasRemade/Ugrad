@@ -144,7 +144,7 @@ $codigo_prof = $stmt_codigos->fetch();
 
 //
 //////////////////////////////////
-$title = 'Gerenciamento de Professores';
+$title = 'Painel de Professores - Ugrad';
 $href = 'dashboard.php';
 include 'header.php';
 ?>
@@ -152,7 +152,7 @@ include 'header.php';
     <div style="height: 200px"></div>
 
 <div id="main_paper">
-    <h1>Gerenciamento de professores</h1>
+    <h1>Painel de professores</h1>
     <p>Instituição: <strong><?= htmlspecialchars($_SESSION['usuario_nome'] ?? '') ?></strong></p>
     <br>
     <p><a href="dashboard.php" class="btn-novo">Voltar ao Painel</a></p>

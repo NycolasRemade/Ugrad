@@ -31,13 +31,12 @@ if (!isset($_SESSION['usuario_id'])) {
 } else {
     $stmt = $pdo->prepare(
        'SELECT pm.id 
-        FROM proj_membros pm JOIN projetos p 
-        ON pm.id_projeto = p.id
-        WHERE p.id = ? AND pm.id_convidado = ?'
+        FROM proj_membros pm
+        WHERE pm.id_projeto = ? AND pm.id_convidado = ?'
     );
     $stmt->execute([$registro['id'], $_SESSION['usuario_id']]);
 
-    if (!$stmt->fetch() || (int)$registro['estado'] !== 3) {
+    if (!$stmt->fetch() && (int)$registro['estado'] !== 3) {
         http_response_code(403);
         exit;
     }

@@ -194,6 +194,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+
+        // excluir imagem da história
+        if (isset($_POST['excluir_imagem_historia_id'])) {
+            $id_img_excluir = (int)$_POST['excluir_imagem_historia_id'];
+
+            if ($id_img_excluir > 0) {
+                try {
+                    $stmt_del_img = $pdo->prepare('DELETE FROM proj_imagens WHERE id = ? AND id_projeto = ?');
+                    $stmt_del_img->execute([$id_img_excluir, $id_projeto]);
+
+                    echo json_encode([
+                        'success' => true,
+                        'id' => $id_img_excluir
+                    ]);
+                    exit;
+                } catch (PDOException $e) {
+                    echo json_encode(['success' => false, 'message' => 'Erro ao excluir imagem do banco de dados.']);
+                    exit;
+                }
+            }
+
+            echo json_encode(['success' => false, 'message' => 'ID de imagem inválido.']);
+            exit;
+        }
     }
 
     // salvar imagem do projeto

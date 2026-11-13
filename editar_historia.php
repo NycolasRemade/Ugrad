@@ -14,26 +14,32 @@
                 </div>
                 <textarea name="historia_projeto" id="historia_projeto" 
                 style="max-width: 100%; border: 1px solid black;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
-            </div>
-            <br>
-            <br>
 
-            <div class='buttons_criar'>
-                <button type="submit" class="btn-novo">Salvar</button>
+                <div class='buttons_criar'>
+                    <button type="submit" class="btn-novo">Salvar</button>
+                </div>
             </div>
+            <br>
+            <br>
         </form>
 
         <!-- GALERIA DE IMAGENS DA HISTÓRIA -->
         <div id="secao-imagens-historia" style="margin-top: 20px;">
             <h4>Imagens enviadas para a história</h4>
-            <div id="galeria-imagens-historia" style="display: flex; flex-wrap: wrap;">
+            <div id="galeria-imagens-historia" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px;">
                 <?php if (!empty($imagens_historia)): ?>
                     <?php foreach ($imagens_historia as $img_item): ?>
-                        <?php $url_img = 'projeto_img.php?id=' . (int)$img_item['id']; ?>
-                        <div class="card-imagem-historia" style="padding: 8px; width: 160px; height: 100px; background: #fafafa;">
-                            <div class="historia-imagem" style="background-image: url(<?= htmlspecialchars($url_img) ?>); width: 100%; height: 100%; background-fit: contain;"></div>
-                            <button type="button" class="btn-novo" onclick="inserirImagemNoTexto('<?= htmlspecialchars($url_img) ?>')">
+                        <?php 
+                            $id_img = (int)$img_item['id'];
+                            $url_img = 'projeto_img.php?id=' . $id_img; 
+                        ?>
+                        <div class="card-imagem-historia" data-id="<?= $id_img ?>" style="padding: 8px; width: 160px; background: #fafafa; border: 1px solid #ccc; border-radius: 6px; display: flex; flex-direction: column; gap: 6px;">
+                            <div class="historia-imagem" style="background-image: url(<?= htmlspecialchars($url_img) ?>); width: 100%; height: 100px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+                            <button type="button" class="btn-novo" style="width: 100%;" onclick="inserirImagemNoTexto('<?= htmlspecialchars($url_img) ?>')">
                                 Adicionar ao texto
+                            </button>
+                            <button type="button" class="btn-novo" style="width: 100%; background-color: #C50000; color: white;" onclick="excluirImagemHistoria(<?= $id_img ?>, this)">
+                                Excluir
                             </button>
                         </div>
                     <?php endforeach; ?>
@@ -55,6 +61,14 @@
         </div>
 
         <script>
+            function atualizarPreviewHistoria() {
+                const textarea = document.getElementById('historia_projeto');
+                const divSaida = document.getElementById('saida-historia-projeto');
+                if (divSaida && typeof parser === 'function' && typeof lexer === 'function') {
+                    divSaida.replaceChildren(parser(lexer(textarea.value.replace(/\r/g, ""))));
+                }
+            }
+
             function inserirImagemNoTexto(url) {
                 const textarea = document.getElementById('historia_projeto');
                 const tag = `<#img "${url}"#>`;
@@ -73,37 +87,93 @@
                 textarea.focus();
                 textarea.setSelectionRange(novaPosicao, novaPosicao);
 
-                // Atualiza a pré-visualização imediatamente
-                const divSaida = document.getElementById('saida-historia-projeto');
-                if (divSaida && typeof parser === 'function' && typeof lexer === 'function') {
-                    divSaida.replaceChildren(parser(lexer(textarea.value.replace(/\r/g, ""))));
-                }
+                atualizarPreviewHistoria();
             }
 
-            function adicionarCardImagemGaleria(url) {
+            function adicionarCardImagemGaleria(id, url) {
                 const msgVazia = document.getElementById('msg-sem-imagens-historia');
                 if (msgVazia) msgVazia.remove();
 
                 const galeria = document.getElementById('galeria-imagens-historia');
                 const card = document.createElement('div');
                 card.className = 'card-imagem-historia';
-                card.style.cssText = 'border: 1px solid #ccc; border-radius: 6px; padding: 8px; width: 150px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: #fafafa;';
+                card.dataset.id = id;
+                card.style.cssText = 'padding: 8px; width: 160px; background: #fafafa; border: 1px solid #ccc; border-radius: 6px; display: flex; flex-direction: column; gap: 6px;';
 
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = 'Imagem da história';
-                img.style.cssText = 'width: 100%; height: 100px; object-fit: cover; border-radius: 4px;';
+                const imgDiv = document.createElement('div');
+                imgDiv.className = 'historia-imagem';
+                imgDiv.style.cssText = `background-image: url(${url}); width: 100%; height: 100px; background-size: contain; background-repeat: no-repeat; background-position: center;`;
 
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'btn-novo';
-                btn.style.cssText = 'width: 100%; font-size: 0.85em;';
-                btn.textContent = 'Adicionar ao texto';
-                btn.onclick = () => inserirImagemNoTexto(url);
+                const btnAdicionar = document.createElement('button');
+                btnAdicionar.type = 'button';
+                btnAdicionar.className = 'btn-novo';
+                btnAdicionar.style.width = '100%';
+                btnAdicionar.textContent = 'Adicionar ao texto';
+                btnAdicionar.onclick = () => inserirImagemNoTexto(url);
 
-                card.appendChild(img);
-                card.appendChild(btn);
+                const btnExcluir = document.createElement('button');
+                btnExcluir.type = 'button';
+                btnExcluir.className = 'btn-novo';
+                btnExcluir.style.cssText = 'width: 100%; background-color: #C50000; color: white;';
+                btnExcluir.textContent = 'Excluir';
+                btnExcluir.onclick = () => excluirImagemHistoria(id, btnExcluir);
+
+                card.appendChild(imgDiv);
+                card.appendChild(btnAdicionar);
+                card.appendChild(btnExcluir);
                 galeria.appendChild(card);
+            }
+
+            async function excluirImagemHistoria(id, botao) {
+                if (!confirm('Deseja realmente excluir esta imagem?')) return;
+
+                const statusEl = document.getElementById('status-upload-historia');
+                botao.disabled = true;
+
+                const formData = new FormData();
+                formData.append('ajax', '1');
+                formData.append('excluir_imagem_historia_id', id);
+
+                try {
+                    const resposta = await fetch('editar_projeto.php?id=<?= (int)$id_projeto ?>', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const dados = await resposta.json();
+
+                    if (dados.success) {
+                        // Remove o card da galeria
+                        const card = botao.closest('.card-imagem-historia');
+                        if (card) card.remove();
+
+                        // Exibe mensagem caso a galeria fique vazia
+                        const galeria = document.getElementById('galeria-imagens-historia');
+                        if (galeria.querySelectorAll('.card-imagem-historia').length === 0) {
+                            const msg = document.createElement('p');
+                            msg.id = 'msg-sem-imagens-historia';
+                            msg.style.cssText = 'color: #666; font-size: 0.9em;';
+                            msg.textContent = 'Nenhuma imagem enviada ainda.';
+                            galeria.appendChild(msg);
+                        }
+
+                        // Remove referências a essa imagem no textarea e atualiza a pré-visualização
+                        const textarea = document.getElementById('historia_projeto');
+                        const regexTag = new RegExp(`\\n?<#img\\s+"projeto_img\\.php\\?id=${id}"#>\\n?`, 'g');
+                        textarea.value = textarea.value.replace(regexTag, '\n').trim();
+                        atualizarPreviewHistoria();
+
+                        statusEl.textContent = 'Imagem excluída!';
+                        statusEl.style.color = 'green';
+                    } else {
+                        botao.disabled = false;
+                        statusEl.textContent = dados.message || 'Erro ao excluir imagem.';
+                        statusEl.style.color = 'red';
+                    }
+                } catch (erro) {
+                    botao.disabled = false;
+                    statusEl.textContent = 'Falha na comunicação com o servidor.';
+                    statusEl.style.color = 'red';
+                }
             }
 
             document.getElementById('input_imagem_historia').addEventListener('change', async function () {
@@ -128,7 +198,7 @@
                     if (dados.success) {
                         statusEl.textContent = 'Imagem adicionada!';
                         statusEl.style.color = 'green';
-                        adicionarCardImagemGaleria(dados.url);
+                        adicionarCardImagemGaleria(dados.id, dados.url);
                         inserirImagemNoTexto(dados.url);
                     } else {
                         statusEl.textContent = dados.message || 'Erro ao enviar imagem.';

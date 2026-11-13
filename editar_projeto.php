@@ -129,6 +129,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
         }
+
+        // upload de imagens da história do projeto
+        if (isset($_FILES['imagem_historia'])) {
+            $imagem = $_FILES['imagem_historia'];
+
+            if (
+                $imagem['size'] > 5 * 1024 * 1024 ||
+                $imagem['error'] === UPLOAD_ERR_INI_SIZE ||
+                $imagem['error'] === UPLOAD_ERR_FORM_SIZE
+            ) {
+                echo json_encode(['success' => false, 'message' => 'A imagem excede o tamanho máximo permitido de 5MB.']);
+                exit;
+            }
+
+            if ($imagem['error'] !== UPLOAD_ERR_OK) {
+                echo json_encode(['success' => false, 'message' => 'Erro no upload da imagem.']);
+                exit;
+            }
+
+            $imgInfo = getimagesize($imagem['tmp_name']);
+            $imagem_original = null;
+
+            switch ($imgInfo['mime'] ?? '') {
+                case 'image/jpeg':
+                    $imagem_original = imagecreatefromjpeg($imagem['tmp_name']);
+                    break;
+                case 'image/png':
+                    $imagem_original = imagecreatefrompng($imagem['tmp_name']);
+                    imagepalettetotruecolor($imagem_original);
+                    imagealphablending($imagem_original, false);
+                    imagesavealpha($imagem_original, true);
+                    break;
+                case 'image/webp':
+                    $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
+                    break;
+                default:
+                    echo json_encode(['success' => false, 'message' => 'Apenas os formatos .jpeg, .png e .webp são permitidos.']);
+                    exit;
+            }
+
+            if ($imagem_original) {
+                ob_start();
+                imagewebp($imagem_original, null, 70);
+                imagedestroy($imagem_original);
+                $imagem_nova = ob_get_clean();
+
+                try {
+                    $stmt_img = $pdo->prepare('INSERT INTO proj_imagens (id_projeto, img) VALUES (?, ?)');
+                    $stmt_img->bindParam(1, $id_projeto, PDO::PARAM_INT);
+                    $stmt_img->bindParam(2, $imagem_nova, PDO::PARAM_LOB);
+                    $stmt_img->execute();
+
+                    $novo_id = $pdo->lastInsertId();
+                    echo json_encode([
+                        'success' => true,
+                        'id' => $novo_id,
+                        'url' => "projeto_img.php?id={$novo_id}"
+                    ]);
+                    exit;
+                } catch (PDOException $e) {
+                    echo json_encode(['success' => false, 'message' => 'Erro ao salvar imagem no banco de dados.']);
+                    exit;
+                }
+            }
+        }
     }
 
     // salvar imagem do projeto
@@ -295,6 +360,7 @@ $stmt_cat_proj = $pdo->prepare(
 $stmt_cat_proj->execute([$id_projeto]);
 $categorias_projeto = $stmt_cat_proj->fetchAll();
 
+// infos dos usuários para adicionar no projeto 
 $stmt = $pdo->prepare('SELECT id_turma FROM extra_usuarios WHERE id_usuario = ?');
 $stmt->execute([$usuario_id]);
 $usuario_turma = $stmt->fetchColumn();
@@ -326,7 +392,11 @@ try {
 } catch (PDOException $e) {
     $comentarios = [];
 }
-//
+
+// imagens da história do projeto
+$stmt_imgs_hist = $pdo->prepare('SELECT id FROM proj_imagens WHERE id_projeto = ? ORDER BY id ASC');
+$stmt_imgs_hist->execute([$id_projeto]);
+$imagens_historia = $stmt_imgs_hist->fetchAll();
 //////////////////////////////////
 
 $title = 'Editar ' . htmlspecialchars($projeto['nome']) . ' - Ugrad';

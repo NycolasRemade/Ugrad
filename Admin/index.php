@@ -46,7 +46,7 @@ require __DIR__ . '/includes/header.php';
 <div class="dash-wrap">
   <div class="dash-menu">
       <div class="dash-avatar"></div>
-      <a href="pesquisa.php"><button type="button" class="dash-search-btn">Painel de administrador</button></a>
+      <a href="pesquisa.php"><button type="button" class="dash-search-btn">Pesquisa geral</button></a>
   </div>
 </div>
 

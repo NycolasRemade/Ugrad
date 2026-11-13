@@ -188,7 +188,7 @@ foreach ($alunos as $a) {
 }
 //
 //////////////////////////////////
-$title = 'Gerenciamento de Turmas';
+$title = 'Painel de Turmas - Ugrad';
 $href = 'dashboard.php';
 include 'header.php';
 ?>
@@ -197,7 +197,7 @@ include 'header.php';
     <div style="height: 120px;"></div>
 
     <div id="main_paper">
-        <h1>Gerenciamento de turmas</h1>
+        <h1>Painel de turmas</h1>
         <p><strong><?= htmlspecialchars($_SESSION['usuario_nome']) ?></strong>  (<?= $_SESSION['usuario_tipo'] == 4 ? 'Instituição' : 'Professor' ?>)</p>
         <br><p><a href="dashboard.php" class="btn-novo">Voltar ao Painel</a></p><br>
         <hr>

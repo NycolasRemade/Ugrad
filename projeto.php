@@ -157,7 +157,7 @@ try {
 }
 //
 //////////////////////////////////
-$title = urldecode($projeto['nome'] ?? 'Projeto');
+$title = urldecode($projeto['nome'] ?? 'Projeto') . ' - Ugrad';
 $href = 'pesquisa_de_projetos.php';
 $baseUrl = '_projeto';
 include 'header.php'
@@ -177,6 +177,13 @@ include 'header.php'
     <!-- VISÃO GERAL -->
     <div id="aba-visao-geral">
         <h1><?= htmlspecialchars($projeto['nome'] ?? 'Nome do projeto') ?></h1>
+
+        <?php if ($pode_editar_projeto): ?>
+        <br>
+        <div class='buttons_criar' style="float: left;">
+            <a href="editar_projeto.php?id=<?= $id_projeto; ?>#visao-geral" class="btn-novo">Editar</a>
+        </div><br><br>
+        <?php endif; ?>
 
         <div>
             <?php if (!empty($projeto['img'])): ?>
@@ -210,11 +217,13 @@ include 'header.php'
 
     <div id="aba-historia" style="display: none;">
         <h2>História</h2><br>
+
         <?php if ($pode_editar_projeto): ?>
         <div class='buttons_criar' style="float: left;">
             <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
         </div><br><br>
         <?php endif; ?>
+
         <div id="saida-historia-projeto">
             <script>
                 const divSaida = document.getElementById('saida-historia-projeto');

@@ -329,7 +329,7 @@ try {
 //
 //////////////////////////////////
 
-$title = 'Editar ' . htmlspecialchars($projeto['nome']);
+$title = 'Editar ' . htmlspecialchars($projeto['nome']) . ' - Ugrad';
 $href = 'dashboard.php';
 $baseUrl = '_projeto';
 include 'header.php';

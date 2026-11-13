@@ -102,7 +102,7 @@ $usuario_id = $_SESSION['usuario_id'];
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? null;
 //
 //////////////////////////////////
-$title = 'Pesquisa de Projetos';
+$title = 'Pesquisa de Projetos - Ugrad';
 $href = 'dashboard.php';
 $baseUrl = '_projeto';
 $pdp = true;

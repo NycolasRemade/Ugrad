@@ -18,6 +18,9 @@ $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? 0;
 $stmt = null;
 $projeto = null;
 
+$sucesso = (isset($_SESSION['sucesso'])) ? $_SESSION['sucesso'] : '';
+$erro = (isset($_SESSION['erro'])) ? $_SESSION['erro'] : '';
+
 // Consulta dados do projeto incluindo o campo estado
 if ($_SESSION['usuario_tipo'] === 1) {
     // ALUNO
@@ -71,10 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $stmt_est = $pdo->prepare('UPDATE projetos SET estado = ? WHERE id = ?');
                 $stmt_est->execute([$novo_estado, $id_projeto]);
+                $_SESSION['sucesso'] = 'Estado atualizado.';
+                $_SESSION['erro'] = '';
                 header("Location: editar_projeto.php?id=$id_projeto");
                 exit;
             } catch (Exception $e) {
-                $erro = 'Erro ao alterar a visibilidade do projeto.';
+                $_SESSION['erro'] = 'Erro ao alterar a visibilidade do projeto.';
             }
         }
     }
@@ -104,6 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'id' => $usr['id'], 
                             'nome' => $usr['nome'] ?: $usr['email']
                         ]);
+                        $_SESSION['sucesso'] = 'Convite enviado!';
+                        $_SESSION['erro'] = '';
                         exit;
                     }
                 }
@@ -229,9 +236,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $imagem['error'] === UPLOAD_ERR_INI_SIZE || 
             $imagem['error'] === UPLOAD_ERR_FORM_SIZE
         ) {
-            $erro = 'A imagem excede o tamanho máximo permitido de 5MB.';
+            $_SESSION['erro'] = 'A imagem excede o tamanho máximo permitido de 5MB.';
         } elseif ($imagem['error'] !== UPLOAD_ERR_OK) {
-            $erro = 'Erro no upload.';
+            $_SESSION['erro'] = 'Erro no upload.';
         } else {
             $imgInfo = getimagesize($imagem['tmp_name']);
             switch ($imgInfo['mime']) {
@@ -248,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
                     break;
                 default:
-                    $erro = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
+                    $_SESSION['erro'] = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
             }
             if (isset($imagem_original) && $imagem_original) {
                 ob_start();
@@ -261,7 +268,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bindParam(2, $id_projeto);
                 $stmt->execute();
 
-                $mensagem_sucesso = 'Imagem de perfil atualizada!';
+                $_SESSION['sucesso'] = 'Imagem do projeto atualizada!';
+                $_SESSION['erro'] = '';
                 header("Location: editar_projeto.php?id=$id_projeto");
                 exit;
             }
@@ -295,11 +303,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
 
                 $pdo->commit();
+                
+                $_SESSION['sucesso'] = 'Alterações salvas.';
+                $_SESSION['erro'] = '';
                 header("Location: editar_projeto.php?id=$id_projeto");
                 exit;
             } catch (Exception $e) {
                 $pdo->rollBack();
-                $erro = 'Erro ao salvar projeto';
+                $_SESSION['erro'] = 'Erro ao salvar projeto';
             }
         }
 
@@ -312,11 +323,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare('UPDATE proj_dados SET historia = ? WHERE id_projeto = ?');
         $stmt->execute([$historia, $id_projeto]);
 
-        $mensagem_sucesso = 'História do projeto atualizada!';
+        $_SESSION['sucesso'] = 'História do projeto atualizada!';
+        $_SESSION['erro'] = '';
         if ($_POST['salvar_historia'] == 2) {
             header("Location: projeto.php?id=$id_projeto#historia");
             exit;
         }
+
+        $_SESSION['sucesso'] = 'Alterações salvas';
+        $_SESSION['erro'] = '';
         header("Location: editar_projeto.php?id=$id_projeto");
         exit;
     }
@@ -339,6 +354,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
                     VALUES (?, ?, 0, ?, ?)'
                 );
                 $stmt_ins->execute([$usuario_id, $id_projeto, $comentario_texto, $nota]);
+                
+                $_SESSION['sucesso'] = 'Nota atualizada!';
+                $_SESSION['erro'] = '';
             } else {
                 $stmt_upd = $pdo->prepare(
                    'UPDATE comentarios 
@@ -347,10 +365,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
                 );
                 $stmt_upd->execute([$comentario_texto, $nota, $usuario_id, $id_projeto]);
             }
+            
+            $_SESSION['sucesso'] = 'Comentário salvo';
+            $_SESSION['erro'] = '';
             header("Location: editar_projeto.php?id=$id_projeto#avaliacoes");
             exit;
         } catch (\PDOException $e) {
-            $erro = 'Erro ao salvar comentário';
+            $_SESSION['erro'] = 'Erro ao salvar comentário';
+            
         }
     }
 }
@@ -445,7 +467,11 @@ include 'header.php';
     <hr>
 
     <?php if (!empty($erro)): ?>
-        <p style="color: red; padding: 0 20px;"><strong><?= htmlspecialchars($erro) ?></strong></p>
+        <p id="message"><strong><?= htmlspecialchars($erro) ?></strong></p>
+
+    <?php elseif (!empty($sucesso)): ?>
+        <p id="message"><strong><?= htmlspecialchars($sucesso) ?></strong></p>
+
     <?php endif; ?>
 
     <!-- FORMULÁRIO OCULTO PARA UPLOAD DA IMAGEM -->

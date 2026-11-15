@@ -8,8 +8,8 @@ if (!isset($_SESSION['usuario_id'])) {
 
 $usuario_id = $_SESSION['usuario_id'];
 
-static $sucesso = '';
-static $erro = '';
+$sucesso = (isset($_SESSION['sucesso'])) ? $_SESSION['sucesso'] : '';
+$erro = (isset($_SESSION['erro'])) ? $_SESSION['erro'] : '';
 
 $max_allowed_packet = $pdo->query('SELECT @@global.max_allowed_packet')->fetch();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             $imagem['error'] === UPLOAD_ERR_INI_SIZE || 
             $imagem['error'] === UPLOAD_ERR_FORM_SIZE
         ) {
-            $erro = 'A imagem excede o tamanho máximo permitido de 5MB.';
+            $_SESSION['erro'] = 'A imagem excede o tamanho máximo permitido de 5MB.';
         } elseif ($imagem['error'] !== UPLOAD_ERR_OK) {
-            $erro = 'Erro no upload.';
+            $_SESSION['erro'] = 'Erro no upload.';
         } else {
             $imgInfo = getimagesize($imagem['tmp_name']);
             switch ($imgInfo['mime']) {
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                     $imagem_original = imagecreatefromwebp($imagem['tmp_name']);
                     break;
                 default:
-                    $erro = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
+                    $_SESSION['erro'] = 'Apenas os formatos .jpeg, .png e .webp são permitidos. Selecione uma imagem válida.';
             }
             if (isset($imagem_original) && $imagem_original) {
                 ob_start();
@@ -55,11 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
                     $stmt->bindParam(2, $usuario_id);
                     $stmt->execute();
 
-                    $sucesso = 'Imagem de perfil atualizada!';
+                    $_SESSION['sucesso'] = 'Imagem de perfil atualizada!';
+                    $_SESSION['erro'] = '';
                     header('Location: config_conta.php');
                     exit;
                 } catch (PDOException $e) {
-                    $erro = 'Erro ao atualizar imagem de perfil';
+                    $_SESSION['erro'] = 'Erro ao atualizar imagem de perfil';
                 }
             }
         }
@@ -71,11 +72,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             $stmt = $pdo->prepare('UPDATE usuarios SET imagem_perfil = NULL WHERE id = ?');
             $stmt->execute([$usuario_id]);
 
-            $sucesso = 'Imagem de perfil removida com sucesso!';
+            $_SESSION['sucesso'] = 'Imagem de perfil removida com sucesso!';
+            $_SESSION['erro'] = '';
             header('Location: config_conta.php');
             exit;
         } catch (PDOException $e) {
-            $erro = 'Erro ao remover imagem de perfil.';
+            $_SESSION['erro'] = 'Erro ao remover imagem de perfil.';
         }
     }
 
@@ -85,11 +87,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         if (!empty($nome)) {
             $stmt = $pdo->prepare('UPDATE usuarios SET nome = ? WHERE id = ?');
             $stmt->execute([$nome, $usuario_id]);
-            $sucesso = 'Nome alterado com sucesso!';
+            $_SESSION['sucesso'] = 'Nome alterado com sucesso!';
+            $_SESSION['erro'] = '';
             header('Location: config_conta.php');
             exit;
         } else {
-            $erro = 'Preencha o nome corretamente';
+            $_SESSION['erro'] = 'Preencha o nome corretamente';
         }
     }
 
@@ -100,14 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             try {
                 $stmt = $pdo->prepare('UPDATE usuarios SET email = ? WHERE id = ?');
                 $stmt->execute([$email, $usuario_id]);
-                $sucesso = 'E-mail alterado com sucesso!';
+                $_SESSION['sucesso'] = 'E-mail alterado com sucesso!';
+                $_SESSION['erro'] = '';
                 header('Location: config_conta.php');
                 exit;
             } catch (PDOException $e) {
-                $erro = 'E-mail já está em uso ou é inválido';
+                $_SESSION['erro'] = 'E-mail já está em uso ou é inválido';
             }
         } else {
-            $erro = 'Preencha o e-mail corretamente';
+            $_SESSION['erro'] = 'Preencha o e-mail corretamente';
         }
     }
 
@@ -124,14 +128,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             if (!empty($nova_senha)) {
                 $stmt = $pdo->prepare('UPDATE usuarios SET senha = ? WHERE id = ?');
                 $stmt->execute([password_hash($nova_senha, PASSWORD_DEFAULT), $usuario_id]);
-                $sucesso = 'Senha alterada com sucesso!';
+                $_SESSION['sucesso'] = 'Senha alterada com sucesso!';
+                $_SESSION['erro'] = '';
                 header('Location: config_conta.php');
                 exit;
             } else {
-                $erro = 'A nova senha não pode estar vazia.';
+                $_SESSION['erro'] = 'A nova senha não pode estar vazia.';
             }
         } else {
-            $erro = 'Senha atual incorreta.';
+            $_SESSION['erro'] = 'Senha atual incorreta.';
         }
     }
 
@@ -140,7 +145,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $descricao = trim($_POST['descricao']);
         $stmt = $pdo->prepare('UPDATE usuarios SET descricao = ? WHERE id = ?');
         $stmt->execute([$descricao, $usuario_id]);
-        $sucesso = 'Descrição alterada com sucesso!';
+        $_SESSION['sucesso'] = 'Descrição alterada com sucesso!';
+        $_SESSION['erro'] = '';
         header('Location: config_conta.php');
         exit;
     }
@@ -151,7 +157,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         // Status 2 corresponde a MEMBRO
         $stmt = $pdo->prepare('UPDATE proj_membros SET status_membro = 2 WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
-        $sucesso = 'Convite aceito!';
+        $_SESSION['sucesso'] = 'Convite aceito!';
+        $_SESSION['erro'] = '';
         header('Location: config_conta.php');
         exit;
     }
@@ -161,7 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $id_convite = intval($_POST['id_convite']);
         $stmt = $pdo->prepare('DELETE FROM proj_membros WHERE id = ? AND id_convidado = ?');
         $stmt->execute([$id_convite, $usuario_id]);
-        $sucesso = 'Convite recusado';
+        $_SESSION['sucesso'] = 'Convite recusado';
+        $_SESSION['erro'] = '';
         header('Location: config_conta.php');
         exit;
     }
@@ -178,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
         $stmt = $pdo->prepare('UPDATE usuarios SET ativada = FALSE WHERE id = ?');
         $stmt->execute([$usuario_id]);
         session_destroy();
-        $erro = 'Sua conta foi desativada.';
+        $_SESSION['erro'] = 'Sua conta foi desativada.';
         header('Location: login.php');
         exit;
     }
@@ -218,12 +226,12 @@ include 'header.php';
 
 <div class='config_container'>
 
-    <?php if ($sucesso): ?>
-        <p id='message'><strong><?= htmlspecialchars($sucesso) ?></strong></p>
-    <?php endif; ?>
-
     <?php if ($erro): ?>
         <p id='erro'><strong><?= htmlspecialchars($erro) ?></strong></p>
+
+    <?php elseif ($sucesso): ?>
+        <p id='message'><strong><?= htmlspecialchars($sucesso) ?></strong></p>
+
     <?php endif; ?>
 
     <div id='config_container'>

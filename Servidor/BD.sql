@@ -203,7 +203,7 @@ INSERT INTO categorias (nome) VALUES
   ('Ciências'),
   ('Saúde'),
   ('Inteligência Artificial'),
-  ('Estudos'),;
+  ('Estudos');
 
 
 INSERT INTO projetos (nome, estado) VALUES

@@ -54,8 +54,14 @@ const lexer = (function() {
                 continue;
             }
 
-            if (str[i] === typeof _stringTypes[str[i]] || (str[i] + str [i+1]) === typeof _stringTypes[str[i]]) {
-                const strTk = { type: 'string', value: '' };
+            if (str[i] === typeof _stringTypes[str[i]]) {
+
+                if(str[i]+str[i+1] === typeof _stringTypes[str[i]+str[i+1]]) { 
+                strV = (str[i]+str[i+1]=== typeof _stringTypes[str[i]+str[i+1]]) ? _stringTypes[str[i]+str[i+1]] : _stringTypes[str[i]]; //Isso aqui precisa ser arrumado
+                i++;
+                }
+
+                const strTk = { type: 'string', value: strT };
                 while (str[++i] && str[i] !== typeof _stringTypes[str[i]]) {
                     if (str[i] === '\\') ++i;
                     strTk.value += str[i];

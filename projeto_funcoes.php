@@ -14,7 +14,7 @@
             const botao = document.getElementById('btn_' + nomeAba);
             
             if (bloco) {
-                bloco.style.display = 'block';
+                bloco.style.display = 'flex';
                 location.hash = nomeAba;
                 if (botao) botao.className = 'btn-novo_mod';
                 document.getElementById('Historia').style.display = (bloco === "aba-historia") ? "block" : "none";

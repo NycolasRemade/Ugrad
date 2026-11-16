@@ -1,5 +1,5 @@
 
-#main_paper, #main_paper_edit, #historia_bloco_inicial{
+#main_paper, #main_paper_edit{
   width: 77%;
   min-height: 00px;
   padding: 50px 50px;
@@ -11,9 +11,13 @@
   /*z-index: 0;*/
 }
 
-#main_paper, #historia_bloco_inicial{
+#main_paper{
   margin-bottom: 100px;
   padding-bottom: 50px;
+}
+
+#aba-visao-geral, #aba-avaliacoes{
+  flex-direction: column;
 }
 
 /* Pesquisa de Projetos*/
@@ -205,17 +209,6 @@ textarea{
 }
 
 /*Elementos de edição*/
-
-#aba-historia{
-  display: none; 
-  min-width: 500px; 
-  margin-top: -0px;
-}
-
-#historia_bloco_inicial{
-  margin-bottom: 24px;
-  width: 100%;
-}
 
 footer{
   width: 1920px;
@@ -450,21 +443,54 @@ hr{
 }
 
 /* seção da história do projeto */
+
+#aba-historia{
+  margin-top: -0px;
+  width: 100%;
+  flex-direction: column;
+}
+
+#saida-historia-projeto, #entrada-historia-projeto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  background-color: #F2F2F7;
+}
+
+#historia_bloco_inicial{
+  margin-bottom: 24px;
+  width: 77%;
+  min-height: 00px;
+  padding: 50px 50px;
+  background-color: white;
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 50px;
+}
+
+
+
 .historia-titulo {
   color: black;
-  font-size: 38px;
+  font-size: 48px;
   font-weight: 800;
+  margin-top: 40px;
+  margin-bottom: 40px;
 }
 
 .historia-subtitulo {
   color: black;
-  font-size: 32px;
+  font-size: 40px;
   font-weight: 600;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .historia-textogrande {
   color: black;
-  font-size: 26px;
+  font-size: 32px;
 }
 
 #saida-historia-projeto img{
@@ -490,13 +516,4 @@ hr{
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-#saida-historia-projeto {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px;
-  box-sizing: border-box;
-  background-color: #F2F2F7;
 }

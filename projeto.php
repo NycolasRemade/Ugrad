@@ -174,6 +174,8 @@ include 'header.php'
 
     <hr>
 
+    <h2 id="Historia">História</h2>
+
     <!-- VISÃO GERAL -->
     <div id="aba-visao-geral">
         <h1><?= htmlspecialchars($projeto['nome'] ?? 'Nome do projeto') ?></h1>
@@ -210,30 +212,6 @@ include 'header.php'
             <p><?= nl2br(htmlspecialchars($projeto['descricao'] ?? 'Sem descrição disponível.')) ?></p>
         </div>
     </div>
-
-
-    <!-- HISTÓRIA -->
-    <script src='modular_text.js'></script>
-
-    <div id="aba-historia" style="display: none;">
-        <h2>História</h2><br>
-
-        <?php if ($pode_editar_projeto): ?>
-        <div class='buttons_criar' style="float: left;">
-            <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
-        </div><br><br>
-        <?php endif; ?>
-
-        <div id="saida-historia-projeto">
-            <script>
-                const divSaida = document.getElementById('saida-historia-projeto');
-                divSaida.replaceChildren(parser(lexer(
-                    <?= json_encode($projeto['historia']); ?>
-                .replace(/\r/g, ""))));
-            </script>
-        </div>
-    </div>
-
 
     <!-- AVALIAÇÕES -->
     <div id="aba-avaliacoes" style="display: none;">
@@ -352,99 +330,32 @@ include 'header.php'
         </main>
     </div>
 </div>
+
+<!-- HISTÓRIA -->
+    <script src='modular_text.js'></script>
+
+    <div id="aba-historia" style="display: none;">
+        
+        <?php if ($pode_editar_projeto): ?>
+        <div class='buttons_criar' style="float: left;">
+            <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
+        </div><br><br>
+        <?php endif; ?>
+
+        <div id="saida-historia-projeto">
+            <script>
+                const divSaida = document.getElementById('saida-historia-projeto');
+                divSaida.replaceChildren(parser(lexer(
+                    <?= json_encode($projeto['historia']); ?>
+                .replace(/\r/g, ""))));
+            </script>
+        </div>
+    </div>
+
 </div>
 
 
-    <script>
-        function mudarAba(nomeAba) {
-            document.getElementById('aba-visao-geral').style.display = 'none';
-            document.getElementById('aba-historia').style.display = 'none';
-            document.getElementById('aba-avaliacoes').style.display = 'none';
-
-            document.getElementById('btn_visao-geral').className = 'deepmod';
-            document.getElementById('btn_historia').className = 'deepmod';
-            document.getElementById('btn_avaliacoes').className = 'deepmod';
-
-            const bloco = document.getElementById('aba-' + nomeAba);
-            const botao = document.getElementById('btn_' + nomeAba);
-            
-            if (bloco) {
-                bloco.style.display = 'block';
-                location.hash = nomeAba;
-                botao.className = 'btn-novo_mod';
-            } else {
-                document.getElementById('aba-visao-geral').style.display = 'block';
-                location.hash = 'visao-geral';
-            }
-        }
-
-        if (location.hash && location.hash !== '#') mudarAba(location.hash.slice(1));
-        else mudarAba('visao-geral');
-
-        function toggleFormAvaliacao() {
-            const formContainer = document.getElementById('form-avaliacao-container');
-            const botaoToggleAvaliacao = document.getElementById('botao-toggle-avaliacao');
-            if (formContainer.style.display === 'none') {
-                formContainer.style.display = 'block';
-                botaoToggleAvaliacao.style.display = 'none';
-            } else {
-                formContainer.style.display = 'none';
-                botaoToggleAvaliacao.style.display = 'block';
-            }
-        }
-
-        function definirNota(valor) {
-            document.getElementById('nota_input').value = valor;
-            const estrelas = document.querySelectorAll('#estrelas-rating span');
-            estrelas.forEach(function(estrela, index) {
-                if (index < valor) {
-                    estrela.textContent = '★';
-                } else {
-                    estrela.textContent = '☆';
-                }
-            });
-        }
-
-        function toggleFiltros() {
-            const painel = document.getElementById('painel-filtros');
-            painel.style.display = (painel.style.display === 'none') ? 'block' : 'none';
-        }
-
-        function filtrarComentarios() {
-            const tipo = document.getElementById('filtro_tipo').value.toLowerCase();
-            const nota = document.getElementById('filtro_nota').value;
-            const busca = document.getElementById('filtro_busca').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.card-comentario');
-
-            cards.forEach(card => {
-                const cardTipo = card.getAttribute('data-tipo') || '';
-                const cardNota = card.getAttribute('data-nota') || '';
-                const cardTexto = card.getAttribute('data-texto') || '';
-
-                let atendeTipo = false;
-                if (tipo === 'todos') {
-                    atendeTipo = true;
-                } else if (tipo === 'professor' && cardTipo.includes('professor')) {
-                    atendeTipo = true;
-                } else if (tipo === 'empresario' && (cardTipo.includes('empresario') || cardTipo.includes('investidor'))) {
-                    atendeTipo = true;
-                }
-
-                let atendeNota = false;
-                if (nota === 'todas' || cardNota === nota) {
-                    atendeNota = true;
-                }
-
-                const atendeBusca = !busca || cardTexto.includes(busca);
-
-                if (atendeTipo && atendeNota && atendeBusca) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-    </script>
+    <?php include 'projeto_funcoes.php'; ?>
 
 </body>
 </html>

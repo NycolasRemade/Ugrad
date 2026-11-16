@@ -172,7 +172,7 @@ INSERT INTO usuarios (nome, email, senha, descricao, tipo) VALUES
   -- senha: admin
   ('instituição', 'instituicao@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 4),
   -- senha: admin
-  ('outro', 'outro@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 1),
+  ('outro', 'outro@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta deteste', 1),
   -- senha: admin
   ('professor', 'professor@ugrad.com', '$2y$10$x4auNVaTZIoAENyj9Xsdc.cQoXdCJswNjtPeJfAi155iXAUNjH3by', 'conta de teste', 2);
   -- senha: admin
@@ -196,7 +196,15 @@ INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, id_turma) 
 
 INSERT INTO categorias (nome) VALUES
   ('categoria1'),
-  ('categoria2');
+  ('categoria2'),
+  ('Tecnologia'),
+  ('Artes'),
+  ('Programação'),
+  ('Ciências'),
+  ('Saúde'),
+  ('Inteligência Artificial'),
+  ('Estudos'),;
+
 
 INSERT INTO projetos (nome, estado) VALUES
   ('Projeto 1', 3);

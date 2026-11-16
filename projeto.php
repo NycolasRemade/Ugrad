@@ -165,193 +165,192 @@ include 'header.php'
 <div class="centrao">
     <div style="height: 200px"></div>
 
-<div id="main_paper">
-    <nav id='mudaraba'>
-        <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
-        <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
-        <div onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'><p>Avaliações</p></div>
-    </nav>
+    <div id="main_paper">
+        <nav id='mudaraba'>
+            <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
+            <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
+            <div onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'><p>Avaliações</p></div>
+        </nav>
 
-    <hr>
+        <hr>
 
-    <h2 id="Historia">História</h2>
+        <h2 id="Historia">História</h2>
 
-    <!-- VISÃO GERAL -->
-    <div id="aba-visao-geral">
-        <h1><?= htmlspecialchars($projeto['nome'] ?? 'Nome do projeto') ?></h1>
+        <!-- VISÃO GERAL -->
+        <div id="aba-visao-geral">
+            <h1><?= htmlspecialchars($projeto['nome'] ?? 'Nome do projeto') ?></h1>
 
-        <?php if ($pode_editar_projeto): ?>
-        <br>
-        <div class='buttons_criar' style="float: left;">
-            <a href="editar_projeto.php?id=<?= $id_projeto; ?>#visao-geral" class="btn-novo">Editar</a>
-        </div><br><br>
-        <?php endif; ?>
-
-        <div>
-            <?php if (!empty($projeto['img'])): ?>
-                <div style="width: 640px; height:360px; background-position:center; background-repeat:none; background-size:cover; background-image: url('data:image/webp;base64,<?= base64_encode($projeto['img']) ?>');"></div>
-            <?php else: ?>
-                <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
-                    [ Imagem do Projeto ]
-                </div>
+            <?php if ($pode_editar_projeto): ?>
+            <br>
+            <div class='buttons_criar' style="float: left;">
+                <a href="editar_projeto.php?id=<?= $id_projeto; ?>#visao-geral" class="btn-novo">Editar</a>
+            </div><br><br>
             <?php endif; ?>
-        </div>
 
-        <p>
-            <strong>Criado por:</strong> 
-            <?= !empty($membros) ? htmlspecialchars(implode(', ', $membros)) : 'Nenhum integrante cadastrado' ?>
-        </p>
+            <div>
+                <?php if (!empty($projeto['img'])): ?>
+                    <div style="width: 640px; height:360px; background-position:center; background-repeat:none; background-size:cover; background-image: url('data:image/webp;base64,<?= base64_encode($projeto['img']) ?>');"></div>
+                <?php else: ?>
+                    <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
+                        [ Imagem do Projeto ]
+                    </div>
+                <?php endif; ?>
+            </div>
 
-        <p>
-            <strong>Tags:</strong> 
-            <?= !empty($tags) ? htmlspecialchars(implode(', ', $tags)) : 'Sem categorias' ?>
-        </p>
+            <p>
+                <strong>Criado por:</strong> 
+                <?= !empty($membros) ? htmlspecialchars(implode(', ', $membros)) : 'Nenhum integrante cadastrado' ?>
+            </p>
 
-        <div>
-            <strong>Descrição:</strong>
-            <p><?= nl2br(htmlspecialchars($projeto['descricao'] ?? 'Sem descrição disponível.')) ?></p>
-        </div>
-    </div>
+            <p>
+                <strong>Tags:</strong> 
+                <?= !empty($tags) ? htmlspecialchars(implode(', ', $tags)) : 'Sem categorias' ?>
+            </p>
 
-    <!-- AVALIAÇÕES -->
-    <div id="aba-avaliacoes" style="display: none;">
-        <div>
-            <h2>Avaliações <?php 
-                $total_comentarios = count($comentarios);
-                if ($total_comentarios > 0) {
-                    $soma_notas = array_sum(array_column($comentarios, 'nota'));
-                    $media_nota = (int) round($soma_notas / $total_comentarios * 2) / 2;
-                    $estrelas_cheias = (int) floor($media_nota);
-                    if ($estrelas_cheias === $media_nota) {
-                        echo str_repeat('★', $estrelas_cheias) . str_repeat('☆', 5 - $estrelas_cheias);
-                    } else {
-                        echo str_repeat('★', $estrelas_cheias) . '⯪' . str_repeat('☆', 4 - $estrelas_cheias);
-                    }
-                } else {
-                    echo '☆☆☆☆☆';
-                }
-            ?></h2>
-            <button type="button" class="btn-novo" onclick="toggleFiltros()">Filtros +</button>
-        </div>
-
-        <!-- PAINEL DE FILTROS -->
-        <div id="painel-filtros" class="selector selector-mini" style="display: none; margin: 15px 0; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd;">
-            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                <div>
-                    <label for="filtro_tipo"><strong>Exibir:</strong></label>
-                    <select id="filtro_tipo" onchange="filtrarComentarios()">
-                        <option value="todos">Todos os tipos</option>
-                        <option value="professor">Apenas professores</option>
-                        <option value="empresario">Apenas investidores</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="filtro_nota"><strong>Avaliação:</strong></label>
-                    <select id="filtro_nota" onchange="filtrarComentarios()">
-                        <option value="todas">Todas as notas</option>
-                        <option value="5">5 ★★★★★</option>
-                        <option value="4">4 ★★★★☆</option>
-                        <option value="3">3 ★★★☆☆</option>
-                        <option value="2">2 ★★☆☆☆</option>
-                        <option value="1">1 ★☆☆☆☆</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="filtro_busca"><strong>Pesquisar palavra-chave:</strong></label>
-                    <input type="text" id="filtro_busca" onkeyup="filtrarComentarios()" placeholder="Digite para filtrar..." style="padding: 4px 8px;">
-                </div>
+            <div>
+                <strong>Descrição:</strong>
+                <p><?= nl2br(htmlspecialchars($projeto['descricao'] ?? 'Sem descrição disponível.')) ?></p>
             </div>
         </div>
 
-        <br>
+        <!-- AVALIAÇÕES -->
+        <div id="aba-avaliacoes" style="display: none;">
+            <div>
+                <h2>Avaliações <?php 
+                    $total_comentarios = count($comentarios);
+                    if ($total_comentarios > 0) {
+                        $soma_notas = array_sum(array_column($comentarios, 'nota'));
+                        $media_nota = (int) round($soma_notas / $total_comentarios * 2) / 2;
+                        $estrelas_cheias = (int) floor($media_nota);
+                        if ($estrelas_cheias === $media_nota) {
+                            echo str_repeat('★', $estrelas_cheias) . str_repeat('☆', 5 - $estrelas_cheias);
+                        } else {
+                            echo str_repeat('★', $estrelas_cheias) . '⯪' . str_repeat('☆', 4 - $estrelas_cheias);
+                        }
+                    } else {
+                        echo '☆☆☆☆☆';
+                    }
+                ?></h2>
+                <button type="button" class="btn-novo" onclick="toggleFiltros()">Filtros +</button>
+            </div>
 
-        <div id="botao-toggle-avaliacao">
-            <button type="button" onclick="toggleFormAvaliacao()"  class="btn-novo"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
-            <br><br>
-        </div>
-
-        <!-- ENTRADA DE TEXTO E FORMULÁRIO DE AVALIAÇÃO -->
-        <div id="form-avaliacao-container" style="display: none;">
-            <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo btn-secundario">Cancelar x</button>
-            <br><br>
-            <form action="" method="POST">
-                <input type="hidden" name="id_comentario" value="<?= (empty($comentario_usuario)) ? '0' : $comentario_usuario['id'] ?>">
-                <div>
-                    <textarea name="comentario" placeholder="Escreva uma avaliação..." rows="4" required><?php if (!empty($comentario_usuario)) { echo $comentario_usuario['comentario']; }?></textarea>
-                </div>
-                <br>
-                <div>
-                <?php if (empty($comentario_usuario)): ?>
-                    <input type="hidden" name="nota" id="nota_input" value="5">
-                    <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
-                        <span onclick="definirNota(1)">★</span><span onclick="definirNota(2)">★</span><span onclick="definirNota(3)">★</span><span onclick="definirNota(4)">★</span><span onclick="definirNota(5)">★</span>
-                    </span>
-                <?php else: ?>
-                    <input type="hidden" name="nota" id="nota_input" value="<?= $comentario_usuario['nota'] ?>">
-                    <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
-                        <?php $nota = (int)$comentario_usuario['nota'];
-                        for ($i = 1; $i <= $nota; $i++): ?><span onclick="definirNota(<?= $i ?>)">★</span><?php endfor;
-                        for ($i = $nota + 1; $i <= 5; $i++): ?><span onclick="definirNota(<?= $i ?>)">☆</span><?php endfor; ?>
-                    </span>
-                <?php endif; ?>
-                    <button type="submit" class="btn-novo">Enviar</button>
-                </div>
-            </form>
-        </div>
-
-        <main id="lista-comentarios">
-            <?php if (!empty($comentarios)): ?>
-                <?php foreach ($comentarios as $c): ?>
-                    <div class="card-comentario" 
-                         data-tipo="<?= htmlspecialchars(mb_strtolower($c['tipo_usuario'])) ?>" 
-                         data-nota="<?= (int)$c['nota'] ?>" 
-                         data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
-                        <div>
-                            <div class="projeto-membros">
-                                <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
-                            </div>
-                                <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
-                            <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
-                        </div>
-                        
-                        <p><?= htmlspecialchars($c['comentario']) ?></p>
-                        
-                        <div>
-                            <small>Data: <?= date('d/m/Y H:i', strtotime($c['data_criacao'])) ?></small>
-                            <?php if ($c['data_criacao'] !== $c['data_edicao']): ?>
-                            <br><small>Editada em: <?= date('d/m/Y H:i', strtotime($c['data_edicao'])) ?></small>
-                            <?php endif; ?>
-                        </div>
+            <!-- PAINEL DE FILTROS -->
+            <div id="painel-filtros" class="selector selector-mini" style="display: none; margin: 15px 0; padding: 12px; background-color: #f9f9f9; border: 1px solid #ddd;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                    <div>
+                        <label for="filtro_tipo"><strong>Exibir:</strong></label>
+                        <select id="filtro_tipo" onchange="filtrarComentarios()">
+                            <option value="todos">Todos os tipos</option>
+                            <option value="professor">Apenas professores</option>
+                            <option value="empresario">Apenas investidores</option>
+                        </select>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>Nenhuma avaliação cadastrada para este projeto ainda.</p>
+                    <div>
+                        <label for="filtro_nota"><strong>Avaliação:</strong></label>
+                        <select id="filtro_nota" onchange="filtrarComentarios()">
+                            <option value="todas">Todas as notas</option>
+                            <option value="5">5 ★★★★★</option>
+                            <option value="4">4 ★★★★☆</option>
+                            <option value="3">3 ★★★☆☆</option>
+                            <option value="2">2 ★★☆☆☆</option>
+                            <option value="1">1 ★☆☆☆☆</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="filtro_busca"><strong>Pesquisar palavra-chave:</strong></label>
+                        <input type="text" id="filtro_busca" onkeyup="filtrarComentarios()" placeholder="Digite para filtrar..." style="padding: 4px 8px;">
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div id="botao-toggle-avaliacao">
+                <button type="button" onclick="toggleFormAvaliacao()"  class="btn-novo"><?= (empty($comentario_usuario)) ? 'Deixe sua avaliação +' : 'Editar avaliação' ?></button>
+                <br><br>
+            </div>
+
+            <!-- ENTRADA DE TEXTO E FORMULÁRIO DE AVALIAÇÃO -->
+            <div id="form-avaliacao-container" style="display: none;">
+                <button type="button" onclick="toggleFormAvaliacao()" class="btn-novo btn-secundario">Cancelar x</button>
+                <br><br>
+                <form action="" method="POST">
+                    <input type="hidden" name="id_comentario" value="<?= (empty($comentario_usuario)) ? '0' : $comentario_usuario['id'] ?>">
+                    <div>
+                        <textarea name="comentario" placeholder="Escreva uma avaliação..." rows="4" required><?php if (!empty($comentario_usuario)) { echo $comentario_usuario['comentario']; }?></textarea>
+                    </div>
+                    <br>
+                    <div>
+                    <?php if (empty($comentario_usuario)): ?>
+                        <input type="hidden" name="nota" id="nota_input" value="5">
+                        <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
+                            <span onclick="definirNota(1)">★</span><span onclick="definirNota(2)">★</span><span onclick="definirNota(3)">★</span><span onclick="definirNota(4)">★</span><span onclick="definirNota(5)">★</span>
+                        </span>
+                    <?php else: ?>
+                        <input type="hidden" name="nota" id="nota_input" value="<?= $comentario_usuario['nota'] ?>">
+                        <span id="estrelas-rating" style="cursor: pointer; font-size: 1.3rem;">
+                            <?php $nota = (int)$comentario_usuario['nota'];
+                            for ($i = 1; $i <= $nota; $i++): ?><span onclick="definirNota(<?= $i ?>)">★</span><?php endfor;
+                            for ($i = $nota + 1; $i <= 5; $i++): ?><span onclick="definirNota(<?= $i ?>)">☆</span><?php endfor; ?>
+                        </span>
+                    <?php endif; ?>
+                        <button type="submit" class="btn-novo">Enviar</button>
+                    </div>
+                </form>
+            </div>
+
+            <main id="lista-comentarios">
+                <?php if (!empty($comentarios)): ?>
+                    <?php foreach ($comentarios as $c): ?>
+                        <div class="card-comentario" 
+                            data-tipo="<?= htmlspecialchars(mb_strtolower($c['tipo_usuario'])) ?>" 
+                            data-nota="<?= (int)$c['nota'] ?>" 
+                            data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
+                            <div>
+                                <div class="projeto-membros">
+                                    <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
+                                </div>
+                                    <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
+                                <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
+                            </div>
+                            
+                            <p><?= htmlspecialchars($c['comentario']) ?></p>
+                            
+                            <div>
+                                <small>Data: <?= date('d/m/Y H:i', strtotime($c['data_criacao'])) ?></small>
+                                <?php if ($c['data_criacao'] !== $c['data_edicao']): ?>
+                                <br><small>Editada em: <?= date('d/m/Y H:i', strtotime($c['data_edicao'])) ?></small>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>Nenhuma avaliação cadastrada para este projeto ainda.</p>
+                <?php endif; ?>
+            </main>
+        </div>
+
+        <!-- HISTÓRIA -->
+        <script src='modular_text.js'></script>
+
+        <div id="aba-historia" style="display: none;">
+            
+            <?php if ($pode_editar_projeto): ?>
+            <div class='buttons_criar' style="float: left;">
+                <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
+            </div><br><br>
             <?php endif; ?>
-        </main>
-    </div>
-</div>
 
-<!-- HISTÓRIA -->
-    <script src='modular_text.js'></script>
-
-    <div id="aba-historia" style="display: none;">
-        
-        <?php if ($pode_editar_projeto): ?>
-        <div class='buttons_criar' style="float: left;">
-            <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
-        </div><br><br>
-        <?php endif; ?>
-
-        <div id="saida-historia-projeto">
-            <script>
-                const divSaida = document.getElementById('saida-historia-projeto');
-                divSaida.replaceChildren(parser(lexer(
-                    <?= json_encode($projeto['historia']); ?>
-                .replace(/\r/g, ""))));
-            </script>
+            <div id="saida-historia-projeto">
+                <script>
+                    const divSaida = document.getElementById('saida-historia-projeto');
+                    divSaida.replaceChildren(parser(lexer(
+                        <?= json_encode($projeto['historia']); ?>
+                    .replace(/\r/g, ""))));
+                </script>
+            </div>
         </div>
     </div>
-
 </div>
 
 

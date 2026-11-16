@@ -456,64 +456,61 @@ include 'header.php';
 <main class='centrao'>
     <div style="height: 100px"></div>
 
+    <div id='main_paper_edit'>
+        <nav id='mudaraba'>
+            <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
+            <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
+            <div onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'><p>Avaliações</p></div>
+        </nav>
 
-<div id='main_paper_edit'>
-    <nav id='mudaraba'>
-        <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
-        <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
-        <div onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'><p>Avaliações</p></div>
-    </nav>
+        <hr>
 
-    <hr>
+        <?php if (!empty($erro)): ?>
+            <p id="message"><strong><?= htmlspecialchars($erro) ?></strong></p>
 
-    <?php if (!empty($erro)): ?>
-        <p id="message"><strong><?= htmlspecialchars($erro) ?></strong></p>
+        <?php elseif (!empty($sucesso)): ?>
+            <p id="message"><strong><?= htmlspecialchars($sucesso) ?></strong></p>
 
-    <?php elseif (!empty($sucesso)): ?>
-        <p id="message"><strong><?= htmlspecialchars($sucesso) ?></strong></p>
+        <?php endif; ?>
 
-    <?php endif; ?>
+        <!-- FORMULÁRIO OCULTO PARA UPLOAD DA IMAGEM -->
+        <form id="form-upload-imagem" method="POST" enctype="multipart/form-data" style="display: none;">
+            <input type="file" id="imagem_projeto" name="imagem_projeto" accept="image/png, image/jpeg, image/webp" >
+        </form>
 
-    <!-- FORMULÁRIO OCULTO PARA UPLOAD DA IMAGEM -->
-    <form id="form-upload-imagem" method="POST" enctype="multipart/form-data" style="display: none;">
-        <input type="file" id="imagem_projeto" name="imagem_projeto" accept="image/png, image/jpeg, image/webp" >
-    </form>
+        <!-- VISÃO GERAL -->
 
-    <h2 id="Historia">História</h2>
+        <?php include 'editar_visao-geral.php'; ?>
 
-    <!-- VISÃO GERAL -->
+        <!-- AVALIAÇÕES -->
 
-    <?php include 'editar_visao-geral.php'; ?>
+        <?php include 'editar_avaliacoes.php'; ?>
 
-    <!-- AVALIAÇÕES -->
+        <!-- HISTÓRIA DO PROJETO -->
 
-    <?php include 'editar_avaliacoes.php'; ?>
+        <?php include 'editar_historia.php';?>
+    </div>
 
-    <!-- HISTÓRIA DO PROJETO -->
-
-    <?php include 'editar_historia.php';?>
-</div>
-
-<!-- BARRA DE AÇÕES INFERIOR -->
-<hr style="margin-top: 30px; max-width: 640px; width: 100%;">
-<div>
+    <!-- BARRA DE AÇÕES INFERIOR -->
+    <hr style="margin-top: 30px; max-width: 640px; width: 100%;">
     <div>
-        <strong>Visibilidade atual:</strong> 
-        <span><?= ($projeto['estado'] == 3) ? 'Público' : (($projeto['estado'] == 2) ? 'Restrito para Professores' : (($projeto['estado'] == 1) ? 'Privado' : 'Em revisão' ))?></span>
+        <div>
+            <strong>Visibilidade atual:</strong> 
+            <span><?= ($projeto['estado'] == 3) ? 'Público' : (($projeto['estado'] == 2) ? 'Restrito para Professores' : (($projeto['estado'] == 1) ? 'Privado' : 'Em revisão' ))?></span>
+        </div>
+        <div style="display: flex; gap: 10px; margin: 15px 0; align-items: center; justify-content: space-between; max-width: 640px; width: 100%;">
+            <form method="POST" action="" style="display: inline;">
+                <input type="hidden" name="alterar_estado_projeto" value="1">
+                <input type="hidden" name="novo_estado" value="3">
+                <button type="submit" class="btn-novo" style="background-color: #005EFF; color: white;">Publicar projeto</button>
+            </form>
+            <form method="POST" action="" style="display: inline;">
+                <input type="hidden" name="alterar_estado_projeto" value="1">
+                <input type="hidden" name="novo_estado" value="1">
+                <button type="submit" class="btn-novo" style="background-color: #C50000; color: white;">Restringir visualização para professores</button>
+            </form>
+        </div>
     </div>
-    <div style="display: flex; gap: 10px; margin: 15px 0; align-items: center; justify-content: space-between; max-width: 640px; width: 100%;">
-        <form method="POST" action="" style="display: inline;">
-            <input type="hidden" name="alterar_estado_projeto" value="1">
-            <input type="hidden" name="novo_estado" value="3">
-            <button type="submit" class="btn-novo" style="background-color: #005EFF; color: white;">Publicar projeto</button>
-        </form>
-        <form method="POST" action="" style="display: inline;">
-            <input type="hidden" name="alterar_estado_projeto" value="1">
-            <input type="hidden" name="novo_estado" value="1">
-            <button type="submit" class="btn-novo" style="background-color: #C50000; color: white;">Restringir visualização para professores</button>
-        </form>
-    </div>
-</div>
 
 </main>
 

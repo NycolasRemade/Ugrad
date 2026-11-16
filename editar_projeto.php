@@ -487,9 +487,8 @@ include 'header.php';
         <?php include 'editar_avaliacoes.php'; ?>
 
         <!-- HISTÓRIA DO PROJETO -->
-
+            </div>
         <?php include 'editar_historia.php';?>
-    </div>
 
     <!-- BARRA DE AÇÕES INFERIOR -->
     <hr style="margin-top: 30px; max-width: 640px; width: 100%;">

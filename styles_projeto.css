@@ -160,13 +160,13 @@ textarea{
 }
 
 .long{
-  width: 77%;
+  width: 100%;
   padding-top: 50px;
   padding-bottom: 50px;
 }
 
 .short{
-  width: 50%;
+  width: 65%;
   padding-top: 30px;
   padding-bottom: 30px;
 }
@@ -182,10 +182,11 @@ textarea{
 .poly{
   -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
-  width: 70%;
+  width: 91%;
   font-size: 32px;
   margin-bottom: 50px;
-  height: 300px;
+  min-height: 400px;
+  height: auto;
 }
 
 .poly p{
@@ -202,10 +203,14 @@ textarea{
 
 .medio{
   background-image: url("Fotos/Polygon 4.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
 .rebarba{
   background-image: url("Fotos/Polygon 5.png");
+  background: no-repeat;
 }
 
 /*Elementos de edição*/
@@ -446,7 +451,7 @@ hr{
 
 #aba-historia{
   margin-top: -0px;
-  width: 100%;
+  width: 77%;
   flex-direction: column;
 }
 
@@ -460,7 +465,7 @@ hr{
 
 #historia_bloco_inicial{
   margin-bottom: 24px;
-  width: 77%;
+  width: 100%;
   min-height: 00px;
   padding: 50px 50px;
   background-color: white;
@@ -468,6 +473,7 @@ hr{
   display: flex;
   flex-direction: column;
   padding-bottom: 50px;
+  margin-left: -50px;
 }
 
 

@@ -1,5 +1,4 @@
     <script src='modular_text.js'></script>
-</div>
     <div id="aba-historia">
 
         <h2 id="Historia">História</h2>

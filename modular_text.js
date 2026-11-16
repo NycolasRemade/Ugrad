@@ -10,6 +10,14 @@ const lexer = (function() {
         ';': 'blocoM',
         '/': 'blocoG'
     };
+
+    const _stringTypes = {
+        "'": 'string',
+        '*': 'italic',
+        '**': 'bold',
+        '§': 'meringue'
+    };
+    
     return function lexer(str) {
 
         const tokens = [];
@@ -31,7 +39,7 @@ const lexer = (function() {
 
             if (str[i] === '<' && typeof _blockTypes[str[i+1]] === "string") {
                 ++i;
-                const tagTk = { type: 'tag', value: _blockTypes[str[i]] };
+                const tagTk = { type: 'string', value: _blockTypes[str[i]] };
                 while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
                 tokens.push(tagTk);
                 continue;
@@ -46,15 +54,16 @@ const lexer = (function() {
                 continue;
             }
 
-            if (str[i] === "'") {
+            if (str[i] === typeof _stringTypes[str[i]] || (str[i] + str [i+1]) === typeof _stringTypes[str[i]]) {
                 const strTk = { type: 'string', value: '' };
-                while (str[++i] && str[i] !== "'") {
+                while (str[++i] && str[i] !== typeof _stringTypes[str[i]]) {
                     if (str[i] === '\\') ++i;
                     strTk.value += str[i];
                 }
                 tokens.push(strTk);
                 continue;
             }
+
 
             if (str[i] === '#' && (!str[i-1] || str[i-1] === '\n')) {
 

@@ -39,7 +39,7 @@ const lexer = (function() {
 
             if (str[i] === '<' && typeof _blockTypes[str[i+1]] === "string") {
                 ++i;
-                const tagTk = { type: 'string', value: _blockTypes[str[i]] };
+                const tagTk = { type: 'tag', value: _blockTypes[str[i]] };
                 while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
                 tokens.push(tagTk);
                 continue;

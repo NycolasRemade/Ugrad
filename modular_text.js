@@ -94,6 +94,7 @@ const lexer = (function() {
             tokens.push(tk);
 
         }
+        console.log(tokens);
         return tokens;
     }
 })();
@@ -107,18 +108,6 @@ const parser = (function(){
         switch (_tokens[_i].type) {
             case "tag":
                 switch (_tokens[_i].value) {
-                    case "h1": 
-                    case "h2":                     
-                    case "h3":{
-                        const title = document.createElement("span");
-                        title.className = (_tokens[_i].value === "h1") ? "historia-titulo" : ((_tokens[_i].value === "h2") ? "historia-subtitulo" : "historia-textogrande");
-                        while (_tokens[++_i].type !== "closetag") {
-                            title.innerText += _tokens[_i].value + '\n';
-                        }
-                        --_i;
-                        _fragment.appendChild(title);
-                        break;
-                    }
                     case "img": {
                         ++_i;
                         if (_tokens[_i].type === "string") {
@@ -127,7 +116,22 @@ const parser = (function(){
                             img.style.backgroundImage = "url(" + _tokens[_i].value + ")";
                             _fragment.appendChild(img);
                         }
-                        if (_tokens[_i+1].type === "closetag") ++_i;
+                        if (_tokens[_i+1]?.type === "closetag") ++_i;
+                        break;
+                    }
+                    case "h1": 
+                    case "h2":                     
+                    case "h3": {
+                        const title = document.createElement("span");
+                        title.className = (_tokens[_i].value === "h1") ? "historia-titulo" : ((_tokens[_i].value === "h2") ? "historia-subtitulo" : "historia-textogrande");
+                        const previousFragment = _fragment;
+                        _fragment = title;
+                        while (_tokens[++_i] && _tokens[_i].type !== "closetag") {
+                            _parse_token();
+                        }
+                        _fragment = previousFragment;
+                        _fragment.appendChild(title);
+                        _fragment.appendChild(document.createElement("br"));
                         break;
                     }
                     case "bloco":
@@ -141,9 +145,9 @@ const parser = (function(){
                         while (_tokens[++_i] && _tokens[_i].type !== "closetag") {
                             _parse_token();
                         }
-                        --_i;
                         _fragment = previousFragment;
                         _fragment.appendChild(bloco);
+                        break;
                     }
                     case "br": {
                         _fragment.appendChild(document.createElement("br"));
@@ -188,6 +192,7 @@ const parser = (function(){
         for (_i = 0; _i < tokens.length; ++_i) {
             _parse_token();
         }
+        console.log(_fragment.children);
         return _fragment;
     };
 

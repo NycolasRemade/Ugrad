@@ -12,9 +12,9 @@ const lexer = (function() {
     };
 
     const _stringTypes = {
-        "'": 'string',
+        "'": '',
         '*': 'italic',
-        '**': 'bold',
+        '_': 'bold',
         '§': 'meringue'
     };
     
@@ -54,19 +54,10 @@ const lexer = (function() {
                 continue;
             }
 
-            if (str[i] === typeof _stringTypes[str[i]]) {
-
-                if(str[i]+str[i+1] === typeof _stringTypes[str[i]+str[i+1]]) { 
-                strV =  _stringTypes[str[i]+str[i+1]]; 
-                strT = typeof _stringTypes[str[i]+str[i+1]];
-                i++;
-                }else{
-                    strV = _stringTypes[str[i]];
-                    strT = typeof _stringTypes[str[i]]
-                }
-
-                const strTk = { type: 'string', value: strV };
-                while (str[++i] && (str[i] !== strT || str[i] + str[i+1] !== strT)) {
+            if (typeof _stringTypes[str[i]] === "string") {
+                const strHolder = _stringTypes[str[i]];
+                const strTk = { type: 'string', value: _stringTypes[str[i]] };
+                while (str[++i] && !(_stringTypes[str[i]] === strHolder)) {
                     if (str[i] === '\\') ++i;
                     strTk.value += str[i];
                 }

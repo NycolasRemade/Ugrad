@@ -179,6 +179,10 @@ textarea{
   font-family: BMIP;
 }
 
+.italic {
+  font-style: italic;
+}
+
 .poly{
   -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
@@ -509,7 +513,7 @@ hr{
 }
 
 .historia-imagem {
-  display: block;
+  display: inline;
   width: 800px;
   height: 450px;
   background-position: center;

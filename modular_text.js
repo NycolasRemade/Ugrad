@@ -1,22 +1,22 @@
-function isLetter(char) {
-    return char = char.charCodeAt(0), (char >= 97 && char <= 122) || (char >= 65 && char <= 90);
+function isLetterOrNumber(char) {
+    return char = char.charCodeAt(0), (char >= 97 && char <= 122) || (char >= 65 && char <= 90) || (char >= 48 && char <= 57);
 }
 
 const lexer = (function() {
 
-    const _blockTypes = {
+    const _blockTags = {
         '|': 'bloco',
         '¨': 'blocoP',
         ';': 'blocoM',
         '/': 'blocoG'
     };
 
-    const _stringTypes = {
-        "'": '',
-        '*': 'italic',
-        '_': 'bold',
-        '§': 'meringue'
-    };
+    // const _stringStyles = {
+    //     "'": '',
+    //     '*': 'italic',
+    //     '_': 'bold',
+    //     '§': 'meringue'
+    // };
     
     return function lexer(str) {
 
@@ -29,7 +29,7 @@ const lexer = (function() {
                 ++i;
                 const tagTk = { type: 'tag', value: '' };
                 while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
-                while (str[++i] && str[i] !== ' ' && str[i] !== '\n' && !(str[i] === '#' && str[i+1] === '>')) {
+                while (str[++i] && isLetterOrNumber(str[i])) {
                     tagTk.value += str[i];
                 }
                 if (str[i] !== ' ') --i;
@@ -37,9 +37,9 @@ const lexer = (function() {
                 continue;
             }
 
-            if (str[i] === '<' && typeof _blockTypes[str[i+1]] === "string") {
+            if (str[i] === '<' && typeof _blockTags[str[i+1]] === "string") {
                 ++i;
-                const tagTk = { type: 'tag', value: _blockTypes[str[i]] };
+                const tagTk = { type: 'tag', value: _blockTags[str[i]] };
                 while (str[i+1] === ' ' || str[i+1] === '\n') ++i;
                 tokens.push(tagTk);
                 continue;
@@ -48,21 +48,21 @@ const lexer = (function() {
             if (str[i] === '#' && str[i+1] === '>') {
                 ++i;
                 tokens.push({ type: 'closetag', value: '' });
-                if (str[i+1] === ' ' || str[i+1] === '\n') ++i;
+                if (str[i+1] === ' ') ++i;
                 continue;
             }
 
-            if (typeof _stringTypes[str[i]] === "string") {
-                const strHolder = _stringTypes[str[i]];
-                const strTk = { type: 'string', value: _stringTypes[str[i]] }; //Esse código quase que funciona, porém também não é possível criar uma string com mais de uma linha.
-                while (str[++i] && !(_stringTypes[str[i]] === strHolder)) { 
-                    if (str[i] === '\\') ++i;
-                    strTk.value += str[i];
-                }
-                tokens.push(strTk);
-                console.log(strTk.value +" debug");
-                continue;
-            }
+            // if (typeof _stringStyles[str[i]] === "string") {
+            //     const strHolder = _stringStyles[str[i]];
+            //     const strTk = { type: 'string', value: "", style: strHolder };
+            //     while (str[++i] && (_stringStyles[str[i]] !== strHolder)) { 
+            //         if (str[i] === '\\') ++i;
+            //         strTk.value += str[i];
+            //     }
+            //     tokens.push(strTk);
+            //     console.log(strTk.value +" debug");
+            //     continue;
+            // }
 
 
             if (str[i] === '#' && (!str[i-1] || str[i-1] === '\n')) {
@@ -115,15 +115,19 @@ const parser = (function(){
     let _fragment;
     function _parse_token() {
 
-        const _classTypes = {
-        'h1': 'historia-titulo',
-        'h2': 'historia-subtitulo',
-        'h3': 'historia-textogrande',
+        const _tagClasses = {
+            'h1': 'historia-titulo',
+            'h2': 'historia-subtitulo',
+            'h3': 'historia-textogrande',
 
-        'bloco': 'box long',
-        'blocoP': 'box short',
-        'blocoM': 'poly medio',
-        'blocoG': 'poly rebarba'
+            'bloco': 'box long',
+            'blocoP': 'box short',
+            'blocoM': 'poly medio',
+            'blocoG': 'poly rebarba',
+
+            'b': 'bold',
+            'i': 'italic',
+            'me': 'meringue',
         };
 
         switch (_tokens[_i].type) {
@@ -142,9 +146,12 @@ const parser = (function(){
                     }
                     case "h1": 
                     case "h2":                     
-                    case "h3": {
+                    case "h3":
+                    case "b":
+                    case "i":
+                    case "me": {
                         const title = document.createElement("span");
-                        title.className = _classTypes[_tokens[_i].value]; 
+                        title.className = _tagClasses[_tokens[_i].value]; 
                         const previousFragment = _fragment;
                         _fragment = title;
                         while (_tokens[++_i] && _tokens[_i].type !== "closetag") {
@@ -152,15 +159,14 @@ const parser = (function(){
                         }
                         _fragment = previousFragment;
                         _fragment.appendChild(title);
-                        _fragment.appendChild(document.createElement("br"));
                         break;
                     }
                     case "bloco":
-                    case "blocoP" : 
-                    case "blocoM" : 
-                    case "blocoG" : {
+                    case "blocoP": 
+                    case "blocoM": 
+                    case "blocoG": {
                         const bloco = document.createElement("div");
-                        bloco.className = _classTypes[_tokens[_i].value];
+                        bloco.className = _tagClasses[_tokens[_i].value];
                         const previousFragment = _fragment;
                         _fragment = bloco;
                         while (_tokens[++_i] && _tokens[_i].type !== "closetag") {
@@ -177,38 +183,33 @@ const parser = (function(){
                     }
                     default: {
                         _fragment.appendChild(
-                            document.createTextNode('<#' + _tokens[_i].value + '#>')
+                            document.createTextNode(_tokens[_i].value)
                         );
                         break;
                     }
                 }
                 break;
             case "string": {
-                switch (_tokens[_i].value) {
+                // switch (_tokens[_i].style) {
 
-                    case "italic":
-                    case "bold":
-                    case "meringue": {
-                        const title = document.createElement("span");                   //Todo esse código aparentemente não funciona, pois os casos nunca acontecem, 
-                        title.className = _tokens[_i].value ;                           // e se forçar eles a acontecerem, resulta em um erro que diz que o valor é 'undefined', mesmo que claramente ele não é.
-                        const previousFragment = _fragment;
-                        _fragment = title;
-                        while (_tokens[++_i] && _tokens[_i].value !== title.className) {
-                            _parse_token();
-                        }
-                        _fragment = previousFragment;
-                        _fragment.appendChild(title);
-                        console.log(_tokens[_i].value);
-                        break;
-                    }
+                //     case "italic":
+                //     case "bold":
+                //     case "meringue": {
+                //         const text = document.createElement("span");                   //Todo esse código aparentemente não funciona, pois os casos nunca acontecem, 
+                //         text.className = _tokens[_i].style;                            // e se forçar eles a acontecerem, resulta em um erro que diz que o valor é 'undefined', mesmo que claramente ele não é.
+                //         text.innerText = _tokens[_i].value;
+                //         _fragment.appendChild(text);
+                //         console.log(_tokens[_i].value);
+                //         break;
+                //     }
 
-                    default: {
+                //     default: {
                         const node = document.createTextNode(_tokens[_i].value);
                         _fragment.appendChild(node);
                         console.log(_tokens[_i].value + " default");
                         break;
-                    }
-                }
+                //     }
+                // }
                 break;
             }
             case "closetag": {

@@ -219,7 +219,8 @@ INSERT INTO proj_dados (id_projeto, descricao, historia) VALUES
 Bloco de texto com imagem
 <#img "Fotos/Ugrad logo cinza.png"#>
 Mais texto
-aqui em baixo
+<#i itálico #><#b negrito #>
+<#me meringue#>
 #>'
 );
 INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES

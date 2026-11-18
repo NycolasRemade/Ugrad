@@ -487,7 +487,7 @@ include 'header.php';
         <?php include 'editar_avaliacoes.php'; ?>
 
         <!-- HISTÓRIA DO PROJETO -->
-        <h2>História</h2>
+        <h2 id='hist'>História</h2>
         </div>
     <?php include 'editar_historia.php';?>
 

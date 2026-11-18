@@ -345,7 +345,7 @@ include 'header.php'
         </div>
     </div>
 
-    <div id="saida-historia-projeto">
+    <div id="saida-historia-projeto" style='width:77%'>
         <script>
             const divSaida = document.getElementById('saida-historia-projeto');
             divSaida.replaceChildren(parser(lexer(

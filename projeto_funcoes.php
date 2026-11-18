@@ -4,7 +4,7 @@
             document.getElementById('aba-visao-geral').style.display = 'none';
             document.getElementById('aba-historia').style.display = 'none';
             document.getElementById('aba-avaliacoes').style.display = 'none';
-            document.getElementById('Historia').style.display = 'none';
+            document.getElementById('saida-historia-projeto').style.display = 'none';
 
             document.getElementById('btn_visao-geral').className = 'deepmod';
             document.getElementById('btn_historia').className = 'deepmod';
@@ -17,12 +17,10 @@
                 bloco.style.display = 'flex';
                 location.hash = nomeAba;
                 if (botao) botao.className = 'btn-novo_mod';
-                document.getElementById('Historia').style.display = (bloco === "aba-historia") ? "block" : "none";
+                document.getElementById('saida-historia-projeto').style.display = (nomeAba === "historia") ? "" : "none";
             } else {
                 document.getElementById('aba-visao-geral').style.display = 'block';
                 location.hash = 'visao-geral';
-                document.getElementById('Historia').style.display = 'none';
-                
             }
         }
 

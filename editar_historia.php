@@ -1,8 +1,6 @@
     <script src='modular_text.js'></script>
     <div id="aba-historia">
 
-        <h2 id="Historia">História</h2>
-
         <form method="POST" action="">
             <input id="salvar_historia" type="hidden" name="salvar_historia" value="1">
 

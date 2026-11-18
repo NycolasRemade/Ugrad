@@ -174,8 +174,6 @@ include 'header.php'
 
         <hr>
 
-        <h2 id="Historia">História</h2>
-
         <!-- VISÃO GERAL -->
         <div id="aba-visao-geral">
             <h1><?= htmlspecialchars($projeto['nome'] ?? 'Nome do projeto') ?></h1>
@@ -334,25 +332,28 @@ include 'header.php'
         <script src='modular_text.js'></script>
 
         <div id="aba-historia" style="display: none;">
-            
+
+            <h2>História</h2>
+            <br>
+
             <?php if ($pode_editar_projeto): ?>
             <div class='buttons_criar' style="float: left;">
                 <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
             </div><br><br>
             <?php endif; ?>
 
-            <div id="saida-historia-projeto">
-                <script>
-                    const divSaida = document.getElementById('saida-historia-projeto');
-                    divSaida.replaceChildren(parser(lexer(
-                        <?= json_encode($projeto['historia']); ?>
-                    .replace(/\r/g, ""))));
-                </script>
-            </div>
         </div>
     </div>
-</div>
 
+    <div id="saida-historia-projeto">
+        <script>
+            const divSaida = document.getElementById('saida-historia-projeto');
+            divSaida.replaceChildren(parser(lexer(
+                <?= json_encode($projeto['historia']); ?>
+            .replace(/\r/g, ""))));
+        </script>
+    </div>
+</div>
 
     <?php include 'projeto_funcoes.php'; ?>
 

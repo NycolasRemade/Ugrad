@@ -186,11 +186,14 @@ textarea{
 .poly{
   -webkit-filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
   filter: drop-shadow(10px 10px 2px rgba(0, 0, 0, 0.25));
-  width: 91%;
+  width: calc(91% - 200px);
   font-size: 32px;
   margin-bottom: 50px;
-  min-height: 400px;
-  height: auto;
+  padding-top: 70px;
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-bottom: 40px;
+  height: fit-content;
 }
 
 .poly p{
@@ -207,14 +210,16 @@ textarea{
 
 .medio{
   background-image: url("Fotos/Polygon 4.png");
-  background-position: center;
+  background-position: top center;
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: 100% 100%;
 }
 
 .rebarba{
   background-image: url("Fotos/Polygon 5.png");
-  background: no-repeat;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 /*Elementos de edição*/

@@ -45,8 +45,6 @@ const lexer = (function() {
                 continue;
             }
 
-
-
             if (str[i] === '#' && str[i+1] === '>') {
                 ++i;
                 tokens.push({ type: 'closetag', value: '' });
@@ -56,12 +54,13 @@ const lexer = (function() {
 
             if (typeof _stringTypes[str[i]] === "string") {
                 const strHolder = _stringTypes[str[i]];
-                const strTk = { type: 'string', value: _stringTypes[str[i]] };
-                while (str[++i] && !(_stringTypes[str[i]] === strHolder)) {
+                const strTk = { type: 'string', value: _stringTypes[str[i]] }; //Esse código quase que funciona, porém também não é possível criar uma string com mais de uma linha.
+                while (str[++i] && !(_stringTypes[str[i]] === strHolder)) { 
                     if (str[i] === '\\') ++i;
                     strTk.value += str[i];
                 }
                 tokens.push(strTk);
+                console.log(strTk.value +" debug");
                 continue;
             }
 
@@ -115,6 +114,18 @@ const parser = (function(){
     let _i = 0;
     let _fragment;
     function _parse_token() {
+
+        const _classTypes = {
+        'h1': 'historia-titulo',
+        'h2': 'historia-subtitulo',
+        'h3': 'historia-textogrande',
+
+        'bloco': 'box long',
+        'blocoP': 'box short',
+        'blocoM': 'poly medio',
+        'blocoG': 'poly rebarba'
+        };
+
         switch (_tokens[_i].type) {
             case "tag":
                 switch (_tokens[_i].value) {
@@ -133,7 +144,7 @@ const parser = (function(){
                     case "h2":                     
                     case "h3": {
                         const title = document.createElement("span");
-                        title.className = (_tokens[_i].value === "h1") ? "historia-titulo" : ((_tokens[_i].value === "h2") ? "historia-subtitulo" : "historia-textogrande");
+                        title.className = _classTypes[_tokens[_i].value]; 
                         const previousFragment = _fragment;
                         _fragment = title;
                         while (_tokens[++_i] && _tokens[_i].type !== "closetag") {
@@ -149,7 +160,7 @@ const parser = (function(){
                     case "blocoM" : 
                     case "blocoG" : {
                         const bloco = document.createElement("div");
-                        bloco.className = (_tokens[_i].value === "bloco") ? "box long" : ((_tokens[_i].value === "blocoP") ? "box short" : ((_tokens[_i].value === "blocoM") ? "poly medio" : "poly rebarba"));
+                        bloco.className = _classTypes[_tokens[_i].value];
                         const previousFragment = _fragment;
                         _fragment = bloco;
                         while (_tokens[++_i] && _tokens[_i].type !== "closetag") {
@@ -173,8 +184,31 @@ const parser = (function(){
                 }
                 break;
             case "string": {
-                const node = document.createTextNode(_tokens[_i].value);
-                _fragment.appendChild(node);
+                switch (_tokens[_i].value) {
+
+                    case "italic":
+                    case "bold":
+                    case "meringue": {
+                        const title = document.createElement("span");                   //Todo esse código aparentemente não funciona, pois os casos nunca acontecem, 
+                        title.className = _tokens[_i].value ;                           // e se forçar eles a acontecerem, resulta em um erro que diz que o valor é 'undefined', mesmo que claramente ele não é.
+                        const previousFragment = _fragment;
+                        _fragment = title;
+                        while (_tokens[++_i] && _tokens[_i].value !== title.className) {
+                            _parse_token();
+                        }
+                        _fragment = previousFragment;
+                        _fragment.appendChild(title);
+                        console.log(_tokens[_i].value);
+                        break;
+                    }
+
+                    default: {
+                        const node = document.createTextNode(_tokens[_i].value);
+                        _fragment.appendChild(node);
+                        console.log(_tokens[_i].value + " default");
+                        break;
+                    }
+                }
                 break;
             }
             case "closetag": {

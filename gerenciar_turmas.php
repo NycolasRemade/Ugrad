@@ -195,7 +195,7 @@ include 'header.php';
 ?>
 
     <div class="centrao">
-    <div style="height: 120px;"></div>
+    <div style="height: 180px;"></div>
 
     <div id="main_paper">
         <h1>Painel de turmas</h1>

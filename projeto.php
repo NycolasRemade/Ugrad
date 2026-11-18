@@ -158,8 +158,9 @@ try {
 //
 //////////////////////////////////
 $title = urldecode($projeto['nome'] ?? 'Projeto') . ' - Ugrad';
-$href = 'pesquisa_de_projetos.php';
+$href = 'dashboard.php';
 $baseUrl = '_projeto';
+$pdp = true;
 include 'header.php'
 ?>
 <div class="centrao">

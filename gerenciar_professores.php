@@ -134,10 +134,10 @@ $professores = $stmt_profs->fetchAll();
 
 // Consulta códigos ativos criados para professores desta instituição
 $stmt_codigos = $pdo->prepare(
-    'SELECT codigo, data_criacao
-     FROM codigo_instituicao 
-     WHERE id_instituicao = ? AND tipo_usuario = 2 AND id_turma IS NULL 
-     ORDER BY data_criacao DESC'
+   'SELECT codigo, data_criacao
+    FROM codigo_instituicao
+    WHERE id_instituicao = ? AND tipo_usuario = 2 AND id_turma IS NULL 
+    ORDER BY data_criacao DESC'
 );
 $stmt_codigos->execute([$id_instituicao]);
 $codigo_prof = $stmt_codigos->fetch();
@@ -174,7 +174,11 @@ include 'header.php';
 
     <!-- Botão para gerar código de professor e listagem dos códigos ativos -->
     <div style="margin-bottom: 20px;">
-        Código: <?= $codigo_prof['codigo']; ?> (<?= strtotime($codigo_prof['data_criacao']) < strtotime('-7 day') ? 'Expirado' : 'Válido' ?>)
+        <?php if (isset($codigo_prof['codigo'])): ?>
+        Código: <?= $codigo_prof['codigo']; ?> (<?= (strtotime($codigo_prof['data_criacao']) < strtotime('-7 day')) ? 'Expirado' : 'Válido' ?>)
+        <?php else: ?>
+        Sem código gerado.
+        <?php endif; ?>
         <form action="" method="POST" style="display: inline-block;">
             <input type="hidden" name="acao" value="gerar_codigo_professor">
             <button type="submit" class="btn-novo">+ Gerar Código para Professor</button>
@@ -184,7 +188,7 @@ include 'header.php';
     <?php if (count($professores) > 0): ?>
         <p>
             <label for="campo-pesquisa"><strong>Pesquisar Professor:</strong></label>
-            <input type="text" id="campo-pesquisa" onkeyup="filtrarProfessores()" placeholder="Digite o nome ou e-mail...">
+            <input type="text" id="campo-pesquisa" onkeyup="filtrarProfessores()" placeholder="Digite o nome ou e-mail..." style="padding: 8px 12px; width: 100%; max-width: 400px; font-size: 14px;">
         </p>
         <table border="1" cellpadding="5" cellspacing="0" id="tabela-professores">
             <thead>

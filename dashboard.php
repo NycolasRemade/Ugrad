@@ -109,11 +109,6 @@ require 'header.php'
             $stmt->execute([$_SESSION['usuario_id_instituicao']]);
             $projetos = $stmt->fetchAll();
             ?>
-            <details>
-                <summary>
-                    <span>Turmas fixadas</span>
-                </summary>
-            </details>
 
             <details>
                 <summary>

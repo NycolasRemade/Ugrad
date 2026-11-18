@@ -343,13 +343,13 @@ include 'header.php';
                         <form method="POST" style="display:inline;">
                             <input type="hidden" name="acao" value="aceitar_convite">
                             <input type="hidden" name="id_convite" value="<?= $convite['id_convite'] ?>">
-                            <button type="submit" title="Aceitar">✓</button>
+                            <button type="submit" class="btn-novo" title="Aceitar">Aceitar</button>
                         </form>
 
                         <form method="POST" style="display:inline;">
                             <input type="hidden" name="acao" value="recusar_convite">
                             <input type="hidden" name="id_convite" value="<?= $convite['id_convite'] ?>">
-                            <button type="submit" title="Recusar">X</button>
+                            <button type="submit" class="btn-novo" title="Recusar">Recusar</button>
                         </form>
 
                     </div>

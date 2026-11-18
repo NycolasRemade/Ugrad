@@ -190,6 +190,7 @@ foreach ($alunos as $a) {
 //////////////////////////////////
 $title = 'Painel de Turmas - Ugrad';
 $href = 'dashboard.php';
+$baseUrl = '_instituicao';
 include 'header.php';
 ?>
 

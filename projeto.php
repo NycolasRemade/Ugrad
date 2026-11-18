@@ -174,6 +174,8 @@ include 'header.php'
 
         <hr>
 
+        <h2 id='hist'>História</h2>
+
         <!-- VISÃO GERAL -->
         <div id="aba-visao-geral">
             <h1><?= htmlspecialchars($projeto['nome'] ?? 'Nome do projeto') ?></h1>
@@ -332,9 +334,6 @@ include 'header.php'
         <script src='modular_text.js'></script>
 
         <div id="aba-historia" style="display: none;">
-
-            <h2>História</h2>
-            <br>
 
             <?php if ($pode_editar_projeto): ?>
             <div class='buttons_criar' style="float: left;">

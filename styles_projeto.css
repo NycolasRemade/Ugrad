@@ -169,6 +169,7 @@ textarea{
   width: 65%;
   padding-top: 30px;
   padding-bottom: 30px;
+  text-align: justify;
 }
 
 .long p, .short p{
@@ -493,6 +494,7 @@ hr{
   font-weight: 800;
   margin-top: 20px;
   margin-bottom: 20px;
+  text-align: center;
 }
 
 .historia-subtitulo {
@@ -501,6 +503,7 @@ hr{
   font-weight: 600;
   margin-top: 15px;
   margin-bottom: 15px;
+  text-align: center;
 }
 
 .historia-textogrande {
@@ -519,7 +522,8 @@ hr{
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  margin: 4px;
+  align-self: center;
+  margin: 6px;
 }
 
 .historia-bloco {
@@ -532,4 +536,9 @@ hr{
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+#saida-historia-projeto .box, #saida-historia-projeto .poly{
+  display: flex;
+  flex-direction: column;
 }

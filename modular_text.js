@@ -241,3 +241,13 @@ const parser = (function(){
     };
 
 })();
+
+//Edição de história user-friendly
+
+    var divsaida = document.getElementById('saida-historia-projeto')
+    function userFriendlyEdit(divsaida){
+        elementos = divsaida;
+        console.log(elementos)
+    }
+
+    userFriendlyEdit(divsaida)

@@ -11,6 +11,9 @@ if (!isset($_GET['id'])) {
     header('Location: dashboard.php');
     exit;
 }
+
+
+$scroll = $_GET['scroll'];
 $id_projeto = (int)$_GET['id'];
 $usuario_id = $_SESSION['usuario_id'];
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? 0;
@@ -325,14 +328,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['sucesso'] = 'História do projeto atualizada!';
         $_SESSION['erro'] = '';
-        if ($_POST['salvar_historia'] == 2) {
-            header("Location: projeto.php?id=$id_projeto#historia");
-            exit;
-        }
-
+        
         $_SESSION['sucesso'] = 'Alterações salvas';
         $_SESSION['erro'] = '';
-        header("Location: editar_projeto.php?id=$id_projeto");
+        header("Location: editar_projeto.php?id=$id_projeto&scroll=".$_POST['salvar_historia']);
         exit;
     }
 }
@@ -451,9 +450,7 @@ $baseUrl = '_projeto';
 include 'header.php';
 ?>
 
-
-
-<main class='centrao'>
+<main class='centrao prj'>
     <div style="height: 100px"></div>
 
     <div id='main_paper_edit'>

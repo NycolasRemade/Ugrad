@@ -30,7 +30,7 @@ if ((!isset($conta) || $conta) && isset($href)){
 </head>
 
 <?php if(isset($href)): ?>
-<body onLoad="window.scroll(0, 0)">
+<body onLoad="window.scroll(0,<?= $scroll ?? 0 ?>)" >
 
 
     <div id="navbar">

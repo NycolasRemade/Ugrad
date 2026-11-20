@@ -5,10 +5,10 @@ function isLetterOrNumber(char) {
 const lexer = (function() {
 
     const _blockTags = {
-        '|': 'bloco',
-        '¨': 'blocoP',
+        '\\': 'bloco',
+        '|': 'blocoP',
         ';': 'blocoM',
-        '/': 'blocoG'
+        ':': 'blocoG'
     };
 
     // const _stringStyles = {

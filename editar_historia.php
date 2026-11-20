@@ -1,37 +1,58 @@
     <script src='modular_text.js'></script>
     <div id="aba-historia">
 
-        <form method="POST" action="">
-            <input id="salvar_historia" type="hidden" name="salvar_historia" value="1">
+        <div id='historia_bloco_inicial'>
 
-            <div id='historia_bloco_inicial'>
-                <div>
-                    <input type="file" id="input_imagem_historia" accept="image/png, image/jpeg, image/webp" hidden>
-                    <button type="button" class="btn-novo" onclick="document.getElementById('input_imagem_historia').click()">
-                        + Upload de imagem
-                    </button>
-                    <span id="status-upload-historia"></span>
-                </div>
-                <textarea name="historia_projeto" id="historia_projeto" 
-                style="max-width: 100%; border: 1px solid black;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
+            <h1>Referência de uso</h1>
+            <p>O editor de história utiliza um sistema de tags que permite a estilização do texto:<br>
+                <span class="bold">
+                    <\ </span> abre um bloco normal,<br>
+                        <span class="bold "><|</span> abre um bloco pequeno,<br>
+                                <span class="bold ">
+                                    <; </span> abre um bloco poligonal e<br>
+                                        <span class="bold">
+                                            <:</span> abre um bloco poligonal com rebarba.<br>
+                                                Após toda abertura de bloco, para fechá-lo, basta digitar <span class="bold italic">#></span><br><br>
 
-                <div class='buttons_criar'>
-                    <button type="submit" class="btn-novo">Salvar</button>
-                </div>
-            </div>
-            <br>
-            <br>
-        </form>
+                                                Para utilizar títulos, subtítlos ou texto grande:<br>
+                                                <span class="bold">###</span>título<br>
+                                                <span class="bold">##</span>subtítulo<br>
+                                                <span class="bold">#</span>texto grande<br><br>
+
+                                                Para utilizar estilos de texto, é necessário colocar o elemento que você quer entre as tags, que nem criar um bloco:<br>
+                                                <span class="bold">
+                                                    <#b</span> abre uma tag <span class="bold">bold</span><br>
+                                                        <span class="bold">
+                                                            <#i</span> abre uma tag <span class="italic">itálica</span><br>
+                                                                <span class="bold">
+                                                                    <#me</span> abre uma tag <span class="meringue">meringue</span><br><br>
+
+                                                                        Exemplo:<br><br>
+
+                                                                        <|<br>
+                                                                            ###Meu trabalho super cool<br>
+                                                                            conteúdo de história dentro do bloco, imagens, texto, etc...<br>
+                                                                            ##subtítlo do trabalho<br>
+
+                                                                            texto com estilização <#me meringue #><br>
+                                                                                #><br>
+                                                                                Conteúdo fora do bloco<br><br>
+
+            </p>
+
+        </div>
+        <br>
+        <br>
 
         <!-- GALERIA DE IMAGENS DA HISTÓRIA -->
-        <div id="secao-imagens-historia" style="margin-top: 20px;">
+        <div id="secao-imagens-historia" style="margin-top: -30px;">
             <h4>Imagens enviadas para a história</h4>
             <div id="galeria-imagens-historia" style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px;">
                 <?php if (!empty($imagens_historia)): ?>
                     <?php foreach ($imagens_historia as $img_item): ?>
-                        <?php 
-                            $id_img = (int)$img_item['id'];
-                            $url_img = 'projeto_img.php?id=' . $id_img; 
+                        <?php
+                        $id_img = (int)$img_item['id'];
+                        $url_img = 'projeto_img.php?id=' . $id_img;
                         ?>
                         <div class="card-imagem-historia" data-id="<?= $id_img ?>" style="padding: 8px; width: 160px; background: #fafafa; border: 1px solid #ccc; border-radius: 6px; display: flex; flex-direction: column; gap: 6px;">
                             <div class="historia-imagem" style="background-image: url(<?= htmlspecialchars($url_img) ?>); width: 100%; height: 100px; background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
@@ -47,20 +68,52 @@
                     <p id="msg-sem-imagens-historia" style="color: #666; font-size: 0.9em;">Nenhuma imagem enviada ainda.</p>
                 <?php endif; ?>
             </div>
+        </div><br><br>
+
+        <div id="bloco_edicao" class='box short'>
+            <form method="POST" action="">
+                <input id="salvar_historia" type="hidden" name="salvar_historia">
+
+
+                <div>
+                    <input type="file" id="input_imagem_historia" accept="image/png, image/jpeg, image/webp" hidden>
+                    <button type="button" class="btn-novo" onclick="document.getElementById('input_imagem_historia').click()">
+                        + Upload de imagem
+                    </button>
+                    <span id="status-upload-historia"></span>
+                </div>
+
+
+                <textarea name="historia_projeto" id="historia_projeto"
+                    style="max-width: 100%; border: 1px solid black;"><?= htmlspecialchars($projeto['historia'] ?? '') ?></textarea>
+
+                <div class='buttons_criar'>
+                    <button onclick="setScrollValue()" type="submit" class="btn-novo">Salvar</button>
+                </div>
+
+            </form>
         </div>
 
+
         <hr style="margin: 20px 0;">
+
 
         <div id="saida-historia-projeto">
             <script>
                 const divSaida = document.getElementById('saida-historia-projeto');
                 divSaida.replaceChildren(parser(lexer(
                     <?= json_encode($projeto['historia'] ?? ''); ?>
-                .replace(/\r/g, ""))));
+                    .replace(/\r/g, ""))));
             </script>
         </div>
 
         <script>
+
+            function setScrollValue(){
+                document.getElementById('salvar_historia').value = window.scrollY;
+                
+            }
+
             function atualizarPreviewHistoria() {
                 const textarea = document.getElementById('historia_projeto');
                 const divSaida = document.getElementById('saida-historia-projeto');
@@ -176,7 +229,7 @@
                 }
             }
 
-            document.getElementById('input_imagem_historia').addEventListener('change', async function () {
+            document.getElementById('input_imagem_historia').addEventListener('change', async function() {
                 const arquivo = this.files[0];
                 if (!arquivo) return;
 
@@ -211,6 +264,6 @@
                     this.value = '';
                 }
             });
+            
         </script>
     </div>
-

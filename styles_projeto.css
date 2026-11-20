@@ -444,10 +444,6 @@ hr{
   background-color: white;
 }
 
-.buttons_criar{
-  float: right;
-}
-
 .btn-x {
   border: none;
   font-size: 26px;
@@ -469,8 +465,12 @@ hr{
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
+  width: 100%;
   background-color: #F2F2F7;
+}
+
+.prj #saida-historia-projeto{
+  margin-left: 200px;
 }
 
 #historia_bloco_inicial{
@@ -486,7 +486,13 @@ hr{
   margin-left: -50px;
 }
 
-
+#bloco_edicao{
+  position: sticky;
+  top:500px;
+  z-index: 1;
+  margin-left: -200px;
+  width: 400px;
+}
 
 .historia-titulo {
   color: black;

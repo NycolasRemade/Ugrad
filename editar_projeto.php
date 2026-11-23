@@ -13,7 +13,7 @@ if (!isset($_GET['id'])) {
 }
 
 
-$scroll = $_GET['scroll'];
+$scroll = $_GET['scroll'] ?? null;
 $id_projeto = (int)$_GET['id'];
 $usuario_id = $_SESSION['usuario_id'];
 $usuario_id_instituicao = $_SESSION['usuario_id_instituicao'] ?? 0;

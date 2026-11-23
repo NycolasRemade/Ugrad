@@ -207,7 +207,8 @@ INSERT INTO categorias (nome) VALUES
 
 
 INSERT INTO projetos (nome, estado) VALUES
-  ('Projeto 1', 3);
+  ('Projeto 1', 3),
+  ('UGRAD outro projeto', 3);
 INSERT INTO proj_dados (id_projeto, descricao, historia) VALUES
 (
 1,
@@ -222,8 +223,28 @@ Mais texto
 <#i itálico #><#b negrito #>
 <#me meringue#>
 #>'
+),
+(
+2,
+'Descrição do projeto',
+'<#h1 Título - história do projeto#>
+<#h2 Subtítulo#>
+
+<|
+Bloco de texto com imagem
+<#img "Fotos/Ugrad logo cinza.png"#>
+Mais texto
+<#i itálico #><#b negrito #>
+<#me meringue#>
+#>'
 );
 INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES
-  (1, 1, 1, 1);
+  (1, 1, 1, 1),
+  (1, 1, 2, 1),
+  (1, 2, 2, 2);
 INSERT INTO proj_categorias (id_projeto, id_categoria) VALUES
-  (1, 1);
+  (1, 1),
+  (1, 2),
+  (2, 1),
+  (2, 3),
+  (2, 5);

@@ -488,7 +488,7 @@ hr{
 
 #bloco_edicao{
   position: sticky;
-  top:500px;
+  top:450px;
   z-index: 1;
   margin-left: -200px;
   width: 400px;

@@ -43,24 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             }
             break;
         case 'desativar':
-            if (conta_protegida($id)) {
-                $result['success'] = false;
-                $result['message'] = 'Esta conta é protegida (administrador principal ou a sua própria conta) e não pode ser desativada.';
-            } else {
-                usuario_toggle_ativacao($id, false);
-                $result['message'] = 'Conta de ' . $usuario['nome'] . ' desativada.';
-            }
+            usuario_toggle_ativacao($id, false);
+            $result['message'] = 'Conta de ' . $usuario['nome'] . ' desativada.';
             break;
         case 'reativar':
             usuario_toggle_ativacao($id, true);
             $result['message'] = 'Conta de ' . $usuario['nome'] . ' reativada.';
             break;
         case 'excluir':
-            if (conta_protegida($id)) {
+            if ($usuario['tipo_nome'] === 'ADMINISTRADOR') {
                 $result['success'] = false;
-                $result['message'] = ($id === (int)($_SESSION['usuario_id'] ?? 0))
-                    ? 'Você não pode excluir a sua própria conta.'
-                    : 'O administrador principal não pode ser excluído.';
+                $result['message'] = 'A conta de administrador não pode ser excluída.';
             } elseif (usuario_excluir($id)) {
                 $result['message'] = 'Conta de ' . $usuario['nome'] . ' excluída.';
                 $result['removed'] = true;

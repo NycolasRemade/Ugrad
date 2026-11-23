@@ -19,7 +19,7 @@
                                                 <span class="bold">##</span> subtítulo<br>
                                                 <span class="bold">#</span> texto grande<br><br>
 
-                                                Para estilos de texto:<br>
+                                                Para estilos de texto, coloque um elemento entre as tags:<br>
                                                 <span class="bold">
                                                     <#b</span> texto em <span class="bold">negrito</span><br>
                                                         <span class="bold">

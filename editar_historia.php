@@ -12,27 +12,27 @@
                                     <; </span> abre um bloco poligonal e<br>
                                         <span class="bold">
                                             <:</span> abre um bloco poligonal com rebarba.<br>
-                                                Após toda abertura de bloco, para fechá-lo, basta digitar <span class="bold italic">#></span><br><br>
+                                                Para fechar os blocos, digite <span class="bold italic">#></span><br><br>
 
-                                                Para utilizar títulos, subtítlos ou texto grande:<br>
-                                                <span class="bold">###</span>título<br>
-                                                <span class="bold">##</span>subtítulo<br>
-                                                <span class="bold">#</span>texto grande<br><br>
+                                                Para títulos, subtítlos ou texto grande:<br>
+                                                <span class="bold">###</span> título<br>
+                                                <span class="bold">##</span> subtítulo<br>
+                                                <span class="bold">#</span> texto grande<br><br>
 
-                                                Para utilizar estilos de texto, é necessário colocar o elemento que você quer entre as tags, que nem criar um bloco:<br>
+                                                Para estilos de texto, coloque um elemento entre as tags:<br>
                                                 <span class="bold">
-                                                    <#b</span> abre uma tag <span class="bold">bold</span><br>
+                                                    <#b</span> texto em <span class="bold">negrito</span><br>
                                                         <span class="bold">
-                                                            <#i</span> abre uma tag <span class="italic">itálica</span><br>
+                                                            <#i</span> texto em <span class="italic">itálico</span><br>
                                                                 <span class="bold">
-                                                                    <#me</span> abre uma tag <span class="meringue">meringue</span><br><br>
+                                                                    <#me</span> texto com <span class="meringue">fonte especial</span><br><br>
 
                                                                         Exemplo:<br><br>
 
                                                                         <|<br>
-                                                                            ###Meu trabalho super cool<br>
-                                                                            conteúdo de história dentro do bloco, imagens, texto, etc...<br>
-                                                                            ##subtítlo do trabalho<br>
+                                                                            ### Meu trabalho super legal<br>
+                                                                            texto dentro do bloco, imagens, etc...<br>
+                                                                            ## subtítlo do trabalho<br>
 
                                                                             texto com estilização <#me meringue #><br>
                                                                                 #><br>

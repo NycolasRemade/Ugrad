@@ -155,7 +155,7 @@ include 'header.php';
     <h1>Painel de professores</h1>
     <p>Instituição: <strong><?= htmlspecialchars($_SESSION['usuario_nome'] ?? '') ?></strong></p>
     <br>
-    <p><a href="dashboard.php" class="btn-novo">Voltar ao Painel</a></p>
+    <p><!--a href="dashboard.php" class="btn-novo">Voltar ao Painel</a--></p>
     <br>
 
     <hr>

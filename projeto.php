@@ -339,6 +339,7 @@ include 'header.php'
         <div id="aba-historia" style="display: none;">
 
             <?php if ($pode_editar_projeto): ?>
+            <br>
             <div class='buttons_criar' style="float: left;">
                 <a href="editar_projeto.php?id=<?= $id_projeto; ?>#historia" class="btn-novo">Editar</a>
             </div><br><br>

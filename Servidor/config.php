@@ -1,7 +1,7 @@
 <?php
 /*
 
-//Opções se for utilizar o cocker
+//Opções se for utilizar o docker
 
 $host = 'localhost';
 $port = '3306';
@@ -30,4 +30,6 @@ try {
 } catch (\PDOException $e) {
     die('Erro na conexão: ' . $e->getMessage());
 }
+
 ?>
+ola

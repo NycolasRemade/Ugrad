@@ -200,7 +200,7 @@ include 'header.php';
     <div id="main_paper">
         <h1>Painel de turmas</h1>
         <p><strong><?= htmlspecialchars($_SESSION['usuario_nome']) ?></strong>  (<?= $_SESSION['usuario_tipo'] == 4 ? 'Instituição' : 'Professor' ?>)</p>
-        <br><p><a href="dashboard.php" class="btn-novo">Voltar ao Painel</a></p><br>
+        <br><p><!--a href="dashboard.php" class="btn-novo">Voltar ao Painel</a--></p>
         <hr>
         <?php if (!empty($mensagem_sucesso)): ?>
             <p><strong>SUCESSO:</strong> <?= htmlspecialchars($mensagem_sucesso) ?></p>

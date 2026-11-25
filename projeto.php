@@ -49,19 +49,6 @@ if ($_SESSION['usuario_tipo'] === 1) {
     $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
     $projeto = $stmt->fetch();
 
-} elseif ($_SESSION['usuario_tipo'] === 3) {
-    // EMPRESARIO
-
-    $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
-        FROM projetos p 
-        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-        WHERE p.id = ? AND p.estado = 3'
-    );
-    // se o projeto for público
-    $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
-    $projeto = $stmt->fetch();
-
 } elseif ($_SESSION['usuario_tipo'] === 5) {
     // ADMINISTRADOR
 
@@ -76,7 +63,21 @@ if ($_SESSION['usuario_tipo'] === 1) {
     $projeto = $stmt->fetch();
     $pode_editar_projeto = true;
 
+} else {
+    // EMPRESARIO
+
+    $stmt = $pdo->prepare(
+       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
+        FROM projetos p 
+        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
+        WHERE p.id = ? AND p.estado = 3'
+    );
+    // se o projeto for público
+    $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
+    $projeto = $stmt->fetch();
+
 }
+
 
 if (empty($projeto)) {
     header('Location: dashboard.php');

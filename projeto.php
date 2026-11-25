@@ -123,13 +123,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
 
 // membros do projeto
 $stmt = $pdo->prepare(
-   'SELECT u.nome 
+   'SELECT u.nome , u.id
     FROM proj_membros pm 
     JOIN usuarios u ON pm.id_convidado = u.id 
     WHERE pm.id_projeto = ? AND (pm.status_membro = 1 OR pm.status_membro = 2)'
 );
 $stmt->execute([$id_projeto]);
-$membros = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$membros = $stmt->fetchAll();
 
 // tags do projeto
 $stmt = $pdo->prepare(
@@ -202,8 +202,9 @@ include 'header.php'
 
             <p>
                 <br>
-                <strong>Criado por:</strong> 
-                <?= !empty($membros) ? htmlspecialchars(implode(', ', $membros)) : 'Nenhum integrante cadastrado' ?>
+                <strong>Criado por:</strong><?php if (!empty($membros)): foreach($membros as $m): ?>
+                    <a style="text-decoration: underline;" href="conta.php?userid=<?= $m['id'] ?>"><?= $m['nome'] ?></a>
+                <?php endforeach; else: ?>Nenhum integrante cadastrado.<?php endif; ?>
             </p>
 
             <p>

@@ -34,7 +34,7 @@ if ((!isset($conta) || $conta) && isset($href)){
 
 
     <div id="navbar">
-        <img src="Fotos/Polygon 2.png" alt="navbar">
+        <img src="Fotos/Polygon 2.png" alt="navbar" style="pointer-events: none;">
         <a href="<?=$href?>">
             <h1 class="meringue">Ugrad</h1>
         </a>

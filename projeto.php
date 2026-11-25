@@ -195,7 +195,7 @@ include 'header.php'
                     <div style="width: 640px; height:360px; background-position:center; background-repeat:none; background-size:cover; background-image: url('data:image/webp;base64,<?= base64_encode($projeto['img']) ?>');"></div>
                 <?php else: ?>
                     <div style="width: 640px; height:360px; background-color: lightgray; display: flex; justify-content: center; align-items: center;">
-                        [ Imagem do Projeto ]
+                        [ Projeto sem imagem ]
                     </div>
                 <?php endif; ?>
             </div>

@@ -143,19 +143,19 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
     <button type="submit" class="btn btn-outline">Solicitar alteração de senha</button>
   </form>
 
-  <?php if ($usuario['ativada']): ?>
+  <?php if ($usuario['ativada'] && !conta_protegida((int)$usuario['id'])): ?>
     <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Desativar esta conta?">
       <input type="hidden" name="acao" value="desativar">
       <button type="submit" class="btn btn-danger">Desativar conta</button>
     </form>
-  <?php else: ?>
+  <?php elseif (!$usuario['ativada']): ?>
     <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Reativar esta conta?">
       <input type="hidden" name="acao" value="reativar">
       <button type="submit" class="btn btn-dark">Reativar conta</button>
     </form>
   <?php endif; ?>
 
-  <?php if ($usuario['tipo_nome'] !== 'ADMINISTRADOR'): ?>
+  <?php if (!conta_protegida((int)$usuario['id'])): ?>
   <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Tem certeza que deseja excluir esta conta? Essa ação não pode ser desfeita.">
     <input type="hidden" name="acao" value="excluir">
     <button type="submit" class="btn btn-danger">Excluir conta</button>

@@ -1,179 +1,69 @@
 <?php
-session_start();
-require_once 'Servidor/config.php';
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
-}
+require __DIR__ . '/includes/auth_admin.php';
+require __DIR__ . '/includes/data.php';
 
-$id_projeto = $_GET['id'];
+$id = (int)($_GET['id'] ?? 0);
+$projeto = find_projeto($id);
+$isPartial = ($_GET['partial'] ?? '') === '1'; // pedido via AJAX pela tela de pesquisa
+$isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
 
-$stmt = null;
-$projeto = null;
-$pode_editar_projeto = false;
-// dados do projeto
-if ($_SESSION['usuario_tipo'] === 1) {
-    // ALUNO
-
-    $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
-        FROM projetos p 
-        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-        JOIN proj_membros pm ON p.id = pm.id_projeto
-        WHERE p.id = ? AND (pm.id_convidado = ? OR p.estado = 3)'
-    );
-    // se o usuário for convidado
-    // ou se o projeto for público
-    $stmt->execute([$id_projeto, $_SESSION['usuario_id']]);
-    $projeto = $stmt->fetch();
-
-    $stmt = $pdo->prepare('SELECT p.id FROM projetos p 
-                           JOIN proj_membros pm ON p.id = pm.id_projeto 
-                           WHERE pm.id_convidado = ?');
-    $pode_editar_projeto = ($stmt->fetch()) ? true : false;
-
-} elseif ($_SESSION['usuario_tipo'] === 2 || $_SESSION['usuario_tipo'] === 4) {
-    // PROFESSOR ou INSTITUICAO
-
-    $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
-        FROM projetos p 
-        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-        INNER JOIN proj_membros pm ON p.id = pm.id_projeto
-        LEFT JOIN extra_usuarios e ON e.id_usuario = pm.id_convidado
-        WHERE p.id = ? AND ((pm.id_convidado = pm.id_convidante AND e.id_instituicao = ?) OR p.estado = 3)'
-    );
-    // se o membro principal (que é convidado e convidante) 
-    // for da mesma instituição do usuário
-    // ou se o projeto for público
-    $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
-    $projeto = $stmt->fetch();
-
-} elseif ($_SESSION['usuario_tipo'] === 3) {
-    // EMPRESARIO
-
-    $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
-        FROM projetos p 
-        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-        WHERE p.id = ? AND p.estado = 3'
-    );
-    // se o projeto for público
-    $stmt->execute([$id_projeto, $_SESSION['usuario_id_instituicao']]);
-    $projeto = $stmt->fetch();
-
-} elseif ($_SESSION['usuario_tipo'] === 5) {
-    // ADMINISTRADOR
-
-    $stmt = $pdo->prepare(
-       'SELECT p.id, p.nome, p.img, pd.descricao, pd.historia 
-        FROM projetos p 
-        LEFT JOIN proj_dados pd ON p.id = pd.id_projeto 
-        WHERE p.id = ?'
-    );
-    // qualquer projeto
-    $stmt->execute([$id_projeto]);
-    $projeto = $stmt->fetch();
-    $pode_editar_projeto = true;
-
-}
-
-if (empty($projeto)) {
-    header('Location: dashboard.php');
-    exit;
-}
-$nome_projeto = $projeto['nome'];
-
-$stmt = $pdo->prepare(
-    'SELECT id, comentario, nota FROM comentarios WHERE id_usuario = ?'
-);
-$stmt->execute([$_SESSION['usuario_id']]);
-$comentario_usuario = $stmt->fetch();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
-    $id_comentario = (int)$_POST['id_comentario'];
-    $comentario_texto = trim($_POST['comentario'] ?? '');
-    $nota = isset($_POST['nota']) ? (int) $_POST['nota'] : null;
-    $feedback = 0;
-
-    if (!empty($comentario_texto) && $id_projeto) {
-        try {
-            if (empty($comentario_usuario)) {
-                $stmt_ins = $pdo->prepare(
-                   'INSERT INTO comentarios (id_usuario, id_projeto, feedback, comentario, nota) 
-                    VALUES (?, ?, ?, ?, ?)'
-                );
-                $stmt_ins->execute([$_SESSION['usuario_id'], $id_projeto, $feedback, $comentario_texto, $nota]);
-            } else {
-                $stmt_upd = $pdo->prepare(
-                   'UPDATE comentarios
-                    SET comentario = ?, nota = ?
-                    WHERE id_usuario = ?'
-                );
-                $stmt_upd->execute([$comentario_texto, $nota, $_SESSION['usuario_id']]);
-            }
-        } catch (PDOException) {
-            $mensagem_erro = 'Erro ao salvar comentário';
-        }
-        header("Location: projeto.php?id=$id_projeto");
+if (!$projeto) {
+    http_response_code(404);
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Projeto não encontrado.']);
         exit;
     }
+    if ($isPartial) {
+        echo '<p class="detail-placeholder">Projeto não encontrado.</p>';
+        exit;
+    }
+    $pageTitle = 'Projeto não encontrado';
+    require __DIR__ . '/includes/header.php';
+    echo '<p>Projeto não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/footer.php';
+    exit;
 }
 
-// membros do projeto
-$stmt = $pdo->prepare(
-   'SELECT u.nome 
-    FROM proj_membros pm 
-    JOIN usuarios u ON pm.id_convidado = u.id 
-    WHERE pm.id_projeto = ? AND (pm.status_membro = 1 OR pm.status_membro = 2)'
-);
-$stmt->execute([$id_projeto]);
-$membros = $stmt->fetchAll(PDO::FETCH_COLUMN);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
+    $result = ['success' => true, 'acao' => $_POST['acao'], 'id' => $id, 'message' => '', 'removed' => false];
 
-// tags do projeto
-$stmt = $pdo->prepare(
-   'SELECT c.nome 
-    FROM proj_categorias pc 
-    JOIN categorias c ON pc.id_categoria = c.id 
-    WHERE pc.id_projeto = ?'
-);
-$stmt->execute([$id_projeto]);
-$tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    switch ($_POST['acao']) {
+        case 'excluir':
+            if (projeto_excluir($id)) {
+                $result['message'] = 'Projeto ' . $projeto['nome'] . ' excluído.';
+                $result['removed'] = true;
+            } else {
+                $result['success'] = false;
+                $result['message'] = 'Não foi possível excluir o projeto "' . $projeto['nome'] . '": há dados vinculados que não puderam ser removidos.';
+            }
+            break;
+        default:
+            $result['success'] = false;
+            $result['message'] = 'Ação desconhecida.';
+    }
 
-// comentários/avaliações
-try {
-    $stmt = $pdo->prepare(
-       'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
-        FROM comentarios c
-        JOIN usuarios u ON c.id_usuario = u.id
-        JOIN tipos_usuario tu ON u.tipo = tu.id
-        WHERE c.id_projeto = ?
-        ORDER BY c.data_criacao DESC'
-    );
-    $stmt->execute([$id_projeto]);
-    $comentarios = $stmt->fetchAll();
-} catch (PDOException) {
-    $mensagem_erro = 'Não foi possível acessar os comentários do projeto';
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+
+    // Fallback sem JS: navegação normal com mensagem via sessão.
+    flash_set($result['message']);
+    header('Location: ' . ($result['removed'] ? 'pesquisa.php?tab=projetos' : ('projeto.php?id=' . $id)));
+    exit;
 }
-//
-//////////////////////////////////
-$title = urldecode($projeto['nome'] ?? 'Projeto') . ' - Ugrad';
-$href = 'dashboard.php';
-$baseUrl = '_projeto';
-$pdp = true;
-include 'header.php'
-?>
-<div class="centrao">
-    <div style="height: 200px"></div>
 
-    <div id="main_paper">
-        <nav id='mudaraba'>
-            <div onclick="mudarAba('visao-geral')" id='btn_visao-geral'><p>Visão geral</p></div>
-            <div onclick="mudarAba('historia')" id='btn_historia'><p>História</p></div>
-            <div onclick="mudarAba('avaliacoes')" id='btn_avaliacoes'><p>Avaliações</p></div>
-        </nav>
+$categorias = categorias_do_projeto($id);
+$membros = membros_do_projeto($id);
+$reportagens = reportagens_do_projeto($id);
 
-        <hr>
+if ($isPartial) {
+    // Fragmento puro (sem <html>/header/footer) para ser injetado via fetch()
+    require __DIR__ . '/includes/projeto_detail.php';
+    exit;
+}
 
         <h2 id='hist'>História</h2>
 

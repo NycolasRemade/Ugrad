@@ -10,7 +10,7 @@ $usuario_id = $_SESSION['usuario_id'];
 $usuario_inspect = $_GET['userid'];
 
 $stmt_user = $pdo->prepare(
-   'SELECT u.nome, u.email, u.descricao, u.imagem_perfil, t.nome AS tipo_nome 
+   'SELECT u.nome, u.descricao, u.imagem_perfil, t.nome AS tipo_nome 
     FROM usuarios u
     JOIN tipos_usuario t ON u.tipo = t.id
     WHERE u.id = ?'
@@ -40,12 +40,6 @@ include 'header.php';
         <div id='variables_container' style='margin-left: 100px; margin-top:50px'>
 
             <h1><?= htmlspecialchars($usuario['nome'] ?? '') ?></h1>
-
-        <br>
-
-            <h2><?= htmlspecialchars($usuario['email'] ?? '') ?></h2>
-
-        <br>
         
             <div class='textarea_fix box' style='padding:30px; margin-left:-30px'>
             <p id="descricao"><?= htmlspecialchars($usuario['descricao'] ?? 'Sem descrição') ?></p>

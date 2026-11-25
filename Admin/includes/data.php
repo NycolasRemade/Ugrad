@@ -462,33 +462,18 @@ function nome_instituicao(?int $instituicaoId): string {
  * Ações de escrita
  * ------------------------------------------------------------------- */
 
-/**
- * Administrador principal = o administrador mais antigo (menor id).
- * Ele é protegido: ninguém o exclui nem o desativa, nem outro admin
- * (por exemplo, um admin falso criado depois).
- */
-function admin_principal_id(): int {
-    global $pdo;
-    return (int)$pdo->query('SELECT MIN(id) FROM usuarios WHERE tipo = 5')->fetchColumn();
-}
-
-/** Esta conta está protegida contra exclusão/desativação? (admin principal ou a própria conta logada) */
-function conta_protegida(int $id): bool {
-    return $id === admin_principal_id() || $id === (int)($_SESSION['usuario_id'] ?? 0);
-}
-
 function usuario_toggle_ativacao(int $id, bool $ativar): bool {
     global $pdo;
-    if (!$ativar && conta_protegida($id)) return false;   // não desativa admin principal nem a si mesmo
     $stmt = $pdo->prepare('UPDATE usuarios SET ativada = ? WHERE id = ?');
     return $stmt->execute([$ativar ? 1 : 0, $id]);
 }
 
 function usuario_excluir(int $id): bool {
     global $pdo;
-    // o administrador principal e a própria conta logada nunca são excluídos;
-    // outros administradores (ex.: um admin falso) podem ser excluídos
-    if (conta_protegida($id)) return false;
+    // conta de administrador nunca pode ser excluída
+    $t = $pdo->prepare('SELECT tipo FROM usuarios WHERE id = ?');
+    $t->execute([$id]);
+    if ((int)$t->fetchColumn() === 5) return false;
     try {
         $pdo->beginTransaction();
 

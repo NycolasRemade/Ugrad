@@ -1,7 +1,6 @@
 <?php
 /** @var string $pageTitle */
 $pageTitle = $pageTitle ?? 'Admin';
-require_once __DIR__ . '/acessibilidade.php';
 
 // Evita que o navegador guarde a página em cache — sem isso, uma
 // atualização no PHP/CSS/JS pode não aparecer até um hard-refresh.
@@ -17,10 +16,8 @@ header('Pragma: no-cache');
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <?php $cssPath = __DIR__ . '/../css/style.css'; $cssVersion = file_exists($cssPath) ? filemtime($cssPath) : time(); ?>
 <link rel="stylesheet" href="<?= isset($basePath) ? $basePath : '' ?>css/style.css?v=<?= $cssVersion ?>">
-<?php acessibilidade_head(); ?>
 </head>
 <body>
-<?php acessibilidade_widget(); ?>
 <div class="app-shell">
 
   <header class="topbar">
@@ -40,7 +37,7 @@ header('Pragma: no-cache');
     </a>
   </header>
 
-  <main class="content" id="conteudo" tabindex="-1">
+  <main class="content">
     <?php if ($msg = flash_get()): ?>
       <div class="flash"><?= htmlspecialchars($msg) ?></div>
     <?php endif; ?>

@@ -42,30 +42,38 @@ include 'header.php';
 
         <div class='img_container'>
             <div id="kirkle"><div class="config" style="background-image: url('<?= !empty($usuario['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($usuario['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div></div>
-            <br>
+        <br>
+
         <div id='variables_container'>
 
-        <form method="none">
+        <form method="POST">
             <label for="nome">Nome</label><br>
-            <p id="nome" name="nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>">
+            <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" required>
         </form>
 
         <br>
 
-        <form method="none">
+        <form method="POST">
             <label for="email">E-mail</label><br>
-            <p id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
+            <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
         </form>
+
+        <br>
+        </div>
 
         <br>
         </div>
         
         <div id='descr_container'>
-
-        <form method="none">
+<br>
+        <form method="POST">
             <label for="descricao">Descrição</label><br>
             <div class='textarea_fix'>
-            <p id="descricao" name="descricao"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea> 
+            <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea>
+            </div>
             </div>
         </form>
             </div>
+
+</body>
+</html>

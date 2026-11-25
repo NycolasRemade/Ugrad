@@ -311,9 +311,8 @@ include 'header.php'
                             data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
                             <div>
                                 <a href="conta.php?userid=<?= $c['id'] ?>">
-                                <div class="projeto-membros">
                                     <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
-                                </div></a>
+                                </a>
                                     <a href="conta.php?userid=<?= $c['id'] ?>"><strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong></a>
                                 <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
                             </div>

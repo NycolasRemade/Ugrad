@@ -38,7 +38,7 @@ include 'header.php';
 
     <?php endif; ?>
 
-    <div id='config_container'>
+    <div id='config_container' style='margin-top:-100px'>
 
         <div class='img_container'>
             <div id="kirkle"><div class="config" style="background-image: url('<?= !empty($usuario['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($usuario['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div></div>
@@ -62,10 +62,7 @@ include 'header.php';
         </div>
 
         <br>
-        </div>
         
-        <div id='descr_container'>
-<br>
         <form method="POST">
             <label for="descricao">Descrição</label><br>
             <div class='textarea_fix'>
@@ -73,7 +70,7 @@ include 'header.php';
             </div>
             </div>
         </form>
-            </div>
+
 
 </body>
 </html>

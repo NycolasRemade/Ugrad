@@ -32,6 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($tipo !== 3) {
                 $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario, id_instituicao, id_turma) VALUES (?, ?, ?)');
                 $stmt->execute([$_SESSION['usuario_id'], $_SESSION['usuario_id_instituicao'], $_SESSION['usuario_id_turma']]);
+            } else {
+                $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario) VALUES (?)');
+                $stmt->execute([$_SESSION['usuario_id']]);
             }
 
             $pdo->commit();

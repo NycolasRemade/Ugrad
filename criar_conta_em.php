@@ -20,17 +20,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($nome) && $email && !empty($senha)) {
         try {
+            $pdo->beginTransaction();
 
             $stmt = $pdo->prepare('INSERT INTO usuarios(nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
             $stmt->execute([$nome, $email, password_hash($senha, PASSWORD_DEFAULT), $tipo]);
 
             $_SESSION['usuario_id'] = $pdo->lastInsertId();
             $_SESSION['usuario_nome'] = $nome;
-            
+
+            $stmt = $pdo->prepare('INSERT INTO extra_usuarios(id_usuario) VALUES (?)');
+            $stmt->execute([$_SESSION['usuario_id']]);
+
+            $pdo->commit();
             header('Location: dashboard.php');
             exit;
-            
         } catch (\PDOException $e) {
+            $pdo->rollBack();
             $erro = 'Tente usar outro e-mail.';
         }
     } else {

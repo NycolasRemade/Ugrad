@@ -18,3 +18,21 @@
   background-color: #FFFFFF;
   color: #111111;
 }
+
+table{
+  border-collapse: collapse;
+  border: 1px solid ;
+  padding: 20px;
+  background-color: white;
+  margin-top: 20px;
+}
+
+td{
+  margin: 10px;
+  padding: 8px 10px;
+}
+
+
+tbody > tr:nth-of-type(even) {
+  background-color: #F2F2F7;
+}

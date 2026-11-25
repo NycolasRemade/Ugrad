@@ -239,7 +239,7 @@ Mais texto
 INSERT INTO proj_membros (id_convidante, id_convidado, id_projeto, status_membro) VALUES
   (1, 1, 1, 1),
   (1, 1, 2, 1),
-  (1, 2, 2, 2);
+  (1, 3, 2, 2);
 INSERT INTO proj_categorias (id_projeto, id_categoria) VALUES
   (1, 1),
   (1, 2),

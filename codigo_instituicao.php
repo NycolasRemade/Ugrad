@@ -86,7 +86,7 @@ include 'header.php';
 
         <form action="codigo_instituicao.php" method="POST" id="form_login">
             <div>
-                <input type="text" class="input_login" name="codigo_instituicao" required placeholder="Código" value="<?= $_GET['codigo'] ?? ''; ?>">
+                <input type="text" class="input_login" name="codigo_instituicao" required placeholder="Código" value="<?= $_GET['codigo'] ?? ''; ?>" oninput="this.value = this.value.toUpperCase();">
                 <button type="submit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="72" height="71" viewBox="0 0 72 71" fill="none">
                         <rect width="72" height="71" fill="#111111" />

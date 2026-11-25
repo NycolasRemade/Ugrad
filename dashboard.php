@@ -74,7 +74,7 @@ require 'header.php'
                         <p class="projeto-titulo"><?= htmlspecialchars($proj['nome_projeto']); ?></p>
                         <div class="projeto-membros">
                             <?php foreach ($membros as $m): ?>
-                                <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($m['imagem_perfil']) ?>')" title="<?= htmlspecialchars($m['nome']); ?>"></div>
+                                <div class="membro-avatar" style="background-image: url('<?= !empty($m['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($m['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" title="<?= htmlspecialchars($m['nome']); ?>"></div>
                             <?php endforeach; ?>
                         </div>
                     </a>
@@ -150,7 +150,7 @@ require 'header.php'
 
                         <div class="projeto-membros">
                         <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
-                            <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
+                            <div class="membro-avatar" style="background-image: url('<?= !empty($projetos[$i]['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($projetos[$i]['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
                         <?php $i++; endwhile; $i--;?>
                         </div>
                     </a>
@@ -247,7 +247,7 @@ require 'header.php'
 
                         <div class="projeto-membros">
                         <?php while ($i < $tamanho && $id_projeto === $projetos[$i]['id']): ?>
-                            <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($projetos[$i]['imagem_perfil']) ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
+                            <div class="membro-avatar" style="background-image: url('<?= !empty($projetos[$i]['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($projetos[$i]['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" title="<?= htmlspecialchars($projetos[$i]['nome_usuario']) ?>"></div>
                         <?php $i++; endwhile; $i--;?>
                         </div>
                     </a>

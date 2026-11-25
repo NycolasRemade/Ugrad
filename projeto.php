@@ -205,7 +205,7 @@ include 'header.php'
                 <?php foreach ($membros as $c): ?>
                 <div style="margin-left: 16px; margin-top: 8px;">
                     <a href="conta.php?userid=<?= $c['id'] ?>">
-                        <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome']); ?>"></div>
+                        <div class="membro-avatar" style="background-image: url('<?= !empty($c['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($c['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" title="<?= htmlspecialchars($c['nome']); ?>"></div>
                     </a>
                     <a href="conta.php?userid=<?= $c['id'] ?>"><strong><?= htmlspecialchars($c['nome']) ?></strong></a>
                 </div>
@@ -319,7 +319,7 @@ include 'header.php'
                             data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
                             <div>
                                 <a href="conta.php?userid=<?= $c['id'] ?>">
-                                    <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
+                                    <div class="membro-avatar" style="background-image: url('<?= !empty($c['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($c['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
                                 </a>
                                     <a href="conta.php?userid=<?= $c['id'] ?>"><strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong></a>
                                 <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>

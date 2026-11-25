@@ -195,8 +195,6 @@ INSERT INTO codigo_instituicao (id_instituicao, codigo, tipo_usuario, id_turma) 
   (2, 'abcdefghijk', 1, 2);
 
 INSERT INTO categorias (nome) VALUES
-  ('categoria1'),
-  ('categoria2'),
   ('Tecnologia'),
   ('Artes'),
   ('Programação'),

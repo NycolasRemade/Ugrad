@@ -1,0 +1,113 @@
+<?php
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
+
+$id = (int)($_GET['id'] ?? 0);
+$instituicao = find_instituicao($id);
+$isPartial = ($_GET['partial'] ?? '') === '1';
+$isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
+
+if (!$instituicao) {
+    http_response_code(404);
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Instituição não encontrada.']);
+        exit;
+    }
+    if ($isPartial) {
+        echo '<p class="detail-placeholder">Instituição não encontrada.</p>';
+        exit;
+    }
+    $pageTitle = 'Instituição não encontrada';
+    require __DIR__ . '/includes/mod_04.php';
+    echo '<p>Instituição não encontrada. <a href="arq_01.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/mod_05.php';
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
+    $result = ['success' => true, 'acao' => $_POST['acao'], 'id' => $id, 'message' => '', 'removed' => false];
+
+    switch ($_POST['acao']) {
+        case 'gerar_codigo':
+            // turma_id: "0"    -> código da própria instituição
+            //           número -> código de uma turma desta instituição
+            $alvo = (string)($_POST['turma_id'] ?? '0');
+            $turmaId = null;
+            $tipoCodigo = 'ALUNO';
+            $rotulo = 'da instituição';
+            if ($alvo !== '0') {
+                $turmaOk = false;
+                foreach (turmas_da_instituicao($id) as $t) {
+                    if ((string)$t['id'] === $alvo) { $turmaOk = true; $turmaId = (int)$t['id']; $rotulo = 'da turma ' . $t['nome']; }
+                }
+                if (!$turmaOk) {
+                    $result['success'] = false;
+                    $result['message'] = 'Turma inválida para esta instituição.';
+                    break;
+                }
+            }
+            $gerado = instituicao_gerar_codigo($id, $tipoCodigo, $turmaId);
+            $result['success'] = (bool)$gerado;
+            $result['message'] = $gerado
+                ? 'Código ' . $rotulo . ': ' . $gerado['codigo'] . ' (válido por 7 dias)'
+                : 'Não foi possível gerar o código.';
+            break;
+        case 'senha':
+            $reset = usuario_resetar_senha($id, $instituicao['email'], $instituicao['nome']);
+            $result['success'] = $reset['ok'];
+            if (!$reset['ok']) {
+                $result['message'] = 'Não foi possível redefinir a senha de ' . $instituicao['nome'] . '.';
+            } elseif ($reset['enviado']) {
+                $result['message'] = 'Nova senha temporária enviada para ' . $instituicao['email'] . '.';
+            } else {
+                $result['message'] = 'Senha de ' . $instituicao['nome'] . ' redefinida, mas o e-mail não pôde ser enviado (servidor de e-mail não configurado). '
+                                   . 'Senha temporária para repassar: ' . $reset['senha'];
+            }
+            break;
+        case 'desativar':
+            usuario_toggle_ativacao($id, false);
+            $result['message'] = 'Instituição ' . $instituicao['nome'] . ' desativada.';
+            break;
+        case 'reativar':
+            usuario_toggle_ativacao($id, true);
+            $result['message'] = 'Instituição ' . $instituicao['nome'] . ' reativada.';
+            break;
+        case 'excluir':
+            if (usuario_excluir($id)) {
+                $result['message'] = 'Instituição ' . $instituicao['nome'] . ' excluída.';
+                $result['removed'] = true;
+            } else {
+                $result['success'] = false;
+                $result['message'] = 'Não foi possível excluir "' . $instituicao['nome'] . '": existem registros vinculados que não puderam ser removidos automaticamente.';
+            }
+            break;
+        default:
+            $result['success'] = false;
+            $result['message'] = 'Ação desconhecida.';
+    }
+
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        exit;
+    }
+
+    flash_set($result['message']);
+    header('Location: ' . ($result['removed'] ? 'arq_01.php' : ('arq_03.php?id=' . $id)));
+    exit;
+}
+
+$professores = professores_da_instituicao($id);
+$turmas = turmas_da_instituicao($id);
+$codigos = codigos_da_instituicao($id);
+
+if ($isPartial) {
+    require __DIR__ . '/includes/mod_06.php';
+    exit;
+}
+
+$pageTitle = 'Painel de controle - Detalhes da instituição';
+require __DIR__ . '/includes/mod_04.php';
+require __DIR__ . '/includes/mod_06.php';
+require __DIR__ . '/includes/mod_05.php';

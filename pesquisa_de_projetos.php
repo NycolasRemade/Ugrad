@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $id = (int)$_GET['info_projeto'];
         $stmt = $pdo->prepare(
-        'SELECT p.nome, p.data_criacao, pd.descricao, p.img
+           'SELECT p.nome, p.data_criacao, pd.descricao, p.img
             FROM projetos p LEFT JOIN proj_dados pd
             ON p.id = pd.id_projeto
             WHERE p.id = ? AND p.estado = 3'

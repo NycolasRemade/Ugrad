@@ -184,7 +184,7 @@ INSERT INTO turmas (nome, id_instituicao) VALUES
   ('3tib', 2);
 
 INSERT INTO extra_usuarios (id_usuario, id_turma, id_instituicao) VALUES
-  (1, NULL, NULL),
+  (1, 1, 1),
   (2, 1, 2),
   (3, 1, 2),
   (4, NULL, 2);

@@ -189,6 +189,7 @@ include 'header.php'
             <?php endif; ?>
 
             <div>
+                <br>
                 <?php if (!empty($projeto['img'])): ?>
                     <div style="width: 640px; height:360px; background-position:center; background-repeat:none; background-size:cover; background-image: url('data:image/webp;base64,<?= base64_encode($projeto['img']) ?>');"></div>
                 <?php else: ?>
@@ -199,6 +200,7 @@ include 'header.php'
             </div>
 
             <p>
+                <br>
                 <strong>Criado por:</strong> 
                 <?= !empty($membros) ? htmlspecialchars(implode(', ', $membros)) : 'Nenhum integrante cadastrado' ?>
             </p>
@@ -209,7 +211,7 @@ include 'header.php'
             </p>
 
             <div>
-                <strong>Descrição:</strong>
+                <br>
                 <p><?= nl2br(htmlspecialchars($projeto['descricao'] ?? 'Sem descrição disponível.')) ?></p>
             </div>
         </div>

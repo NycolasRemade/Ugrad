@@ -229,7 +229,7 @@ include 'header.php';
         </div>
 
         <?php if (count($turmas) > 0): ?>
-            <table border="1" cellpadding="5" cellspacing="0">
+            <table>
                 <thead>
                     <tr>
                         <th>Turmas e alunos</th>
@@ -295,7 +295,7 @@ include 'header.php';
                                     <summary>Alunos (<?= count($alunos_da_turma) ?>)</summary>
                                     <br>
                                     <?php if (count($alunos_da_turma) > 0): ?>
-                                        <table border="1" cellpadding="3" cellspacing="0">
+                                        <table>
                                             <thead>
                                                 <tr>
                                                     <th>Nome</th>
@@ -391,7 +391,7 @@ include 'header.php';
 
         <h2>Lista de alunos</h2>
         <?php if (count($alunos) > 0): ?>
-            <table border="1" cellpadding="5" cellspacing="0">
+            <table>
                 <thead>
                     <tr>
                         <th>ID Aluno</th>

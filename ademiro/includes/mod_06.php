@@ -1,15 +1,15 @@
 <?php
 /**
- * includes/instituicao_detail.php
+ * includes/mod_06.php
  * Espera: $instituicao, $professores, $turmas, $codigos
  */
 $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
 ?>
 <div class="detail-grid">
   <?php if ($foto): ?>
-    <div class="detail-avatar" style="background-image:url('<?= $foto ?>');background-size:cover;background-position:center;"></div>
+    <div class="detail-avatar" aria-hidden="true" style="background-image:url('<?= $foto ?>');background-size:cover;background-position:center;"></div>
   <?php else: ?>
-    <div class="detail-avatar"></div>
+    <div class="detail-avatar" aria-hidden="true"></div>
   <?php endif; ?>
   <div class="detail-fields">
     <div>
@@ -47,8 +47,8 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
   <?php endif; ?>
   <?php foreach ($professores as $p): ?>
     <div class="user-row">
-      <span class="radio"></span>
-      <a class="user-name detail-trigger" href="usuario.php?id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" data-type="usuario"><?= htmlspecialchars($p['nome']) ?></a>
+      <span class="radio" aria-hidden="true"></span>
+      <a class="user-name detail-trigger" href="arq_02.php?id=<?= $p['id'] ?>" data-id="<?= $p['id'] ?>" data-type="usuario"><?= htmlspecialchars($p['nome']) ?></a>
       <span class="dim"><?= htmlspecialchars($p['email']) ?></span>
       <span class="dim"></span>
     </div>
@@ -62,7 +62,7 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
       <p class="dim" style="font-size:var(--fs-sm);">Nenhuma turma cadastrada.</p>
     <?php endif; ?>
     <?php foreach ($turmas as $t): ?>
-      <a class="chip detail-trigger" href="turma.php?id=<?= $t['id'] ?>" data-type="turma" data-id="<?= $t['id'] ?>"><?= htmlspecialchars($t['nome']) ?></a>
+      <a class="chip detail-trigger" href="arq_04.php?id=<?= $t['id'] ?>" data-type="turma" data-id="<?= $t['id'] ?>"><?= htmlspecialchars($t['nome']) ?></a>
     <?php endforeach; ?>
   </div>
 </div>
@@ -85,30 +85,30 @@ $foto = avatar_data_uri($instituicao['imagem_perfil'] ?? null);
 </div>
 
 <div class="actions-row">
-  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form">
+  <form method="post" action="arq_03.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form">
     <input type="hidden" name="acao" value="gerar_codigo">
     <input type="hidden" name="turma_id" value="0">
     <button type="submit" class="btn btn-dark">Gerar</button>
   </form>
 
-  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Gerar uma nova senha temporária para esta instituição e enviar por e-mail? A senha atual deixa de funcionar.">
+  <form method="post" action="arq_03.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Gerar uma nova senha temporária para esta instituição e enviar por e-mail? A senha atual deixa de funcionar.">
     <input type="hidden" name="acao" value="senha">
     <button type="submit" class="btn btn-outline">Solicitar alteração de senha</button>
   </form>
 
   <?php if ($instituicao['ativada']): ?>
-    <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Desativar esta instituição?">
+    <form method="post" action="arq_03.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Desativar esta instituição?">
       <input type="hidden" name="acao" value="desativar">
       <button type="submit" class="btn btn-danger">Desativar</button>
     </form>
   <?php else: ?>
-    <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Reativar esta instituição?">
+    <form method="post" action="arq_03.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Reativar esta instituição?">
       <input type="hidden" name="acao" value="reativar">
       <button type="submit" class="btn btn-dark">Reativar</button>
     </form>
   <?php endif; ?>
 
-  <form method="post" action="instituicao.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Tem certeza que deseja excluir esta instituição?">
+  <form method="post" action="arq_03.php?id=<?= $instituicao['id'] ?>" class="ajax-action-form" data-confirm="Tem certeza que deseja excluir esta instituição?">
     <input type="hidden" name="acao" value="excluir">
     <button type="submit" class="btn btn-danger">Excluir</button>
   </form>

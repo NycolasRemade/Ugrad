@@ -7,7 +7,7 @@
 -- Depois de rodar, o login do site principal precisa chamar uma linha logo
 -- após autenticar o usuário pra o horário ser gravado:
 --
---     require_once 'admin-panel/includes/data.php';  // ajuste o caminho
+--     require_once 'admin-panel/includes/mod_02.php';  // ajuste o caminho
 --     registrar_acesso($idDoUsuarioLogado);
 --
 -- Sem rodar este arquivo, os dois cards simplesmente não aparecem.

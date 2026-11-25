@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $usuario = find_usuario($id);
@@ -19,9 +19,9 @@ if (!$usuario) {
         exit;
     }
     $pageTitle = 'Usuário não encontrado';
-    require __DIR__ . '/includes/header.php';
-    echo '<p>Usuário não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
-    require __DIR__ . '/includes/footer.php';
+    require __DIR__ . '/includes/mod_04.php';
+    echo '<p>Usuário não encontrado. <a href="arq_01.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/mod_05.php';
     exit;
 }
 
@@ -43,17 +43,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
             }
             break;
         case 'desativar':
-            usuario_toggle_ativacao($id, false);
-            $result['message'] = 'Conta de ' . $usuario['nome'] . ' desativada.';
+            if (conta_protegida($id)) {
+                $result['success'] = false;
+                $result['message'] = 'Esta conta é protegida (administrador principal ou a sua própria conta) e não pode ser desativada.';
+            } else {
+                usuario_toggle_ativacao($id, false);
+                $result['message'] = 'Conta de ' . $usuario['nome'] . ' desativada.';
+            }
             break;
         case 'reativar':
             usuario_toggle_ativacao($id, true);
             $result['message'] = 'Conta de ' . $usuario['nome'] . ' reativada.';
             break;
         case 'excluir':
-            if ($usuario['tipo_nome'] === 'ADMINISTRADOR') {
+            if (conta_protegida($id)) {
                 $result['success'] = false;
-                $result['message'] = 'A conta de administrador não pode ser excluída.';
+                $result['message'] = ($id === (int)($_SESSION['usuario_id'] ?? 0))
+                    ? 'Você não pode excluir a sua própria conta.'
+                    : 'O administrador principal não pode ser excluído.';
             } elseif (usuario_excluir($id)) {
                 $result['message'] = 'Conta de ' . $usuario['nome'] . ' excluída.';
                 $result['removed'] = true;
@@ -75,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // Fallback sem JS: navegação normal com mensagem via sessão.
     flash_set($result['message']);
-    header('Location: ' . ($result['removed'] ? 'pesquisa.php' : ('usuario.php?id=' . $id)));
+    header('Location: ' . ($result['removed'] ? 'arq_01.php' : ('arq_02.php?id=' . $id)));
     exit;
 }
 
@@ -84,11 +91,11 @@ $avaliacoes = avaliacoes_do_usuario($id);
 
 if ($isPartial) {
     // Fragmento puro (sem <html>/header/footer) para ser injetado via fetch()
-    require __DIR__ . '/includes/usuario_detail.php';
+    require __DIR__ . '/includes/mod_09.php';
     exit;
 }
 
 $pageTitle = 'Painel de controle - Detalhes do usuário';
-require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/usuario_detail.php';
-require __DIR__ . '/includes/footer.php';
+require __DIR__ . '/includes/mod_04.php';
+require __DIR__ . '/includes/mod_09.php';
+require __DIR__ . '/includes/mod_05.php';

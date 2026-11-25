@@ -1,11 +1,11 @@
 <?php
 /**
- * includes/turma_detail.php
+ * includes/mod_08.php
  * Espera: $turma, $membros, $codigos
  */
 ?>
 <div class="detail-grid">
-  <div class="detail-avatar"></div>
+  <div class="detail-avatar" aria-hidden="true"></div>
   <div class="detail-fields">
     <div>
       <div class="field-label">ID da turma</div>
@@ -22,7 +22,7 @@
     <div>
       <div class="field-label">Instituição</div>
       <div class="field-value">
-        <a class="detail-trigger" href="instituicao.php?id=<?= $turma['id_instituicao'] ?>" data-type="instituicao" data-id="<?= $turma['id_instituicao'] ?>"><?= htmlspecialchars($turma['instituicao_nome']) ?></a>
+        <a class="detail-trigger" href="arq_03.php?id=<?= $turma['id_instituicao'] ?>" data-type="instituicao" data-id="<?= $turma['id_instituicao'] ?>"><?= htmlspecialchars($turma['instituicao_nome']) ?></a>
       </div>
     </div>
   </div>
@@ -35,8 +35,8 @@
   <?php endif; ?>
   <?php foreach ($membros as $m): ?>
     <div class="user-row">
-      <span class="radio"></span>
-      <a class="user-name detail-trigger" href="usuario.php?id=<?= $m['id'] ?>" data-id="<?= $m['id'] ?>" data-type="usuario"><?= htmlspecialchars($m['nome']) ?><?php if (!$m['ativada']): ?> <span class="dim">(desativada)</span><?php endif; ?></a>
+      <span class="radio" aria-hidden="true"></span>
+      <a class="user-name detail-trigger" href="arq_02.php?id=<?= $m['id'] ?>" data-id="<?= $m['id'] ?>" data-type="usuario"><?= htmlspecialchars($m['nome']) ?><?php if (!$m['ativada']): ?> <span class="dim">(desativada)</span><?php endif; ?></a>
       <span class="dim"><?= htmlspecialchars($m['email']) ?></span>
       <span class="dim"><?= htmlspecialchars(tipo_label($m['tipo_nome'])) ?></span>
     </div>
@@ -66,12 +66,12 @@
 </div>
 
 <div class="actions-row">
-  <form method="post" action="turma.php?id=<?= $turma['id'] ?>" class="ajax-action-form">
+  <form method="post" action="arq_04.php?id=<?= $turma['id'] ?>" class="ajax-action-form">
     <input type="hidden" name="acao" value="gerar_codigo">
     <button type="submit" class="btn btn-dark">Gerar</button>
   </form>
 
-  <form method="post" action="turma.php?id=<?= $turma['id'] ?>" class="ajax-action-form" data-confirm="Excluir esta turma? Os alunos ficam sem turma e os códigos dela são apagados.">
+  <form method="post" action="arq_04.php?id=<?= $turma['id'] ?>" class="ajax-action-form" data-confirm="Excluir esta turma? Os alunos ficam sem turma e os códigos dela são apagados.">
     <input type="hidden" name="acao" value="excluir">
     <button type="submit" class="btn btn-danger">Excluir turma</button>
   </form>

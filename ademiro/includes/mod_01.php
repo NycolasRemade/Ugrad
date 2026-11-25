@@ -1,10 +1,10 @@
 <?php
 /**
- * includes/auth_admin.php
+ * includes/mod_01.php
  * Garante que só um administrador logado (tipo 5) acesse as páginas
  * do painel. Inclua isso ANTES de qualquer outra coisa no topo de
- * cada arquivo de entrada (index.php, pesquisa.php, usuario.php,
- * instituicao.php, reportagem.php).
+ * cada arquivo de entrada (index.php, arq_01.php, arq_02.php,
+ * arq_03.php, arq_06.php).
  */
 
 if (session_status() === PHP_SESSION_NONE) {
@@ -22,7 +22,7 @@ $loginUrl = $siteCompleto ? '../login.php' : 'login.php';
 // isso NÃO vale e o login normal continua obrigatório.
 $ehLocal = in_array($_SERVER['REMOTE_ADDR'] ?? '', ['127.0.0.1', '::1'], true);
 if (!isset($_SESSION['usuario_id']) && !$siteCompleto && $ehLocal) {
-    require_once __DIR__ . '/config.php';
+    require_once __DIR__ . '/mod_03.php';
     $adm = $pdo->query('SELECT id FROM usuarios WHERE tipo = 5 AND ativada = 1 ORDER BY id LIMIT 1')->fetchColumn();
     if ($adm) {
         $_SESSION['usuario_id'] = (int)$adm;

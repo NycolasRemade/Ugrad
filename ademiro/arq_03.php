@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $instituicao = find_instituicao($id);
@@ -19,9 +19,9 @@ if (!$instituicao) {
         exit;
     }
     $pageTitle = 'Instituição não encontrada';
-    require __DIR__ . '/includes/header.php';
-    echo '<p>Instituição não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
-    require __DIR__ . '/includes/footer.php';
+    require __DIR__ . '/includes/mod_04.php';
+    echo '<p>Instituição não encontrada. <a href="arq_01.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/mod_05.php';
     exit;
 }
 
@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
     }
 
     flash_set($result['message']);
-    header('Location: ' . ($result['removed'] ? 'pesquisa.php' : ('instituicao.php?id=' . $id)));
+    header('Location: ' . ($result['removed'] ? 'arq_01.php' : ('arq_03.php?id=' . $id)));
     exit;
 }
 
@@ -103,11 +103,11 @@ $turmas = turmas_da_instituicao($id);
 $codigos = codigos_da_instituicao($id);
 
 if ($isPartial) {
-    require __DIR__ . '/includes/instituicao_detail.php';
+    require __DIR__ . '/includes/mod_06.php';
     exit;
 }
 
 $pageTitle = 'Painel de controle - Detalhes da instituição';
-require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/instituicao_detail.php';
-require __DIR__ . '/includes/footer.php';
+require __DIR__ . '/includes/mod_04.php';
+require __DIR__ . '/includes/mod_06.php';
+require __DIR__ . '/includes/mod_05.php';

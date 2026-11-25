@@ -1,6 +1,6 @@
 <?php
 /**
- * logout.php — encerra a sessão. Só aceita POST (botão "Sair" da página
+ * arq_08.php — encerra a sessão. Só aceita POST (botão "Sair" da página
  * Conta), pra um link/imagem de terceiros não conseguir deslogar o admin.
  */
 if (session_status() === PHP_SESSION_NONE) {
@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: conta.php');
+    header('Location: arq_07.php');
     exit;
 }
 

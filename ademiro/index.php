@@ -1,9 +1,9 @@
 <?php
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 $pageTitle = 'Dashboard';
 $stats = db_estatisticas_contas();
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/mod_04.php';
 ?>
 
 <div class="stats-row">
@@ -45,9 +45,9 @@ require __DIR__ . '/includes/header.php';
 
 <div class="dash-wrap">
   <div class="dash-menu">
-      <div class="dash-avatar"></div>
-      <a href="pesquisa.php"><button type="button" class="dash-search-btn">Painel de administrador</button></a>
+      <div class="dash-avatar" aria-hidden="true"></div>
+      <a href="arq_01.php"><button type="button" class="dash-search-btn">Painel de administrador</button></a>
   </div>
 </div>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/includes/mod_05.php'; ?>

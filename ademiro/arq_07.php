@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 
 $eu = find_usuario((int)$_SESSION['usuario_id']);
 if (!$eu) {
@@ -14,7 +14,7 @@ if (!$eu) {
 $pageTitle = 'Minha conta';
 $foto = avatar_data_uri($eu['imagem_perfil'] ?? null);
 $pendentes = total_reportagens();
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/mod_04.php';
 ?>
 
 <h1 class="page-title">Minha conta</h1>
@@ -58,9 +58,9 @@ require __DIR__ . '/includes/header.php';
 
 <div class="actions-row">
   <a class="btn btn-outline" href="index.php">Voltar ao painel</a>
-  <form method="post" action="logout.php">
+  <form method="post" action="arq_08.php">
     <button type="submit" class="btn btn-danger">Sair</button>
   </form>
 </div>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/includes/mod_05.php'; ?>

@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $projeto = find_projeto($id);
@@ -19,9 +19,9 @@ if (!$projeto) {
         exit;
     }
     $pageTitle = 'Projeto não encontrado';
-    require __DIR__ . '/includes/header.php';
-    echo '<p>Projeto não encontrado. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
-    require __DIR__ . '/includes/footer.php';
+    require __DIR__ . '/includes/mod_04.php';
+    echo '<p>Projeto não encontrado. <a href="arq_01.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/mod_05.php';
     exit;
 }
 
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // Fallback sem JS: navegação normal com mensagem via sessão.
     flash_set($result['message']);
-    header('Location: ' . ($result['removed'] ? 'pesquisa.php?tab=projetos' : ('projeto.php?id=' . $id)));
+    header('Location: ' . ($result['removed'] ? 'arq_01.php?tab=projetos' : ('arq_05.php?id=' . $id)));
     exit;
 }
 
@@ -61,11 +61,11 @@ $reportagens = reportagens_do_projeto($id);
 
 if ($isPartial) {
     // Fragmento puro (sem <html>/header/footer) para ser injetado via fetch()
-    require __DIR__ . '/includes/projeto_detail.php';
+    require __DIR__ . '/includes/mod_07.php';
     exit;
 }
 
 $pageTitle = 'Painel de controle - Detalhes do projeto';
-require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/projeto_detail.php';
-require __DIR__ . '/includes/footer.php';
+require __DIR__ . '/includes/mod_04.php';
+require __DIR__ . '/includes/mod_07.php';
+require __DIR__ . '/includes/mod_05.php';

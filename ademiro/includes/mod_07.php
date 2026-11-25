@@ -1,15 +1,15 @@
 <?php
 /**
- * includes/projeto_detail.php
+ * includes/mod_07.php
  * Espera: $projeto, $categorias, $membros, $reportagens
  */
 $foto = avatar_data_uri($projeto['img'] ?? null);
 ?>
 <div class="detail-grid">
   <?php if ($foto): ?>
-    <div class="detail-avatar" style="background-image:url('<?= $foto ?>');background-size:cover;background-position:center;"></div>
+    <div class="detail-avatar" aria-hidden="true" style="background-image:url('<?= $foto ?>');background-size:cover;background-position:center;"></div>
   <?php else: ?>
-    <div class="detail-avatar"></div>
+    <div class="detail-avatar" aria-hidden="true"></div>
   <?php endif; ?>
   <div class="detail-fields">
     <div>
@@ -60,8 +60,8 @@ $foto = avatar_data_uri($projeto['img'] ?? null);
   <?php endif; ?>
   <?php foreach ($membros as $m): ?>
     <div class="user-row">
-      <span class="radio"></span>
-      <a class="user-name detail-trigger" href="usuario.php?id=<?= $m['id'] ?>" data-id="<?= $m['id'] ?>" data-type="usuario"><?= htmlspecialchars($m['nome']) ?></a>
+      <span class="radio" aria-hidden="true"></span>
+      <a class="user-name detail-trigger" href="arq_02.php?id=<?= $m['id'] ?>" data-id="<?= $m['id'] ?>" data-type="usuario"><?= htmlspecialchars($m['nome']) ?></a>
       <span class="dim"><?= htmlspecialchars(membro_status_label($m['status_nome'])) ?></span>
       <span class="dim"></span>
     </div>
@@ -89,16 +89,16 @@ $foto = avatar_data_uri($projeto['img'] ?? null);
         <span><?= htmlspecialchars(formatar_data($r['data_reportagem'])) ?></span>
       </div>
       <div class="review-actions">
-        <form method="post" action="reportagem.php" class="ajax-action-form inline-form" data-confirm="Apagar o projeto reportado? Essa ação não pode ser desfeita.">
+        <form method="post" action="arq_06.php" class="ajax-action-form inline-form" data-confirm="Apagar o projeto reportado? Essa ação não pode ser desfeita.">
           <input type="hidden" name="id" value="<?= $r['id'] ?>">
           <input type="hidden" name="acao" value="apagar">
-          <input type="hidden" name="voltar" value="projeto.php?id=<?= $projeto['id'] ?>">
+          <input type="hidden" name="voltar" value="arq_05.php?id=<?= $projeto['id'] ?>">
           <button type="submit" class="btn-mini btn-mini-danger">Apagar</button>
         </form>
-        <form method="post" action="reportagem.php" class="ajax-action-form inline-form" data-confirm="Ignorar esta denúncia?">
+        <form method="post" action="arq_06.php" class="ajax-action-form inline-form" data-confirm="Ignorar esta denúncia?">
           <input type="hidden" name="id" value="<?= $r['id'] ?>">
           <input type="hidden" name="acao" value="ignorar">
-          <input type="hidden" name="voltar" value="projeto.php?id=<?= $projeto['id'] ?>">
+          <input type="hidden" name="voltar" value="arq_05.php?id=<?= $projeto['id'] ?>">
           <button type="submit" class="btn-mini btn-mini-dark">Ignorar</button>
         </form>
       </div>
@@ -107,7 +107,7 @@ $foto = avatar_data_uri($projeto['img'] ?? null);
 </div>
 
 <div class="actions-row">
-  <form method="post" action="projeto.php?id=<?= $projeto['id'] ?>" class="ajax-action-form" data-confirm="Excluir este projeto? Imagens, comentários, membros e categorias dele também serão apagados. Essa ação não pode ser desfeita.">
+  <form method="post" action="arq_05.php?id=<?= $projeto['id'] ?>" class="ajax-action-form" data-confirm="Excluir este projeto? Imagens, comentários, membros e categorias dele também serão apagados. Essa ação não pode ser desfeita.">
     <input type="hidden" name="acao" value="excluir">
     <button type="submit" class="btn btn-danger">Excluir projeto</button>
   </form>

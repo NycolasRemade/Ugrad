@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 
 $id = (int)($_GET['id'] ?? 0);
 $turma = find_turma($id);
@@ -19,9 +19,9 @@ if (!$turma) {
         exit;
     }
     $pageTitle = 'Turma não encontrada';
-    require __DIR__ . '/includes/header.php';
-    echo '<p>Turma não encontrada. <a href="pesquisa.php">Voltar para a pesquisa</a>.</p>';
-    require __DIR__ . '/includes/footer.php';
+    require __DIR__ . '/includes/mod_04.php';
+    echo '<p>Turma não encontrada. <a href="arq_01.php">Voltar para a pesquisa</a>.</p>';
+    require __DIR__ . '/includes/mod_05.php';
     exit;
 }
 
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['acao'])) {
 
     // Fallback sem JS: navegação normal com mensagem via sessão.
     flash_set($result['message']);
-    header('Location: ' . ($result['removed'] ? 'pesquisa.php?tab=turmas' : ('turma.php?id=' . $id)));
+    header('Location: ' . ($result['removed'] ? 'arq_01.php?tab=turmas' : ('arq_04.php?id=' . $id)));
     exit;
 }
 
@@ -71,11 +71,11 @@ $codigos = codigos_da_turma($id);
 
 if ($isPartial) {
     // Fragmento puro (sem <html>/header/footer) para ser injetado via fetch()
-    require __DIR__ . '/includes/turma_detail.php';
+    require __DIR__ . '/includes/mod_08.php';
     exit;
 }
 
 $pageTitle = 'Painel de controle - Detalhes da turma';
-require __DIR__ . '/includes/header.php';
-require __DIR__ . '/includes/turma_detail.php';
-require __DIR__ . '/includes/footer.php';
+require __DIR__ . '/includes/mod_04.php';
+require __DIR__ . '/includes/mod_08.php';
+require __DIR__ . '/includes/mod_05.php';

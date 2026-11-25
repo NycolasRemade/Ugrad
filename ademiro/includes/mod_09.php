@@ -1,15 +1,15 @@
 <?php
 /**
- * includes/usuario_detail.php
+ * includes/mod_09.php
  * Espera: $usuario (linha de USUARIO_SELECT), $projetos, $avaliacoes
  */
 $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
 ?>
 <div class="detail-grid">
   <?php if ($foto): ?>
-    <div class="detail-avatar" style="background-image:url('<?= $foto ?>');background-size:cover;background-position:center;"></div>
+    <div class="detail-avatar" aria-hidden="true" style="background-image:url('<?= $foto ?>');background-size:cover;background-position:center;"></div>
   <?php else: ?>
-    <div class="detail-avatar"></div>
+    <div class="detail-avatar" aria-hidden="true"></div>
   <?php endif; ?>
   <div class="detail-fields">
     <div>
@@ -28,7 +28,7 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
       <div class="field-label">Turma</div>
       <div class="field-value">
         <?php if (!empty($usuario['id_turma'])): ?>
-          <a class="detail-trigger" href="turma.php?id=<?= $usuario['id_turma'] ?>" data-type="turma" data-id="<?= $usuario['id_turma'] ?>"><?= htmlspecialchars($usuario['turma_nome'] ?? '—') ?></a>
+          <a class="detail-trigger" href="arq_04.php?id=<?= $usuario['id_turma'] ?>" data-type="turma" data-id="<?= $usuario['id_turma'] ?>"><?= htmlspecialchars($usuario['turma_nome'] ?? '—') ?></a>
         <?php else: ?>—<?php endif; ?>
       </div>
     </div>
@@ -63,7 +63,7 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
       <p class="dim" style="font-size:var(--fs-sm);">Nenhum projeto vinculado.</p>
     <?php endif; ?>
     <?php foreach ($projetos as $p): ?>
-      <a class="chip detail-trigger" href="projeto.php?id=<?= $p['id'] ?>" data-type="projeto" data-id="<?= $p['id'] ?>"><?= htmlspecialchars($p['nome']) ?></a>
+      <a class="chip detail-trigger" href="arq_05.php?id=<?= $p['id'] ?>" data-type="projeto" data-id="<?= $p['id'] ?>"><?= htmlspecialchars($p['nome']) ?></a>
     <?php endforeach; ?>
   </div>
 </div>
@@ -91,16 +91,16 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
         <span><?= htmlspecialchars(formatar_data($a['data_reportagem'])) ?></span>
       </div>
       <div class="review-actions">
-        <form method="post" action="reportagem.php" class="ajax-action-form inline-form" data-confirm="Apagar o item reportado? Essa ação não pode ser desfeita.">
+        <form method="post" action="arq_06.php" class="ajax-action-form inline-form" data-confirm="Apagar o item reportado? Essa ação não pode ser desfeita.">
           <input type="hidden" name="id" value="<?= $a['id'] ?>">
           <input type="hidden" name="acao" value="apagar">
-          <input type="hidden" name="voltar" value="usuario.php?id=<?= $usuario['id'] ?>">
+          <input type="hidden" name="voltar" value="arq_02.php?id=<?= $usuario['id'] ?>">
           <button type="submit" class="btn-mini btn-mini-danger">Apagar</button>
         </form>
-        <form method="post" action="reportagem.php" class="ajax-action-form inline-form" data-confirm="Ignorar esta reportagem?">
+        <form method="post" action="arq_06.php" class="ajax-action-form inline-form" data-confirm="Ignorar esta reportagem?">
           <input type="hidden" name="id" value="<?= $a['id'] ?>">
           <input type="hidden" name="acao" value="ignorar">
-          <input type="hidden" name="voltar" value="usuario.php?id=<?= $usuario['id'] ?>">
+          <input type="hidden" name="voltar" value="arq_02.php?id=<?= $usuario['id'] ?>">
           <button type="submit" class="btn-mini btn-mini-dark">Ignorar</button>
         </form>
       </div>
@@ -131,32 +131,32 @@ $foto = avatar_data_uri($usuario['imagem_perfil'] ?? null);
 
 <div class="actions-row">
   <?php if ($usuario['tipo_nome'] === 'INSTITUICAO'): ?>
-  <form method="post" action="instituicao.php?id=<?= $usuario['id'] ?>" class="ajax-action-form">
+  <form method="post" action="arq_03.php?id=<?= $usuario['id'] ?>" class="ajax-action-form">
     <input type="hidden" name="acao" value="gerar_codigo">
     <input type="hidden" name="turma_id" value="0">
     <button type="submit" class="btn btn-dark">Gerar</button>
   </form>
   <?php endif; ?>
 
-  <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Gerar uma nova senha temporária para este usuário e enviar por e-mail? A senha atual deixa de funcionar.">
+  <form method="post" action="arq_02.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Gerar uma nova senha temporária para este usuário e enviar por e-mail? A senha atual deixa de funcionar.">
     <input type="hidden" name="acao" value="senha">
     <button type="submit" class="btn btn-outline">Solicitar alteração de senha</button>
   </form>
 
-  <?php if ($usuario['ativada']): ?>
-    <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Desativar esta conta?">
+  <?php if ($usuario['ativada'] && !conta_protegida((int)$usuario['id'])): ?>
+    <form method="post" action="arq_02.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Desativar esta conta?">
       <input type="hidden" name="acao" value="desativar">
       <button type="submit" class="btn btn-danger">Desativar conta</button>
     </form>
-  <?php else: ?>
-    <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Reativar esta conta?">
+  <?php elseif (!$usuario['ativada']): ?>
+    <form method="post" action="arq_02.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Reativar esta conta?">
       <input type="hidden" name="acao" value="reativar">
       <button type="submit" class="btn btn-dark">Reativar conta</button>
     </form>
   <?php endif; ?>
 
-  <?php if ($usuario['tipo_nome'] !== 'ADMINISTRADOR'): ?>
-  <form method="post" action="usuario.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Tem certeza que deseja excluir esta conta? Essa ação não pode ser desfeita.">
+  <?php if (!conta_protegida((int)$usuario['id'])): ?>
+  <form method="post" action="arq_02.php?id=<?= $usuario['id'] ?>" class="ajax-action-form" data-confirm="Tem certeza que deseja excluir esta conta? Essa ação não pode ser desfeita.">
     <input type="hidden" name="acao" value="excluir">
     <button type="submit" class="btn btn-danger">Excluir conta</button>
   </form>

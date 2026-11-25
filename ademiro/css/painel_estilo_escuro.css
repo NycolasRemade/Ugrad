@@ -1,10 +1,10 @@
 /* ============================================================
-   dark-mode.css
+   painel_estilo_escuro.css
    Modo escuro "solto", pra usar em qualquer página (não só no
    admin-panel). Funciona assim:
 
    1. Inclua este arquivo DEPOIS do CSS normal da página:
-        <link rel="stylesheet" href="dark-mode.css">
+        <link rel="stylesheet" href="painel_estilo_escuro.css">
 
    2. Alguma coisa precisa marcar quando o modo escuro está ativo.
       O jeito mais simples: colocar o atributo data-theme="dark"

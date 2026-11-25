@@ -1,6 +1,6 @@
 <?php
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 $pageTitle = 'Painel de controle - Pesquisa';
 
 $q = trim($_GET['q'] ?? '');
@@ -8,7 +8,7 @@ $q = trim($_GET['q'] ?? '');
 $abas = ['instituicoes', 'turmas', 'projetos', 'usuarios'];
 $openTab = in_array($_GET['tab'] ?? '', $abas, true) ? $_GET['tab'] : 'usuarios';
 
-// pré-seleciona um item ao abrir (ex.: pesquisa.php?tipo=usuario&id=3)
+// pré-seleciona um item ao abrir (ex.: arq_01.php?tipo=usuario&id=3)
 $selectedType = in_array($_GET['tipo'] ?? '', ['usuario', 'instituicao', 'turma', 'projeto'], true) ? $_GET['tipo'] : null;
 $selectedId = (int)($_GET['id'] ?? 0);
 
@@ -17,20 +17,20 @@ $turmas = db_turmas($q);
 $projetos = db_projetos($q);
 $usuarios = db_usuarios($q);
 
-require __DIR__ . '/includes/header.php';
+require __DIR__ . '/includes/mod_04.php';
 ?>
 
 <div class="search-layout">
 
   <div class="search-col">
     <form class="search-bar" id="searchForm" method="get">
-      <input type="text" name="q" value="<?= htmlspecialchars($q) ?>"<?= isset($_GET['foco']) ? ' autofocus' : '' ?> placeholder="Pesquisar usuários, turmas, instituições ou projetos...">
+      <input type="text" name="q" aria-label="Pesquisar usuários, turmas, instituições ou projetos" value="<?= htmlspecialchars($q) ?>"<?= isset($_GET['foco']) ? ' autofocus' : '' ?> placeholder="Pesquisar usuários, turmas, instituições ou projetos...">
       <input type="hidden" name="tab" id="tabField" value="<?= htmlspecialchars($openTab) ?>">
-      <button type="submit">+</button>
+      <button type="submit" aria-label="Pesquisar">+</button>
     </form>
 
     <div class="accordion-section<?= $openTab === 'instituicoes' ? ' open' : '' ?>" data-section="instituicoes">
-      <button type="button" class="accordion-header"><span>Instituições <span class="dim" data-count="instituicoes">(<?= count($instituicoes) ?>)</span></span> <span class="chev">⌄</span></button>
+      <button type="button" class="accordion-header" aria-expanded="<?= $openTab === 'instituicoes' ? 'true' : 'false' ?>"><span>Instituições <span class="dim" data-count="instituicoes">(<?= count($instituicoes) ?>)</span></span> <span class="chev" aria-hidden="true">⌄</span></button>
       <div class="accordion-body">
         <div class="pill-row">
           <?php if (empty($instituicoes)): ?>
@@ -38,7 +38,7 @@ require __DIR__ . '/includes/header.php';
           <?php endif; ?>
           <?php foreach ($instituicoes as $inst): ?>
             <div class="pill" data-row-type="instituicao" data-row-id="<?= $inst['id'] ?>">
-              <a href="instituicao.php?id=<?= $inst['id'] ?>" class="detail-trigger" data-type="instituicao" data-id="<?= $inst['id'] ?>">
+              <a href="arq_03.php?id=<?= $inst['id'] ?>" class="detail-trigger" data-type="instituicao" data-id="<?= $inst['id'] ?>">
                 <?= htmlspecialchars($inst['nome']) ?>
               </a>
             </div>
@@ -48,7 +48,7 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <div class="accordion-section<?= $openTab === 'turmas' ? ' open' : '' ?>" data-section="turmas">
-      <button type="button" class="accordion-header"><span>Turmas <span class="dim" data-count="turmas">(<?= count($turmas) ?>)</span></span> <span class="chev">⌄</span></button>
+      <button type="button" class="accordion-header" aria-expanded="<?= $openTab === 'turmas' ? 'true' : 'false' ?>"><span>Turmas <span class="dim" data-count="turmas">(<?= count($turmas) ?>)</span></span> <span class="chev" aria-hidden="true">⌄</span></button>
       <div class="accordion-body">
         <div class="pill-row">
           <?php if (empty($turmas)): ?>
@@ -56,7 +56,7 @@ require __DIR__ . '/includes/header.php';
           <?php endif; ?>
           <?php foreach ($turmas as $t): ?>
             <div class="pill" data-row-type="turma" data-row-id="<?= $t['id'] ?>">
-              <a href="turma.php?id=<?= $t['id'] ?>" class="detail-trigger" data-type="turma" data-id="<?= $t['id'] ?>">
+              <a href="arq_04.php?id=<?= $t['id'] ?>" class="detail-trigger" data-type="turma" data-id="<?= $t['id'] ?>">
                 <?= htmlspecialchars($t['nome']) ?> <span class="dim">· <?= htmlspecialchars($t['instituicao_nome']) ?></span>
               </a>
             </div>
@@ -66,7 +66,7 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <div class="accordion-section<?= $openTab === 'projetos' ? ' open' : '' ?>" data-section="projetos">
-      <button type="button" class="accordion-header"><span>Projetos <span class="dim" data-count="projetos">(<?= count($projetos) ?>)</span></span> <span class="chev">⌄</span></button>
+      <button type="button" class="accordion-header" aria-expanded="<?= $openTab === 'projetos' ? 'true' : 'false' ?>"><span>Projetos <span class="dim" data-count="projetos">(<?= count($projetos) ?>)</span></span> <span class="chev" aria-hidden="true">⌄</span></button>
       <div class="accordion-body">
         <div class="pill-row">
           <?php if (empty($projetos)): ?>
@@ -74,7 +74,7 @@ require __DIR__ . '/includes/header.php';
           <?php endif; ?>
           <?php foreach ($projetos as $p): ?>
             <div class="pill" data-row-type="projeto" data-row-id="<?= $p['id'] ?>">
-              <a href="projeto.php?id=<?= $p['id'] ?>" class="detail-trigger" data-type="projeto" data-id="<?= $p['id'] ?>">
+              <a href="arq_05.php?id=<?= $p['id'] ?>" class="detail-trigger" data-type="projeto" data-id="<?= $p['id'] ?>">
                 <?= htmlspecialchars($p['nome']) ?> <span class="dim">· <?= htmlspecialchars(estado_label($p['estado_nome'])) ?></span>
               </a>
             </div>
@@ -84,7 +84,7 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <div class="accordion-section<?= $openTab === 'usuarios' ? ' open' : '' ?>" data-section="usuarios">
-      <button type="button" class="accordion-header"><span>Usuários <span class="dim" data-count="usuarios">(<?= count($usuarios) ?>)</span></span> <span class="chev">⌄</span></button>
+      <button type="button" class="accordion-header" aria-expanded="<?= $openTab === 'usuarios' ? 'true' : 'false' ?>"><span>Usuários <span class="dim" data-count="usuarios">(<?= count($usuarios) ?>)</span></span> <span class="chev" aria-hidden="true">⌄</span></button>
       <div class="accordion-body">
 
 
@@ -93,8 +93,8 @@ require __DIR__ . '/includes/header.php';
         <?php endif; ?>
         <?php foreach ($usuarios as $u): ?>
           <div class="user-row" data-row-type="usuario" data-row-id="<?= $u['id'] ?>">
-            <span class="radio"></span>
-            <a class="user-name detail-trigger" href="usuario.php?id=<?= $u['id'] ?>" data-type="usuario" data-id="<?= $u['id'] ?>">
+            <span class="radio" aria-hidden="true"></span>
+            <a class="user-name detail-trigger" href="arq_02.php?id=<?= $u['id'] ?>" data-type="usuario" data-id="<?= $u['id'] ?>">
               <?= htmlspecialchars($u['nome']) ?>
               <?php if (!$u['ativada']): ?><span class="dim">(desativada)</span><?php endif; ?>
             </a>
@@ -112,7 +112,8 @@ require __DIR__ . '/includes/header.php';
       <span id="actionBannerText"></span>
       <button type="button" id="actionBannerClose" aria-label="Fechar">×</button>
     </div>
-    <div id="detailPanel" class="detail-panel">
+    <div id="anuncio" class="sr-only" role="status" aria-live="polite"></div>
+    <div id="detailPanel" class="detail-panel" role="region" aria-label="Detalhes do item selecionado">
       <p class="detail-placeholder">Selecione um item na lista ao lado para ver os detalhes aqui.</p>
     </div>
   </div>
@@ -128,20 +129,31 @@ require __DIR__ . '/includes/header.php';
   var current = { type: null, id: null }; // o que está aberto no painel agora
 
   var PLACEHOLDER = '<p class="detail-placeholder">Selecione um item na lista ao lado para ver os detalhes aqui.</p>';
-  var ENDPOINTS = { usuario: 'usuario.php', instituicao: 'instituicao.php', turma: 'turma.php', projeto: 'projeto.php' };
+  var ENDPOINTS = { usuario: 'arq_02.php', instituicao: 'arq_03.php', turma: 'arq_04.php', projeto: 'arq_05.php' };
   var SECTION_OF = { usuario: 'usuarios', instituicao: 'instituicoes', turma: 'turmas', projeto: 'projetos' };
 
   document.querySelectorAll('.accordion-header').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var section = btn.closest('.accordion-section');
       section.classList.toggle('open');
+      btn.setAttribute('aria-expanded', section.classList.contains('open') ? 'true' : 'false');
       // a próxima busca continua na seção que o admin acabou de abrir
       if (section.classList.contains('open')) tabField.value = section.dataset.section;
     });
   });
 
+  // avisa o leitor de tela (a região "anuncio" está sempre na página)
+  var anuncio = document.getElementById('anuncio');
+  var ultimoAviso = 0;
+  function anunciar(texto) {
+    anuncio.textContent = '';
+    setTimeout(function () { anuncio.textContent = texto; }, 50);
+  }
+
   function showBanner(message, isError) {
     bannerText.textContent = message && message.trim() !== '' ? message : 'Ação concluída.';
+    anunciar((isError ? 'Erro: ' : '') + bannerText.textContent);
+    ultimoAviso = Date.now();
     banner.classList.toggle('error', !!isError);
     banner.hidden = false;
   }
@@ -178,6 +190,8 @@ require __DIR__ . '/includes/header.php';
       .then(function (res) { return res.text(); })
       .then(function (html) {
         panel.innerHTML = html;
+        // não cobre o aviso de uma ação que acabou de acontecer
+        if (Date.now() - ultimoAviso > 3000) anunciar('Detalhes carregados.');
       })
       .catch(function () {
         panel.innerHTML = '<p class="detail-placeholder">Não foi possível carregar os detalhes. Tente novamente.</p>';
@@ -216,7 +230,7 @@ require __DIR__ . '/includes/header.php';
 
     if (form.dataset.confirm && !confirm(form.dataset.confirm)) return;
 
-    var m = form.getAttribute('action').match(/(usuario|instituicao|turma|projeto)\.php/);
+    var m = form.getAttribute('action').match(/(arq_02|arq_03|arq_04|arq_05)\.php/);
     var type = m ? m[1] : current.type;
     var submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
@@ -230,7 +244,7 @@ require __DIR__ . '/includes/header.php';
       .then(function (data) {
         showBanner(data.message, !data.success);
 
-        // o próprio item aberto foi excluído (usuario.php / instituicao.php / turma.php / projeto.php)
+        // o próprio item aberto foi excluído (arq_02.php / arq_03.php / arq_04.php / arq_05.php)
         if (data.success && data.removed) {
           removeFromList(type, data.id);
           clearPanel();
@@ -260,4 +274,4 @@ require __DIR__ . '/includes/header.php';
 })();
 </script>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+<?php require __DIR__ . '/includes/mod_05.php'; ?>

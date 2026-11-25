@@ -1,12 +1,12 @@
 <?php
 /**
- * reportagem.php
+ * arq_06.php
  * Recebe os botões "Apagar" e "Ignorar" de cada card de Avaliações
  * (tabela reportagens). Responde em JSON quando chamado via AJAX pela
  * tela de pesquisa; senão, faz o fallback tradicional com redirect.
  */
-require __DIR__ . '/includes/auth_admin.php';
-require __DIR__ . '/includes/data.php';
+require __DIR__ . '/includes/mod_01.php';
+require __DIR__ . '/includes/mod_02.php';
 
 $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 $acao = $_POST['acao'] ?? '';
@@ -14,8 +14,8 @@ $isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
 
 // "voltar" só pode apontar pra uma página deste painel (evita redirect pra site externo)
 $voltar = (string)($_POST['voltar'] ?? '');
-if (!preg_match('/^(usuario|instituicao|turma|projeto|pesquisa|index)\.php(\?[A-Za-z0-9=&_-]*)?$/', $voltar)) {
-    $voltar = 'pesquisa.php';
+if (!preg_match('/^(arq_02|arq_03|arq_04|arq_05|arq_01|index)\.php(\?[A-Za-z0-9=&_-]*)?$/', $voltar)) {
+    $voltar = 'arq_01.php';
 }
 
 $rep = reportagem_find($id);
@@ -43,5 +43,5 @@ if ($isAjax) {
 
 flash_set($result['message']);
 // se o item sumiu (usuário/projeto excluído), a página de detalhe dele não existe mais
-header('Location: ' . (in_array($result['removido_tipo'], ['usuario', 'projeto'], true) ? 'pesquisa.php' : $voltar));
+header('Location: ' . (in_array($result['removido_tipo'], ['usuario', 'projeto'], true) ? 'arq_01.php' : $voltar));
 exit;

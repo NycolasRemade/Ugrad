@@ -1,20 +1,20 @@
 <?php
 /**
- * data.php
+ * mod_02.php
  * Camada de dados — consulta o banco "ugrad" via PDO.
- * (Sessão/permissão já são checadas em includes/auth_admin.php, exigido
+ * (Sessão/permissão já são checadas em includes/mod_01.php, exigido
  * antes deste arquivo em cada página de entrada — não repete a checagem
  * aqui pra não quebrar quando este arquivo é apenas incluído.)
  */
 
 // Usa o config compartilhado do site (../Servidor/config.php) quando ele
 // existir; se não (testando só esta pasta isolada, sem o site completo),
-// cai no config.php local em includes/. Assim funciona nos dois casos.
+// cai no mod_03.php local em includes/. Assim funciona nos dois casos.
 $configCompartilhado = __DIR__ . '/../../Servidor/config.php';
 if (file_exists($configCompartilhado)) {
     require_once $configCompartilhado;
 } else {
-    require_once __DIR__ . '/config.php';
+    require_once __DIR__ . '/mod_03.php';
 }
 
 /* ---------------------------------------------------------------------
@@ -336,7 +336,7 @@ function find_usuario(int $id): ?array {
  * desativadas e a divisão por tipo (aluno, professor, etc. — sem
  * contar instituição, que tem sua própria contagem). Os campos
  * logaram_1h / logaram_24h só vêm preenchidos se a coluna
- * ultimo_acesso existir (ver migracao_ultimo_acesso.sql); senão são null.
+ * ultimo_acesso existir (ver painel_atualizacao.sql); senão são null.
  */
 function db_estatisticas_contas(): array {
     global $pdo;
@@ -462,18 +462,33 @@ function nome_instituicao(?int $instituicaoId): string {
  * Ações de escrita
  * ------------------------------------------------------------------- */
 
+/**
+ * Administrador principal = o administrador mais antigo (menor id).
+ * Ele é protegido: ninguém o exclui nem o desativa, nem outro admin
+ * (por exemplo, um admin falso criado depois).
+ */
+function admin_principal_id(): int {
+    global $pdo;
+    return (int)$pdo->query('SELECT MIN(id) FROM usuarios WHERE tipo = 5')->fetchColumn();
+}
+
+/** Esta conta está protegida contra exclusão/desativação? (admin principal ou a própria conta logada) */
+function conta_protegida(int $id): bool {
+    return $id === admin_principal_id() || $id === (int)($_SESSION['usuario_id'] ?? 0);
+}
+
 function usuario_toggle_ativacao(int $id, bool $ativar): bool {
     global $pdo;
+    if (!$ativar && conta_protegida($id)) return false;   // não desativa admin principal nem a si mesmo
     $stmt = $pdo->prepare('UPDATE usuarios SET ativada = ? WHERE id = ?');
     return $stmt->execute([$ativar ? 1 : 0, $id]);
 }
 
 function usuario_excluir(int $id): bool {
     global $pdo;
-    // conta de administrador nunca pode ser excluída
-    $t = $pdo->prepare('SELECT tipo FROM usuarios WHERE id = ?');
-    $t->execute([$id]);
-    if ((int)$t->fetchColumn() === 5) return false;
+    // o administrador principal e a própria conta logada nunca são excluídos;
+    // outros administradores (ex.: um admin falso) podem ser excluídos
+    if (conta_protegida($id)) return false;
     try {
         $pdo->beginTransaction();
 
@@ -597,7 +612,7 @@ function usuario_resetar_senha(int $id, string $email, string $nome): array {
 /* ---------------------------------------------------------------------
  * Registro de acessos (opcional)
  * O banco original não guarda quando alguém logou. Rodando
- * migracao_ultimo_acesso.sql uma vez, a coluna usuarios.ultimo_acesso
+ * painel_atualizacao.sql uma vez, a coluna usuarios.ultimo_acesso
  * passa a existir; aí registrar_acesso() grava o login e o dashboard
  * mostra quantas contas logaram. Sem a coluna, tudo isso fica
  * desligado e nada quebra.

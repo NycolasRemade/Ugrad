@@ -1,6 +1,6 @@
 <?php
 /**
- * config.php
+ * mod_03.php
  * Conexão com o banco "ugrad" (ver dump SQL fornecido) via PDO.
  * Não altera o schema — apenas conecta e disponibiliza $pdo.
  *

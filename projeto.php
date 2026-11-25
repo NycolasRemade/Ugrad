@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_comentario'])) {
 
 // membros do projeto
 $stmt = $pdo->prepare(
-   'SELECT u.nome , u.id
+   'SELECT u.nome , u.id, u.imagem_perfil
     FROM proj_membros pm 
     JOIN usuarios u ON pm.id_convidado = u.id 
     WHERE pm.id_projeto = ? AND (pm.status_membro = 1 OR pm.status_membro = 2)'
@@ -202,9 +202,15 @@ include 'header.php'
 
             <p>
                 <br>
-                <strong>Criado por:</strong><?php if (!empty($membros)): foreach($membros as $m): ?>
-                    <a style="text-decoration: underline;" href="conta.php?userid=<?= $m['id'] ?>"><?= $m['nome'] ?></a>
-                <?php endforeach; else: ?>Nenhum integrante cadastrado.<?php endif; ?>
+                <?php foreach ($membros as $c): ?>
+                <div style="margin-left: 16px; margin-top: 8px;">
+                    <a href="conta.php?userid=<?= $c['id'] ?>">
+                        <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome']); ?>"></div>
+                    </a>
+                    <a href="conta.php?userid=<?= $c['id'] ?>"><strong><?= htmlspecialchars($c['nome']) ?></strong></a>
+                </div>
+                <?php endforeach; ?>
+                <br>
             </p>
 
             <p>

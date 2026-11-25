@@ -30,7 +30,7 @@ include 'header.php';
 
 <div class='config_container'>
 
-    <div id='config_container' style='margin-top:-70px'>
+    <div id='config_container' style='margin-top:-70px; justify-content:center'>
 
         <div class='img_container'>
             <div id="kirkle"><div class="config" style="background-image: url('<?= !empty($usuario['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($usuario['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div></div>

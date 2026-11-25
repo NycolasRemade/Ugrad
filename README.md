@@ -17,3 +17,8 @@ o docker não funciona em outras máquinas que não sejam do lab docker, então 
 
 pra entrar no banco de dados (acho que falta coisa)
 `docker exec -it ugrad -u root -p ugrad`
+
+O básico de nosso projeto é que existem instituições, onde existem salas, e é possível criar códigos de acesso que determinam se um usuário é do tipo professor ou aluno na
+instituição, e também pode-se determinar de que sala o aluno é pelo código.
+No cadastro de contas, o usuário coloca o código, que vincula sua conta à instituição, ou, se não colocar o código, 
+se torna uma conta de empresário, que não consegue criar projetos, apenas visualizar os publicados e deixar comentários.

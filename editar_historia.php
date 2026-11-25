@@ -25,7 +25,7 @@
                                                         <span class="bold">
                                                             <#i</span> texto em <span class="italic">itálico</span><br>
                                                                 <span class="bold">
-                                                                    <#me</span> texto com <span class="meringue">fonte especial</span><br><br>
+                                                                    <#m</span> texto com <span class="meringue">fonte meringue</span><br><br>
 
                                                                         Exemplo:<br><br>
 

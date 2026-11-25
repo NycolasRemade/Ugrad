@@ -143,7 +143,7 @@ $tags = $stmt->fetchAll(PDO::FETCH_COLUMN);
 // comentários/avaliações
 try {
     $stmt = $pdo->prepare(
-       'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil
+       'SELECT c.comentario, c.nota, c.feedback, c.data_criacao, c.data_edicao, u.nome AS nome_usuario, tu.nome AS tipo_usuario, u.imagem_perfil, u.id
         FROM comentarios c
         JOIN usuarios u ON c.id_usuario = u.id
         JOIN tipos_usuario tu ON u.tipo = tu.id
@@ -310,10 +310,11 @@ include 'header.php'
                             data-nota="<?= (int)$c['nota'] ?>" 
                             data-texto="<?= htmlspecialchars(mb_strtolower($c['comentario'] . ' ' . $c['nome_usuario'])) ?>">
                             <div>
+                                <a href="conta.php?userid=<?= $c['id'] ?>">
                                 <div class="projeto-membros">
                                     <div class="membro-avatar" style="background-image: url('data:image/webp;base64,<?= base64_encode($c['imagem_perfil']) ?>')" title="<?= htmlspecialchars($c['nome_usuario']); ?>"></div>
-                                </div>
-                                    <strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong>
+                                </div></a>
+                                    <a href="conta.php?userid=<?= $c['id'] ?>"><strong><?= htmlspecialchars($c['nome_usuario']) ?> (<?= htmlspecialchars(ucfirst(strtolower($c['tipo_usuario']))) ?>)</strong></a>
                                 <span><?= str_pad(str_repeat('★', $c['nota']), 15, '☆') ?></span>
                             </div>
                             

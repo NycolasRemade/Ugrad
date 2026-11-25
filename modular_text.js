@@ -127,7 +127,7 @@ const parser = (function(){
 
             'b': 'bold',
             'i': 'italic',
-            'me': 'meringue',
+            'm': 'meringue',
         };
 
         switch (_tokens[_i].type) {

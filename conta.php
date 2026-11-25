@@ -30,46 +30,26 @@ include 'header.php';
 
 <div class='config_container'>
 
-    <?php if ($erro): ?>
-        <p id='erro'><strong><?= htmlspecialchars($erro) ?></strong></p>
-
-    <?php elseif ($sucesso): ?>
-        <p id='message'><strong><?= htmlspecialchars($sucesso) ?></strong></p>
-
-    <?php endif; ?>
-
     <div id='config_container' style='margin-top:-100px'>
 
         <div class='img_container'>
             <div id="kirkle"><div class="config" style="background-image: url('<?= !empty($usuario['imagem_perfil']) ? 'data:image/webp;base64,' . base64_encode($usuario['imagem_perfil']) : 'Fotos/Ugrad logo cinza.png' ?>')" alt="Foto de Perfil"></div></div>
-        <br>
+    </div>
+            <br>
 
-        <div id='variables_container'>
+        <div id='variables_container' style='margin-left: 100px; margin-top:50px'>
 
-        <form method="POST">
-            <label for="nome">Nome</label><br>
-            <input type="text" id="nome" name="nome" value="<?= htmlspecialchars($usuario['nome'] ?? '') ?>" required>
-        </form>
+            <h1><?= htmlspecialchars($usuario['nome'] ?? '') ?></h1>
 
         <br>
 
-        <form method="POST">
-            <label for="email">E-mail</label><br>
-            <input type="email" id="email" name="email" value="<?= htmlspecialchars($usuario['email'] ?? '') ?>" required>
-        </form>
-
-        <br>
-        </div>
+            <h2><?= htmlspecialchars($usuario['email'] ?? '') ?></h2>
 
         <br>
         
-        <form method="POST">
-            <label for="descricao">Descrição</label><br>
-            <div class='textarea_fix'>
-            <textarea id="descricao" name="descricao" rows="4" cols="50" placeholder="Descrição curta sobre você ou sua instituição"><?= htmlspecialchars($usuario['descricao'] ?? '') ?></textarea>
+            <div class='textarea_fix box' style='padding:30px; margin-left:-30px'>
+            <p id="descricao"><?= htmlspecialchars($usuario['descricao'] ?? 'Sem descrição') ?></p>
             </div>
-            </div>
-        </form>
 
 
 </body>

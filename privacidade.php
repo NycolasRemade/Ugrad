@@ -5,6 +5,10 @@
  * Texto de apoio do projeto: deve ser revisado pelo responsável pela plataforma.
  */
 
+// O header.php do site usa a conexão ($pdo) e a sessão, como nas outras páginas.
+session_start();
+require_once 'Servidor/config.php';
+
 // Contato do encarregado pelo tratamento de dados (art. 41). Preencha, por exemplo:
 // $contatoEncarregado = 'privacidade@seudominio.com';
 $contatoEncarregado = '';

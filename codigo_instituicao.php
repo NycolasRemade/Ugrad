@@ -110,6 +110,12 @@ include 'header.php';
                 <p>Já tenho uma conta <a class="meringue">Ugrad</a></p>
             </div>
         </a>
+        <!-- LGPD (Lei nº 13.709/2018): link para a política de privacidade -->
+        <a href="privacidade.php">
+            <div class="small">
+                <p>Seus dados são protegidos pela LGPD · Privacidade</p>
+            </div>
+        </a>
     </div>
 
 </body>
